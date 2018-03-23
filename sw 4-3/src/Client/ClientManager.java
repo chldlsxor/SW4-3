@@ -39,12 +39,18 @@ public class ClientManager {
 		}
 	}
 
-	public void send(String str) {
+	public void send(String str,Member member) {
 		try {
+//			connect();
 			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			out.writeObject(str);
 			out.flush();
-			Thread.sleep(1000);
+			out.writeObject(member);
+			out.flush();
+//			out.writeObject(member);
+//			out.flush();
+//			Thread.sleep(1000);
+//			socket.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,10 +59,11 @@ public class ClientManager {
 	
 	public void memberSend(Member member) {
 		try {
+//			connect();
 			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			out.writeObject(member);
 			out.flush();
-			Thread.sleep(1000);
+//			socket.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

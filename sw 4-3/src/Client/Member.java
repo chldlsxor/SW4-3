@@ -1,6 +1,8 @@
 package Client;
 
-public class Member {
+import java.io.Serializable;
+
+public class Member implements Serializable{
 	private String pw;
 	private String name;
 	private String birth;
