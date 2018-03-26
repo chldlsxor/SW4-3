@@ -9,11 +9,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-<<<<<<< HEAD
-=======
 import Client.ClientManager;
->>>>>>> refs/remotes/origin/chldlsxor
 import db.Member;
+//import header.Header;
+import header.Header;
 
 class Sign extends JFrame{
 	private JPanel mainPanel = new JPanel();
@@ -36,9 +35,12 @@ class Sign extends JFrame{
 	
 	ClientManager cmg = new ClientManager();
 	
+	boolean overlapCheck = false;
+
+	
 	public Sign(){
 		cmg.connect();
-		
+		cmg.headerSend(Header.SIGNUP);
 		this.display();
 		this.event();
 		
@@ -84,8 +86,12 @@ class Sign extends JFrame{
 			//회원db에 같은 아이디가 등록되어있는지 확인후 메시지 출력
 			String str=idInput.getText();
 			cmg.send(str);//아이디 보내고
-			if(cmg.receive())// 널값 받아서
+			
+			overlapCheck = cmg.receive();//널값 받고
+			if(overlapCheck) {
 				JOptionPane.showMessageDialog(mainPanel, "사용 가능한 아이디입니다.");
+				overlap.setEnabled(false);
+			}
 			else
 				JOptionPane.showMessageDialog(mainPanel, "이미 존재하는 아이디입니다.");
 		});
@@ -93,14 +99,22 @@ class Sign extends JFrame{
 		ok.addActionListener(e->{
 			//ok버튼 누르면 나머지 정보를 서버에 다 보냄
 			//비밀번호 = 비밀번호 확인 검사
-			Member m = new Member(pwInput.getText(),nameInput.getText(),birthInput.getText());
-			if(pwInput.getText().equals(pwCheck.getText())) {
+			//회원가입이 완료됬는지 널값 받아서 확인창 띄워줌
+			if(nameInput.getText().equals(""))
+				JOptionPane.showMessageDialog(mainPanel, "이름을 입력하세요");
+			else if(!overlapCheck)
+				JOptionPane.showMessageDialog(mainPanel, "아이디 중복확인을 해주세요");
+			else if(pwInput.getText().equals(""))
+				JOptionPane.showMessageDialog(mainPanel, "비밀번호를 입력하세요");
+			else if(!pwInput.getText().equals(pwCheckInput.getText()))
+				JOptionPane.showMessageDialog(mainPanel, "비밀번호를 다시 확인해주세요");
+			else if(birthInput.getText().equals(""))
+				JOptionPane.showMessageDialog(mainPanel, "생년월일을 입력하세요");
+			else {
+				Member m = new Member(pwInput.getText(),nameInput.getText(),birthInput.getText());
 				cmg.memberSend(m);
 				dispose();
 			}
-			else
-				JOptionPane.showMessageDialog(mainPanel, "비밀번호,비밀번호 확인 다름");
-			//회원가입이 완료됬는지 널값 받아서 확인창 띄워줌
 		});
 		
 		no.addActionListener(e->{

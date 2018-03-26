@@ -3,7 +3,6 @@ package sign;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import Client.ClientManager;
+import header.Header;
 
 public class Wait extends JFrame{
 
@@ -28,18 +28,12 @@ public class Wait extends JFrame{
 	
 	private JButton rogin = new JButton("로그인");
 	private JButton signUp = new JButton("회원가입");
-	
-	private ImageIcon img = new ImageIcon();
-	
-	private String str;
+
 	ClientManager cmg = new ClientManager();
 	
 	public Wait(){
-		cmg.connect();
-		
 		this.display();
 		this.event();
-		this.menu();
 		
 		this.setTitle("대기 화면");
 		this.setSize(500,400);
@@ -82,21 +76,17 @@ public class Wait extends JFrame{
 		
 		rogin.addActionListener(e->{
 			//아이디 비번 보내고
-			System.out.println(idInput.getText());
-			System.out.println(pwInput.getText());
+			cmg.connect();
+			cmg.headerSend(Header.LOGIN);
 			cmg.send(idInput.getText());
 			cmg.send(pwInput.getText());
 			//로그인 눌렀을때 정보가 맞으면 종료, 틀리면 메시지 출력
 			if(cmg.receive()) {
-				JOptionPane.showMessageDialog(mainPanel, "로그인 됨.");
+				Login login = new Login();
 				dispose();
 			}
 			else
 				JOptionPane.showMessageDialog(mainPanel, "틀림.");
 		});
-	}
-	
-	private void menu() {
-		
 	}
 }
