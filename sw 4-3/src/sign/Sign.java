@@ -9,28 +9,33 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import Client.Member;
+import Client.ClientManager;
+import db.Member;
 
 class Sign extends JFrame{
 	private JPanel mainPanel = new JPanel();
 	
-	private JLabel lb1 = new JLabel("이름",JLabel.CENTER);
-	private JLabel lb2 = new JLabel("아이디",JLabel.CENTER);
-	private JLabel lb3 = new JLabel("비밀번호",JLabel.CENTER);
-	private JLabel lb4 = new JLabel("비밀번호 확인",JLabel.CENTER);
-	private JLabel lb5 = new JLabel("주민등록번호 앞자리",JLabel.CENTER);
+	private JLabel name = new JLabel("이름",JLabel.CENTER);
+	private JLabel id = new JLabel("아이디",JLabel.CENTER);
+	private JLabel pw = new JLabel("비밀번호",JLabel.CENTER);
+	private JLabel pwCheck = new JLabel("비밀번호 확인",JLabel.CENTER);
+	private JLabel birth = new JLabel("주민등록번호 앞자리",JLabel.CENTER);
 	
-	private JTextArea jta1 = new JTextArea();
-	private JTextArea jta2 = new JTextArea();
-	private JTextArea jta3 = new JTextArea();
-	private JTextArea jta4 = new JTextArea();
-	private JTextArea jta5 = new JTextArea();
+	private JTextArea nameInput = new JTextArea();
+	private JTextArea idInput = new JTextArea();
+	private JTextArea pwInput = new JTextArea();
+	private JTextArea pwCheckInput = new JTextArea();
+	private JTextArea birthInput = new JTextArea();
 	
 	private JButton ok = new JButton("확인");
 	private JButton no = new JButton("취소");
 	private JButton overlap = new JButton("중복 확인");
 	
+	ClientManager cmg = new ClientManager();
+	
 	public Sign(){
+		cmg.connect();
+		
 		this.display();
 		this.event();
 		
@@ -51,18 +56,18 @@ class Sign extends JFrame{
 		this.setContentPane(mainPanel);
 		mainPanel.setLayout(new GridLayout(7,2));
 		//모든 컴포넌트의 추가는 mainPanel에 수행	
-//		lb1.setBounds(100,100,100,100);
-//		jta1.setBounds(1000, 1000, 1000, 1000);
-		mainPanel.add(lb1);
-		mainPanel.add(jta1);
-		mainPanel.add(lb2);
-		mainPanel.add(jta2);
-		mainPanel.add(lb3);
-		mainPanel.add(jta3);
-		mainPanel.add(lb4);
-		mainPanel.add(jta4);
-		mainPanel.add(lb5);
-		mainPanel.add(jta5);
+//		name.setBounds(100,100,100,100);
+//		nameInput.setBounds(1000, 1000, 1000, 1000);
+		mainPanel.add(name);
+		mainPanel.add(nameInput);
+		mainPanel.add(id);
+		mainPanel.add(idInput);
+		mainPanel.add(pw);
+		mainPanel.add(pwInput);
+		mainPanel.add(pwCheck);
+		mainPanel.add(pwCheckInput);
+		mainPanel.add(birth);
+		mainPanel.add(birthInput);
 		mainPanel.add(ok);
 		mainPanel.add(no);
 		mainPanel.add(overlap);
@@ -74,20 +79,24 @@ class Sign extends JFrame{
 		overlap.addActionListener(e->{
 			//중복확인
 			//회원db에 같은 아이디가 등록되어있는지 확인후 메시지 출력
-			String str=jta2.getText();
-			//cmg.send(str);	//아이디 보내고
-			// 널값 받아서
-			//존재하는지 메시지 출력
-			System.out.println(str);
-			JOptionPane.showMessageDialog(mainPanel, "이미 존재하는 아이디입니다.");
+			String str=idInput.getText();
+			cmg.send(str);//아이디 보내고
+			if(cmg.receive())// 널값 받아서
+				JOptionPane.showMessageDialog(mainPanel, "사용 가능한 아이디입니다.");
+			else
+				JOptionPane.showMessageDialog(mainPanel, "이미 존재하는 아이디입니다.");
 		});
 		
 		ok.addActionListener(e->{
 			//ok버튼 누르면 나머지 정보를 서버에 다 보냄
 			//비밀번호 = 비밀번호 확인 검사
-			Member m = new Member(jta3.getText(),jta1.getText(),jta5.getText());
-			//cmg.send(m);
-			dispose();
+			Member m = new Member(pwInput.getText(),nameInput.getText(),birthInput.getText());
+			if(pwInput.getText().equals(pwCheck.getText())) {
+				cmg.memberSend(m);
+				dispose();
+			}
+			else
+				JOptionPane.showMessageDialog(mainPanel, "비밀번호,비밀번호 확인 다름");
 			//회원가입이 완료됬는지 널값 받아서 확인창 띄워줌
 		});
 		
