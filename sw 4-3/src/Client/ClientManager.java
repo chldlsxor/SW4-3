@@ -2,13 +2,11 @@ package Client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Date;
-import java.util.Map;
 
 import db.Member;
 
@@ -24,9 +22,11 @@ public class ClientManager {
 	public ClientManager() {
 		try {
 			inet = InetAddress.getByName(ip);
+//			System.out.println("inet 연결");
 			connect();
+//			System.out.println("커넥트");
 			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+//			System.out.println("out 스트림");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -36,7 +36,9 @@ public class ClientManager {
 
 	public void connect() {
 		try {
+//			System.out.println("커넥트 진입");
 			socket = new Socket(inet, port);
+//			System.out.println("소켓 연결완료");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,6 +80,8 @@ public class ClientManager {
 
 	public Boolean receive() {
 		try {
+			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+//			System.out.println("in 스트림");
 			my = in.readBoolean();
 			Thread.sleep(1000);
 			return my;
@@ -85,6 +89,16 @@ public class ClientManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public Long timeReceive() {
+		try {
+			
+			return 0L;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return 0L;
 		}
 	}
 	
