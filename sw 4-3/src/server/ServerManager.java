@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Client.Member;
+import db.Member;
 
 public class ServerManager {
 	
