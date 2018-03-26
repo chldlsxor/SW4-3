@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.Map;
 
+import db.Member;
+
 public class ClientManager {
 	private String ip = "192.168.0.130";
 	private int port = 20000;
@@ -23,6 +25,8 @@ public class ClientManager {
 		try {
 			inet = InetAddress.getByName(ip);
 			connect();
+			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -32,25 +36,18 @@ public class ClientManager {
 
 	public void connect() {
 		try {
-			socket = new Socket(ip, port);
+			socket = new Socket(inet, port);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void send(String str,Member member) {
+	public void send(String str) {
 		try {
-//			connect();
-			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			out.writeObject(str);
 			out.flush();
-			out.writeObject(member);
-			out.flush();
-//			out.writeObject(member);
-//			out.flush();
-//			Thread.sleep(1000);
-//			socket.close();
+			Thread.sleep(100);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,11 +56,9 @@ public class ClientManager {
 	
 	public void memberSend(Member member) {
 		try {
-//			connect();
-			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			out.writeObject(member);
 			out.flush();
-//			socket.close();
+			Thread.sleep(100);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,7 +67,7 @@ public class ClientManager {
 	
 	public void dateSend(Date time) {
 		try {
-			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+//			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			out.writeObject(time);
 			out.flush();
 		} catch (Exception e) {
@@ -83,7 +78,6 @@ public class ClientManager {
 
 	public Boolean receive() {
 		try {
-			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 			my = in.readBoolean();
 			Thread.sleep(1000);
 			return my;
