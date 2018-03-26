@@ -9,7 +9,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+<<<<<<< HEAD
+=======
 import Client.ClientManager;
+>>>>>>> refs/remotes/origin/chldlsxor
 import db.Member;
 
 class Sign extends JFrame{
