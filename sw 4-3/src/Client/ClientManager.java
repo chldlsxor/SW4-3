@@ -23,9 +23,9 @@ public class ClientManager {
 		try {
 			inet = InetAddress.getByName(ip);
 //			System.out.println("inet 연결");
-			connect();
+//			connect();
 //			System.out.println("커넥트");
-			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+//			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 //			System.out.println("out 스트림");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -38,6 +38,8 @@ public class ClientManager {
 		try {
 //			System.out.println("커넥트 진입");
 			socket = new Socket(inet, port);
+			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 //			System.out.println("소켓 연결완료");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -56,6 +58,18 @@ public class ClientManager {
 		}
 	}
 	
+	public void headerSend(char a) {
+		try {
+			out.writeChar(a);
+			out.flush();
+			Thread.sleep(100);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public void memberSend(Member member) {
 		try {
 			out.writeObject(member);
@@ -69,7 +83,6 @@ public class ClientManager {
 	
 	public void dateSend(Date time) {
 		try {
-//			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			out.writeObject(time);
 			out.flush();
 		} catch (Exception e) {
@@ -80,8 +93,6 @@ public class ClientManager {
 
 	public Boolean receive() {
 		try {
-			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
-//			System.out.println("in 스트림");
 			my = in.readBoolean();
 			Thread.sleep(1000);
 			return my;
