@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import db.Member;
+import header.Header;
 
 public class FileManager {
 	
@@ -40,5 +41,16 @@ public class FileManager {
 	//아이디 중복 확인
 	public static boolean IDcheck(String id) {		
 		return !map.containsKey(id);	//아이디 존재 하면 false
+	}
+	
+	//시간 충전
+	public static void chargeTime(String id, int money) {
+		Long time;
+		if(money==Header.PC1HOUR) {
+			time = 60L;
+		}else {
+			time=0L;
+		}
+		map.get(id).setTime(time);	
 	}
 }
