@@ -11,6 +11,7 @@ public class TimeManager {
 	private Date now;
 	private Date end;
 	private Boolean flag = false;
+	private String ret = "";
 
 	private Format f = new SimpleDateFormat("h:mm");
 
@@ -35,7 +36,8 @@ public class TimeManager {
 
 	}
 
-	public void timeShow() {
+	public String timeShow() {
+		return ret;
 	}
 
 	public void counter() {
@@ -50,7 +52,10 @@ public class TimeManager {
 						flag = true;
 						break;
 					}
-					System.out.println("남은 시간" + time / 360 + " / " + ((time / 60) + 1));
+					Long h = time/360;
+					Long m = (time/60)+1;
+					ret = h+" : "+m;
+					System.out.println("남은 시간" + ret);
 
 					try {
 						Thread.sleep(1000);
