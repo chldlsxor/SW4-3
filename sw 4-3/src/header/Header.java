@@ -1,7 +1,8 @@
 package header;
 
 public class Header {
-	public static final String SINGUP = "a";
-	public static final String LOGIN = "b";
+	public static final char SIGNUP = 'a';
+	public static final char LOGIN = 'b';
+	public static final char CHARGE = 'c';
 	
 }
