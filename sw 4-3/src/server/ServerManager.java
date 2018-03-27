@@ -6,18 +6,17 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import db.Member;
+import header.Header;
 
 public class ServerManager {
 	
 	private static class Client extends Thread{
 		//총괄 기능
 		private static List<Client> list = new ArrayList<>();
-		private Map<String, Member> map = new HashMap<>();
+		private static List<String> idList = new ArrayList<>();
 		
 		public static void add(Client c) {
 			list.add(c);
@@ -32,9 +31,9 @@ public class ServerManager {
 	
 		public Client(Socket socket) throws IOException {
 			this.socket = socket;
-			this.in = new ObjectInputStream(socket.getInputStream());
 			this.out = new ObjectOutputStream(socket.getOutputStream());
-			
+			this.in = new ObjectInputStream(socket.getInputStream());
+			System.out.println("연결 완료");
 			Client.add(this);
 		}
 		
@@ -48,29 +47,72 @@ public class ServerManager {
 				e.printStackTrace();
 			}
 		}
+		//회원가입
+		private void signup() {
+			try {
+				String id;
+				while(true) {
+					id= in.readObject().toString();//아이디 받아옴
+					System.out.println(id);
+					send(FileManager.IDcheck(id));
+					if(FileManager.IDcheck(id)) {				
+						break;
+					}		
+					
+				}		
+				Member member = (Member)in.readObject();
+				System.out.println("아이디의 멤버 클래스 : "+member);
+				FileManager.saveDB(id, member);
+			}catch(Exception e) {}	
+		}
+		//로그인
+		private void login() {
+			try {
+				String id= in.readObject().toString();//아이디 받아옴
+				System.out.println(id);
+				String pw= in.readObject().toString();//비번 받아옴
+				System.out.println(pw);
+				boolean a = false;
+				if(FileManager.map.containsKey(id)) {
+					if(FileManager.map.get(id).getPw().equals(pw)) {
+						a = true;
+					}
+				}
+				idList.add(id);
+				send(a);
+			}catch(Exception e) {}
+		}
+		private void charge() {
+			try {
+				String id= in.readObject().toString();//아이디 받아옴
+				System.out.println(id);
+				int money = in.readInt();//충전 금액 받아옴
+				System.out.println(money);
+				
+			}catch(Exception e) {}
+		}
 		
 		//메소드 - run()
 		@Override
-		public void run() {
+		public void run() {			
 			try {
-				
-				System.out.println("받아올까욤?");
-				String str1 = in.readObject().toString();
-				System.out.println(str1);
-//				String str2 = in.readObject().toString();
-//				System.out.println(str2);
-				Member str2 = (Member)in.readObject();
-				System.out.println("아이디의 멤버"+str2);
-				//map.put(str1, str2);
-				
-				//System.out.println("받은 메세지 : "+str1 +"아이디의 멤버"+map.get(str1));
-//				if(str1!=null) {
-//					send(true);
-//				}else {
-//					send(false);
-//				}
+				char header = in.readChar();
+				System.out.println(header);
+				if(header==Header.SIGNUP) {		//회원가입 헤더
+					signup();
+				}
+				else if(header==Header.LOGIN) {	//로그인 헤더
+					login();
+				}
+				else if(header ==Header.CHARGE) {
+					charge();
+				}
 				in.close();
 				socket.close();
+				for(int i=0;i<idList.size();i++) {
+					System.out.println(idList.get(i));
+				}
+				
 				System.out.println("--------------");
 			}catch(Exception e) {
 				Client.remove(this);
@@ -82,15 +124,14 @@ public class ServerManager {
 	ServerManager(){
 		connect();
 	}
-	
-
 	private Socket socket ;
 	public void connect() {	
 		try {
 			ServerSocket server =new ServerSocket(20000);
+			FileManager.readDB();
 			while(true) {
 				socket = server.accept();
-				System.out.println("연결 완료");
+				System.out.println("연결 가능");
 				
 				Client c = new Client(socket);
 				c.setDaemon(true);
