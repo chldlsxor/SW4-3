@@ -2,6 +2,7 @@ package Client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -18,6 +19,9 @@ public class ClientManager {
 	private Boolean my;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	private char header;
+	private int time;
+	private String str;
 
 	public ClientManager() {
 		try {
@@ -94,7 +98,7 @@ public class ClientManager {
 	public Boolean receive() {
 		try {
 			my = in.readBoolean();
-			Thread.sleep(1000);
+			Thread.sleep(100);
 			return my;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -103,23 +107,44 @@ public class ClientManager {
 		}
 	}
 	
-	public Long timeReceive() {
+	public char headerReceive() {
 		try {
-			
-			return 0L;
+			header = in.readChar();
+			Thread.sleep(100);
+			return header;
 		} catch (Exception e) {
 			// TODO: handle exception
-			return 0L;
+			return 'a';
 		}
 	}
-	
-	public Long dateReceive() {
-		
-		return 0L;
+	public void aaa() {
+		try {
+			in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public int plusReceive() {
+		try {
+			time = in.readInt();
+			Thread.sleep(100);
+			return time;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return 0;
+		}
 	}
 
-	public Boolean result() {
-		return my;
+	public String strReceive() {
+		try {
+			str = in.readObject().toString();
+			Thread.sleep(100);
+			return str;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return null;
+		}
 	}
 
 }

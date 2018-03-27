@@ -111,8 +111,11 @@ class Sign extends JFrame{
 			else if(birthInput.getText().equals(""))
 				JOptionPane.showMessageDialog(mainPanel, "생년월일을 입력하세요");
 			else {
+				System.out.println("왔어?");
 				Member m = new Member(pwInput.getText(),nameInput.getText(),birthInput.getText());
+				System.out.println("응");
 				cmg.memberSend(m);
+				System.out.println("아니");
 				dispose();
 			}
 		});

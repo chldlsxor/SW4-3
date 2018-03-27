@@ -1,19 +1,17 @@
 package Client;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TimeManager {
-	// ClientManager cmg = new ClientManager();
+//	ClientManager cmg = new ClientManager();
 	private Long time;
 	private Date start;
 	private Date now;
-	private Date end;
+//	private Date end;
 	private Boolean flag = false;
 	private String ret = "";
 
-	private Format f = new SimpleDateFormat("h:mm");
+//	private Format f = new SimpleDateFormat("h:mm");
 
 	public void setTime(Long time) {
 		this.time = time;
@@ -27,13 +25,11 @@ public class TimeManager {
 		return flag;
 	}
 
-	public TimeManager() {
+	public TimeManager(long a) {
 		// cmg.connect();
 		// time = cmg.timeReceive();
 		start = new Date();
-		time = 90L;
-		this.counter();
-
+		time = a;
 	}
 
 	public String timeShow() {
@@ -41,41 +37,30 @@ public class TimeManager {
 	}
 
 	public void counter() {
-		Thread t = new Thread() {
-			@Override
-			public void run() {
-				while (true) {
-					now = new Date();
-					time -= ((now.getTime() - start.getTime()) / 1000);
-					start = now;
-					if (time == 0) {
-						flag = true;
-						break;
-					}
-					Long h = time/360;
-					Long m = (time/60)+1;
-					ret = h+" : "+m;
-					System.out.println("남은 시간" + ret);
-
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+			now = new Date();
+			time -= ((now.getTime() - start.getTime()) / 1000);
+			start = now;
+			if (time == 0) {
+				flag = true;
 			}
-		};
-
-		t.setDaemon(true);
-		t.start();
+			Long h = time/360;
+			Long m = (time/60)+1;
+			ret = h+" : "+m;
+			System.out.println("남은 시간 = " + ret);
+					
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.println(time);
 	}
 
-	public static void main(String[] args) {
-		TimeManager tmg = new TimeManager();
-		System.out.println("");
-		if (tmg.getFlag()) {
-			System.out.println("사용시간이 다 되었습니다.");
-		}
-	}
+//	public static void main(String[] args) {
+//		TimeManager tmg = new TimeManager();
+//		System.out.println("");
+//		if (tmg.getFlag()) {
+//			System.out.println("사용시간이 다 되었습니다.");
+//		}
+//	}
 }
