@@ -29,13 +29,16 @@ public class Wait extends JFrame{
 	private JButton rogin = new JButton("로그인");
 	private JButton signUp = new JButton("회원가입");
 
+	private String seatNum;
+	
 	ClientManager cmg = new ClientManager();
 	
-	public Wait(){
+	public Wait(String num){
+		seatNum = num;
 		this.display();
 		this.event();
 		
-		this.setTitle("대기 화면");
+		this.setTitle(num+"번 자리 대기 화면");
 		this.setSize(500,400);
 		this.setLocation(0, 0);
 		this.setResizable(false);
@@ -82,7 +85,8 @@ public class Wait extends JFrame{
 			cmg.send(pwInput.getText());
 			//로그인 눌렀을때 정보가 맞으면 종료, 틀리면 메시지 출력
 			if(cmg.receive()) {
-				Login login = new Login();
+				cmg.send(seatNum);
+//				Login login = new Login();
 				dispose();
 			}
 			else
