@@ -37,10 +37,34 @@ public class ServerManager {
 			Client.add(this);
 		}
 		
-		//클라이언트에게 메세지를 보내는 기능
+		//클라이언트에게 참거짓을 보내는 기능
 		public void send(boolean text) {
 			try {
 				out.writeBoolean(text);
+				out.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//클라이언트에게 메세지를 보내는 기능
+		public void sendMessage(String text) {
+			try {
+				out.writeChar('f');
+				out.flush();
+				out.writeObject(text);
+				out.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//클라이언트에게 시간을 보내는 기능
+		public void sendTime(int time) {
+			try {
+				out.writeChar('e');
+				out.flush();
+				out.writeInt(time);
 				out.flush();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -54,12 +78,14 @@ public class ServerManager {
 				while(true) {
 					id= in.readObject().toString();//아이디 받아옴
 					System.out.println("아이디 :" +id);
+					System.out.println(FileManager.IDcheck(id));
 					send(FileManager.IDcheck(id));
 					if(FileManager.IDcheck(id)) {				
 						break;
 					}		
 					
 				}		
+				System.out.println("왔니?");
 				Member member = (Member)in.readObject();
 				System.out.println("아이디의 멤버 클래스 : "+member);
 				FileManager.saveDB(id, member);
@@ -82,9 +108,11 @@ public class ServerManager {
 				idList.add(id);
 				send(loginCheck);
 				if(loginCheck) {
-					String PCNum = in.readObject().toString();//피씨 번호 저장옴
+					String PCNum = in.readObject().toString();//피씨 번호 저장옴				
+					FileManager.setPCNUM(id, PCNum);
+					sendTime(1000);
+					//FileManager.set
 					
-					System.out.println(PCNum + "사용중");
 				}
 			}catch(Exception e) {}
 		}
@@ -112,6 +140,17 @@ public class ServerManager {
 					
 			}catch(Exception e) {}
 		}
+		public void message() {
+			try {
+				String PCNum = in.readObject().toString();
+				String message = in.readObject().toString();
+				System.out.println(PCNum +"에서 메세지 보냄 ->" + message);
+				sendTime(1000);
+				sendMessage(message);
+				
+			} catch (Exception e) {} 
+			
+		}
 		
 		
 		//메소드 - run()
@@ -128,10 +167,13 @@ public class ServerManager {
 				}
 				else if(header ==Header.CHARGE) {
 					charge();
+				}else if(header=='f') {
+					message();
+					//sendMessage("안녕");
 				}
-				else if(header == Header.ORDER) {
-					order();
-				}
+//				else if(header == Header.ORDER) {
+//					order();
+//				}
 				in.close();
 				socket.close();
 				
