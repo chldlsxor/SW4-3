@@ -53,7 +53,7 @@ public class ServerManager {
 				String id;
 				while(true) {
 					id= in.readObject().toString();//아이디 받아옴
-					System.out.println(id);
+					System.out.println("아이디 :" +id);
 					send(FileManager.IDcheck(id));
 					if(FileManager.IDcheck(id)) {				
 						break;
@@ -69,35 +69,57 @@ public class ServerManager {
 		private void login() {
 			try {
 				String id= in.readObject().toString();//아이디 받아옴
-				System.out.println(id);
+				System.out.println("아이디 : "+id);
 				String pw= in.readObject().toString();//비번 받아옴
-				System.out.println(pw);
-				boolean a = false;
+				System.out.println("비번 : "+pw);
+				boolean loginCheck = false;
 				if(FileManager.map.containsKey(id)) {
 					if(FileManager.map.get(id).getPw().equals(pw)) {
-						a = true;
+						loginCheck = true;
 					}
 				}
+				
 				idList.add(id);
-				send(a);
+				send(loginCheck);
+				if(loginCheck) {
+					String PCNum = in.readObject().toString();//피씨 번호 저장옴
+					
+					System.out.println(PCNum + "사용중");
+				}
 			}catch(Exception e) {}
 		}
+		//충전하기
 		private void charge() {
 			try {
 				String id= in.readObject().toString();//아이디 받아옴
 				System.out.println(id);
 				int money = in.readInt();//충전 금액 받아옴
 				System.out.println(money);
+				FileManager.chargeTime(id, money);
+				
 				
 			}catch(Exception e) {}
 		}
+		private void order() {
+			try {
+				String PCNum= in.readObject().toString();//주문자의 피씨 번호 받아옴
+				System.out.println(PCNum);
+				int PID = in.readInt();	//주문할 메뉴 받아옴
+				int num = in.readInt();	//주문할 메뉴 수량 받아옴
+				System.out.println(PID);
+				//결제완료되면
+				AccountManager.addSellNum(PID, num);
+					
+			}catch(Exception e) {}
+		}
+		
 		
 		//메소드 - run()
 		@Override
 		public void run() {			
 			try {
 				char header = in.readChar();
-				System.out.println(header);
+				System.out.println("헤더 : "+header);
 				if(header==Header.SIGNUP) {		//회원가입 헤더
 					signup();
 				}
@@ -107,10 +129,15 @@ public class ServerManager {
 				else if(header ==Header.CHARGE) {
 					charge();
 				}
+				else if(header == Header.ORDER) {
+					order();
+				}
 				in.close();
 				socket.close();
+				
+				System.out.print("지금까지 로그인 한 아이디 :  ");
 				for(int i=0;i<idList.size();i++) {
-					System.out.println(idList.get(i));
+					System.out.print(idList.get(i)+" ");
 				}
 				
 				System.out.println("--------------");
@@ -120,11 +147,12 @@ public class ServerManager {
 			}
 		}
 	}
+	private Socket socket ;
 	
 	ServerManager(){
 		connect();
 	}
-	private Socket socket ;
+	
 	public void connect() {	
 		try {
 			ServerSocket server =new ServerSocket(20000);

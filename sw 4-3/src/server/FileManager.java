@@ -9,13 +9,14 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import db.Account;
 import db.Member;
 import header.Header;
 
 public class FileManager {
 	
 	public static Map<String, Member> map = new HashMap<>();
-	
+
     //회원디비 저장
     public static void saveDB(String id, Member m) {
 		map.put(id, m);	
@@ -45,12 +46,17 @@ public class FileManager {
 	
 	//시간 충전
 	public static void chargeTime(String id, int money) {
-		Long time;
+		int time;
 		if(money==Header.PC1HOUR) {
-			time = 60L;
+			time = 60;
 		}else {
-			time=0L;
+			time=0;
 		}
-		map.get(id).setTime(time);	
+		map.get(id).setTime(time);
 	}
+	//PCNum추가
+	public static void setPCNUM() {
+		//map.get(id,)
+	}
+	
 }
