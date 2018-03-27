@@ -6,20 +6,31 @@ public class Member implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private String pw;
 	private String name;
 	private String birth;
-	private Long time;
+	private int time;
+	private String pcNum;
+	
 	public Member(String pw, String name, String birth) {
 		this.setPw(pw);
 		this.setName(name);
 		this.setBirth(birth);
-		this.setTime(0L);
+		this.setTime(0);
 	} 
 	public String getName() {
 		return name;
 	}
+	
+	public void setPcNum(String pcNum) {
+		this.pcNum = pcNum;
+	}
+	
+	public String getPcNum() {
+		return pcNum;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -35,10 +46,11 @@ public class Member implements Serializable{
 	public void setBirth(String birth) {
 		this.birth = birth;
 	}
-	public Long getTime() {
+	public int getTime() {
 		return time;
 	}
-	public void setTime(Long time) {
+	
+	public void setTime(int time) {
 		this.time = time;
 	}
 }
