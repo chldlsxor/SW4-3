@@ -25,8 +25,14 @@ class CounterFrame extends JFrame{
 	
 	private JMenuBar jmb = new JMenuBar();
 	private JMenu file = new JMenu("파일(f)");
-	private JMenu setting = new JMenu("세팅(s)");
+	private JMenu setting = new JMenu("상품(g)");
+	
 	private JMenuItem exit = new JMenuItem("종료");
+	
+	private JMenuItem view = new JMenuItem("보기");
+	private JMenuItem add = new JMenuItem("추가");
+	private JMenuItem remove = new JMenuItem("삭제");
+	private JMenuItem fix = new JMenuItem("수정");
 	
 	private JButton[] btList = new JButton[4]; 
 	private JButton calculate = new JButton("정산");
@@ -39,6 +45,8 @@ class CounterFrame extends JFrame{
 	private JLabel jlbUserStartT = new JLabel("시작 시간 : 13시30분");
 	private JLabel jlbUserUseT = new JLabel("사용 시간 : 00시40분");
 	private JLabel jlbUserPrice = new JLabel("정산 요금 : 1000원");
+	
+	
 	
 	private Border line = BorderFactory.createLineBorder(Color.BLACK,3);
 	private Font font = new Font("",Font.BOLD,30);
@@ -79,10 +87,27 @@ class CounterFrame extends JFrame{
 		jmb.add(file);
 		jmb.add(setting);
 		file.add(exit);
+		setting.add(view);
+		setting.add(add);
+		setting.add(remove);
+		setting.add(fix);
 	}
 
 	private void event() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);//창 종료
+		
+		view.addActionListener(e -> {
+			GoodsManager gmg = new GoodsManager();
+		});
+		add.addActionListener(e -> {
+			
+		});
+		remove.addActionListener(e -> {
+			
+		});
+		fix.addActionListener(e -> {
+			
+		});
 	}
 
 	private void display() {

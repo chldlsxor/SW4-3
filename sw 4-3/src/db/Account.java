@@ -6,6 +6,14 @@ public class Account {
 	private int Pprice ;//가격
 	private int sellNum;//판매량	
 	
+	public Account(String pName, int pprice) {
+		this.setPName(pName);
+		this.setPprice(pprice);
+		this.setSellNum(0);
+	}
+	public void setPName(String pName) {
+		PName = pName;
+	}
 	public String getPName() {
 		return PName;
 	}
