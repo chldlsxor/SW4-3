@@ -41,6 +41,7 @@ public class FileManager {
 	
 	//아이디 중복 확인
 	public static boolean IDcheck(String id) {		
+		System.out.println("여기!! "+!map.containsKey(id));
 		return !map.containsKey(id);	//아이디 존재 하면 false
 	}
 	
@@ -55,8 +56,13 @@ public class FileManager {
 		map.get(id).setTime(time);
 	}
 	//PCNum추가
-	public static void setPCNUM() {
-		//map.get(id,)
+	public static void setPCNUM(String id, String PCNum) {
+		map.get(id).setPcNum(PCNum);
 	}
+	//회원의 시간 보내기
+	public static int getUserTime(String id) {
+		return map.get(id).getTime();
+	}
+	
 	
 }
