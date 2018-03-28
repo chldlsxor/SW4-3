@@ -41,9 +41,13 @@ public class ClientManager {
 	public void connect() {
 		try {
 //			System.out.println("커넥트 진입");
+			System.out.println("연결전"+socket);
 			socket = new Socket(inet, port);
+			System.out.println("연결후"+socket);
 			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+			System.out.println("11111");
 			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+			System.out.println("22222");
 //			System.out.println("소켓 연결완료");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -51,6 +55,18 @@ public class ClientManager {
 		}
 	}
 
+	public void exit() {
+		try {
+			out.close();
+			in.close();
+			socket.close();
+			System.out.println("끊고"+socket);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void send(String str) {
 		try {
 			out.writeObject(str);
@@ -62,9 +78,9 @@ public class ClientManager {
 		}
 	}
 	
-	public void headerSend(char a) {
+	public void headerSend(char header) {
 		try {
-			out.writeChar(a);
+			out.writeChar(header);
 			out.flush();
 			Thread.sleep(100);
 		} catch (Exception e) {
@@ -114,7 +130,7 @@ public class ClientManager {
 			return header;
 		} catch (Exception e) {
 			// TODO: handle exception
-			return 'a';
+			return '\0';
 		}
 	}
 	public void aaa() {

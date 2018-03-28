@@ -1,13 +1,16 @@
 package sign;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
 
 import Client.ClientManager;
 import db.Member;
@@ -76,6 +79,17 @@ class Sign extends JFrame{
 		mainPanel.add(ok);
 		mainPanel.add(no);
 		mainPanel.add(overlap);
+		Border line = BorderFactory.createLineBorder(Color.BLACK,1);
+		name.setBorder(line);
+		nameInput.setBorder(line);
+		id.setBorder(line);
+		idInput.setBorder(line);
+		pw.setBorder(line);
+		pwInput.setBorder(line);
+		pwCheck.setBorder(line);
+		pwCheckInput.setBorder(line);
+		birth.setBorder(line);
+		birthInput.setBorder(line);
 	}
 
 	private void event() {

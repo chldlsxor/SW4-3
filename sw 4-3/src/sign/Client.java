@@ -10,5 +10,6 @@ public class Client {
 		String numArr[] = num.split("\\.");
 		Wait wait = new Wait(numArr[3]);
 //		Login login = new Login(numArr[3]);
+//		Charger charger = new Charger();
 	}
 }
