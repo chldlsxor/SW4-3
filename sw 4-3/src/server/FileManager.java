@@ -47,11 +47,11 @@ public class FileManager {
 	
 	//시간 충전
 	public static void chargeTime(String id, int money) {
-		int time;
+		int time= map.get(id).getTime();
 		if(money==Header.PC1HOUR) {
-			time = 60;
+			time += 3600;
 		}else {
-			time=0;
+			time+=0;
 		}
 		map.get(id).setTime(time);
 	}
@@ -62,6 +62,10 @@ public class FileManager {
 	//회원의 시간 보내기
 	public static int getUserTime(String id) {
 		return map.get(id).getTime();
+	}
+	//회원의 남은 시간 저장
+	public static void saveTime(String id, int restTime) {
+		map.get(id).setTime(restTime);
 	}
 	
 	

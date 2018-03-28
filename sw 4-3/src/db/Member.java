@@ -18,6 +18,7 @@ public class Member implements Serializable{
 		this.setName(name);
 		this.setBirth(birth);
 		this.setTime(0);
+		
 	} 
 	public String getName() {
 		return name;
