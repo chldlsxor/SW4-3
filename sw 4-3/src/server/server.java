@@ -17,6 +17,7 @@ public class server {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		ServerManager sm = new ServerManager();
+		
 
 		try {
 			Thread.sleep(1000);
