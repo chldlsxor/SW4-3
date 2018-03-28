@@ -1,21 +1,23 @@
 package sign;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import Client.ClientManager;
 import header.Header;
 
 public class Login extends JFrame{
 	private JPanel mainPanel = new JPanel();
-	private JPanel p = new JPanel();
 	
 	private JButton order = new JButton("상품 주문");
 	private JButton message = new JButton("메세지");
@@ -27,16 +29,19 @@ public class Login extends JFrame{
 	private JLabel restTimeOut = new JLabel("",JLabel.CENTER);
 	
 	private String seatNum;
+	private String id;
 	private String aaa;
 	ClientManager cmg = new ClientManager();
 	
 	Date today = new Date();
 	SimpleDateFormat date = new SimpleDateFormat("h시 mm분");
 	
-	private int a = 0;
+	private int timeSet;
 	
-	public Login(String num){	
+	public Login(String num, String idInput, int time){	
 		seatNum = num;
+		id = idInput;
+		timeSet = time;
 		this.display();
 		this.event();
 		this.menu();
@@ -58,36 +63,64 @@ public class Login extends JFrame{
 		mainPanel.add(restTime);
 		mainPanel.add(restTimeOut);
 		mainPanel.add(exit);
+		Border line = BorderFactory.createLineBorder(Color.BLACK,1);
+		startTime.setBorder(line);
+		startTimeOut.setBorder(line);
+		restTime.setBorder(line);
+		restTimeOut.setBorder(line);
 	}
 
-	
-	
 	private void event() {
+		cmg.connect();//나중에 다시..
 		Thread t = new Thread() { // 받는 스레드
 			public void run() {
 				while(true) {
-					cmg.connect();
 					char header = cmg.headerReceive();
-//					System.out.println(header);
+//					char header = 'z';
+					System.out.println("이거1?"+header);
 					if(header == Header.PLUS)
-						a+=cmg.plusReceive();
+						timeSet+=cmg.plusReceive();
 					if(header == Header.MESSAGE) {
 						aaa = cmg.strReceive();
 						System.out.println(aaa);
 						JOptionPane.showMessageDialog(mainPanel, aaa);
 						cmg.aaa();
 					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {}
 				}
 			}
 		};
 		t.setDaemon(true);
 		t.start();
-		
-		
+
+		Thread t2 = new Thread() { // 시간출력 스레드
+			public void run() {
+				while(timeSet>0){
+					int hour = timeSet/60;
+					int min = timeSet%60;
+					restTimeOut.setText(hour+"시간 "+min+"분");
+					timeSet--;
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {}
+				}
+				cmg.headerSend(Header.SAVE);
+				cmg.send(id);
+				Wait wait = new Wait(seatNum);
+				dispose();
+			}
+		};
+		t2.setDaemon(true);
+		t2.start();
 		
 		exit.addActionListener(e->{ //종료
 			cmg.headerSend(Header.SAVE);
-			cmg.send(seatNum);
+			cmg.send(id);
+//			cmg.exit();
+			t.stop();
+//			t2.stop();
 			Wait wait = new Wait(seatNum);
 			dispose();
 		});
@@ -100,27 +133,6 @@ public class Login extends JFrame{
 		});
 		
 		startTimeOut.setText(date.format(today)); // 시작시간
-		
-		
-		
-		
-		Thread t2 = new Thread() { // 시간출력 스레드
-			public void run() {
-				while(a>0){
-					int hour = a/60;
-					int min = a%60;
-					restTimeOut.setText(hour+"시간 "+min+"분");
-					a--;
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e1) {}
-				}
-				Wait wait = new Wait(seatNum);
-				dispose();
-			}
-		};
-		t2.setDaemon(true);
-		t2.start();
 	}
 
 
