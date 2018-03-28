@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,6 +15,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+
+import db.Account;
 
 class CounterFrame extends JFrame{
 	private JPanel mainPanel = new JPanel();
@@ -47,6 +50,13 @@ class CounterFrame extends JFrame{
 	private JLabel jlbUserPrice = new JLabel("Á¤»ê ¿ä±Ý : 1000¿ø");
 	
 	
+	private ImageIcon ramen = new ImageIcon("image/ramen.jpg");
+	private ImageIcon ddug = new ImageIcon("image/ddug.jpg");
+	private ImageIcon coca = new ImageIcon("image/coca.JPG");
+	private ImageIcon ice = new ImageIcon("image/ice.jpg");
+	private ImageIcon sand = new ImageIcon("image/sand.jpg");
+	private ImageIcon hotbar = new ImageIcon("image/hotbar.jpg");
+	
 	
 	private Border line = BorderFactory.createLineBorder(Color.BLACK,3);
 	private Font font = new Font("",Font.BOLD,30);
@@ -54,6 +64,7 @@ class CounterFrame extends JFrame{
 	
 	public CounterFrame() {
 		btset();
+		basicSetting();
 		this.display();
 		this.event();
 		this.menu();
@@ -79,6 +90,15 @@ class CounterFrame extends JFrame{
 			btList[i].add(new JLabel("ºó ÀÚ¸®"),BorderLayout.CENTER);
 		}
 		System.out.println(btList[3]);
+	}
+	
+	public void basicSetting() {
+		AccountManager.account.put(1, new Account(ramen,"¶ó¸é", 3500));
+		AccountManager.account.put(2, new Account(ddug,"¶±ººÀÌ", 4000));
+		AccountManager.account.put(3, new Account(ice,"¾ÆÀÌ½ºÆ¼", 1500));
+		AccountManager.account.put(4, new Account(coca,"ÄÝ¶ó", 1000));
+		AccountManager.account.put(5, new Account(sand,"»÷µåÀ§Ä¡", 2500));
+		AccountManager.account.put(6, new Account(hotbar,"ÇÖ¹Ù", 1000));
 	}
 
 	private void menu() {
