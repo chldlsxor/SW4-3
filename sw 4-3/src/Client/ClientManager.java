@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Date;
 
 import db.Member;
 
@@ -54,7 +53,16 @@ public class ClientManager {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public void aaa() {
+		try {
+			in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void exit() {
 		try {
 			out.close();
@@ -101,9 +109,9 @@ public class ClientManager {
 		}
 	}
 	
-	public void dateSend(Date time) {
+	public void intSend(int money) {
 		try {
-			out.writeObject(time);
+			out.writeInt(money);
 			out.flush();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -133,14 +141,7 @@ public class ClientManager {
 			return '\0';
 		}
 	}
-	public void aaa() {
-		try {
-			in.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 	public int plusReceive() {
 		try {
 			time = in.readInt();
@@ -151,7 +152,6 @@ public class ClientManager {
 			return 0;
 		}
 	}
-
 	public String strReceive() {
 		try {
 			str = in.readObject().toString();
@@ -162,5 +162,6 @@ public class ClientManager {
 			return null;
 		}
 	}
+
 
 }

@@ -1,6 +1,5 @@
 package sign;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 
@@ -19,7 +18,6 @@ import header.Header;
 public class Wait extends JFrame{
 
 	private JPanel mainPanel = new JPanel();
-	private JPanel p = new JPanel();
 	
 	private JLabel id = new JLabel("아이디",JLabel.CENTER);
 	private JLabel pw = new JLabel("비밀번호",JLabel.CENTER);
@@ -31,48 +29,38 @@ public class Wait extends JFrame{
 	
 	private JButton rogin = new JButton("로그인");
 	private JButton signUp = new JButton("회원가입");
-	private JButton aaa = new JButton("충전기");
+	private JButton charger = new JButton("충전기");
 
-	private String seatNum;
+	private String pcNum;
 	
 	ClientManager cmg = new ClientManager();
 	
 	public Wait(String num){
-		seatNum = num;
+		pcNum = num;
 		this.display();
 		this.event();
 		
 		this.setTitle(num+"번 자리 대기 화면");
 		this.setSize(500,400);
-		this.setLocation(0, 0);
+		this.setLocation(1000, 250);
 		this.setResizable(false);
 		this.setVisible(true);
 	}
 	
 	private void display() {
 		this.setContentPane(mainPanel);
-		mainPanel.setLayout(new BorderLayout());
-		p.setLayout(new GridLayout(5,2));
-		mainPanel.add(p,BorderLayout.EAST);
-		
-//		mainPanel.add(id);
-//		mainPanel.add(idInput);
-//		mainPanel.add(pw);
-//		mainPanel.add(pwInput);
-//		mainPanel.add(card);
-//		mainPanel.add(cardInput);
-//		mainPanel.add(rogin);
-//		mainPanel.add(signUp);
-		
-		p.add(id);
-		p.add(idInput);
-		p.add(pw);
-		p.add(pwInput);
-		p.add(card);
-		p.add(cardInput);
-		p.add(rogin);
-		p.add(signUp);
-		p.add(aaa);
+		mainPanel.setLayout(new GridLayout(5,2));
+
+		mainPanel.add(id);
+		mainPanel.add(idInput);
+		mainPanel.add(pw);
+		mainPanel.add(pwInput);
+		mainPanel.add(card);
+		mainPanel.add(cardInput);
+		mainPanel.add(rogin);
+		mainPanel.add(signUp);
+		mainPanel.add(charger);
+
 		Border line = BorderFactory.createLineBorder(Color.BLACK,1);
 		id.setBorder(line);
 		idInput.setBorder(line);
@@ -88,29 +76,25 @@ public class Wait extends JFrame{
 			//회원가입 창 띄우기
 			Sign sign = new Sign();
 		});
-		aaa.addActionListener(e->{
+		charger.addActionListener(e->{
 			Charger charger = new Charger();
 		});
 		
 		rogin.addActionListener(e->{
 			//아이디 비번 보내고
-			System.out.println("1");
 			cmg.connect();
-			System.out.println("2");
 			cmg.headerSend(Header.LOGIN);
-			System.out.println("3");
 			cmg.send(idInput.getText());
 			cmg.send(pwInput.getText());
-			System.out.println("4");
 			//로그인 눌렀을때 정보가 맞으면 종료, 틀리면 메시지 출력
 			if(cmg.receive()) {
-				cmg.send(seatNum);
+				cmg.send(pcNum);
 				int time = cmg.plusReceive();
-				if(time==0)
+				if(time<60)
 					JOptionPane.showMessageDialog(mainPanel, "시간을 충전하고 오세요");
 				else {
 //					cmg.exit();
-					Login login = new Login(seatNum,idInput.getText(),time);					
+					Login login = new Login(pcNum,idInput.getText(),time);					
 					dispose();
 				}
 			}
