@@ -41,27 +41,45 @@ public class FileManager {
 	
 	//아이디 중복 확인
 	public static boolean IDcheck(String id) {		
-		System.out.println("여기!! "+!map.containsKey(id));
-		return !map.containsKey(id);	//아이디 존재 하면 false
+		return map.containsKey(id);	//아이디 존재 하면 true
+	}
+	
+	//로그인 가능 여부 확인
+	public static boolean loginCheck(String id, String pw) {		
+		return map.containsKey(id)&&map.get(id).getPw().equals(pw);	//로그인 가능하면 true
 	}
 	
 	//시간 충전
 	public static void chargeTime(String id, int money) {
-		int time= map.get(id).getTime();
-		if(money==Header.PC1HOUR) {
-			time += 3600;
-		}else {
-			time+=0;
-		}
-		map.get(id).setTime(time);
+		map.get(id).setTime(map.get(id).getTime()+plusTime(money));
 	}
-	//PCNum추가
+	
+	//해당금액의 시간 반환
+	public static int plusTime(int money) {
+		int time=0;
+		if(money==Header.PC1HOUR) {
+			time = 3600;
+		}else if(money ==Header.PC3HOUR){
+			time = 3600*3;
+		}else if(money ==Header.PC5HOUR){
+			time = 3600*5;
+		}else if(money ==Header.PC10HOUR){
+			time = 36000;
+		}
+		return time;
+	}
+	
+	//PCNum 갱신
 	public static void setPCNUM(String id, String PCNum) {
 		map.get(id).setPcNum(PCNum);
 	}
-	//회원의 시간 보내기
+	//회원의 시간 가져오기
 	public static int getUserTime(String id) {
 		return map.get(id).getTime();
+	}
+	//회원의 ip 가져오기
+	public static String getUserIP(String id) {
+		return "192.168.0."+map.get(id).getPcNum();
 	}
 	//회원의 남은 시간 저장
 	public static void saveTime(String id, int restTime) {

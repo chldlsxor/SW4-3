@@ -6,13 +6,15 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import db.Member;
 import header.Header;
 
 public class ServerManager {
-	public static List<String> idList = new ArrayList<>();
+	public static Set<String> idList = new HashSet<>();
 	
 	private static class Client extends Thread{
 		//총괄 기능
@@ -89,13 +91,11 @@ public class ServerManager {
 					id= in.readObject().toString();//아이디 받아옴
 					System.out.println("아이디 :" +id);
 					System.out.println(FileManager.IDcheck(id));
-					send(FileManager.IDcheck(id));
-					if(FileManager.IDcheck(id)) {				
+					send(!FileManager.IDcheck(id));
+					if(!FileManager.IDcheck(id)) {				
 						break;
-					}		
-					
+					}							
 				}		
-				System.out.println("왔니?");
 				Member member = (Member)in.readObject();
 				System.out.println("아이디의 멤버 클래스 : "+member);
 				FileManager.saveDB(id, member);
@@ -108,16 +108,11 @@ public class ServerManager {
 				System.out.println("아이디 : "+id);
 				String pw= in.readObject().toString();//비번 받아옴
 				System.out.println("비번 : "+pw);
-				boolean loginCheck = false;
-				if(FileManager.map.containsKey(id)) {
-					if(FileManager.map.get(id).getPw().equals(pw)) {
-						loginCheck = true;
-					}
-				}
-				
-				idList.add(id);
+				//map에 아이디랑 비번 존재하는지 보내기
+				boolean loginCheck =FileManager.loginCheck(id, pw);
 				send(loginCheck);
 				if(loginCheck) {
+					idList.add(id);
 					String PCNum = in.readObject().toString();	//피씨 번호 받음
 					FileManager.setPCNUM(id, PCNum);			//멤버에 피씨번호 저장
 					
@@ -133,19 +128,20 @@ public class ServerManager {
 		private void charge() {
 			try {
 				String id= in.readObject().toString();	//아이디 받아옴
+				int money = in.readInt();				//금액 받아옴
 				System.out.println(id);
-				boolean isID= false;
-				if(FileManager.map.containsKey(id)) {	//아이디가 존재하면
-					isID = true;						
-					FileManager.chargeTime(id, 1000);	//시간 충전
-				}
-				//System.out.println(FileManager.map.get(id).getTime());
-				System.out.println(isID);
-				send(isID);
+				send(FileManager.IDcheck(id));
+				if(FileManager.IDcheck(id)) {	//아이디가 존재하면					
+					FileManager.chargeTime(id, money);	//시간 충전
+				}			
 				//만약 회원아이디가 로그인 된 아이디 리스트에 존재한다면 충전한 시간을 해당 PC로 보내줘야되..
-//				if(idList.contains(id)) {	
-//					sendTime(3600);
-//				}
+				if(idList.contains(id)) {	
+					//sendTime(3600);
+					ServerSendManager ssm = new ServerSendManager(FileManager.getUserIP(id));
+					System.out.println("보낼 클라이언트의 아이피 : "+FileManager.getUserIP(id));
+					ssm.sendPCTime(FileManager.plusTime(money));		
+					ssm.disconnect();
+				}
 //				
 			}catch(Exception e) {}
 		}
@@ -176,9 +172,13 @@ public class ServerManager {
 			try {
 				String id = in.readObject().toString();
 				//남은시간을 Member.setTime으로..
+				//추가 : 자리 널로★★★★★★★★★★★★★★★★★
+				FileManager.setPCNUM(id, null);
 				idList.remove(id);	
-				for(int i=0;i<idList.size();i++) {
-					System.out.println(idList.get(i));
+				
+				
+				for(String i : idList) {
+					System.out.println(i);
 				}	
 			} catch (Exception e) {
 				e.printStackTrace();

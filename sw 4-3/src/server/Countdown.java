@@ -7,9 +7,9 @@ public class Countdown extends Thread{
 		
 		while(true) {
 			for(String id : ServerManager.idList) {
-				System.out.println("이름 : "+FileManager.map.get(id).getName());
+//				System.out.println("이름 : "+FileManager.map.get(id).getName());
 				FileManager.map.get(id).setTime(FileManager.map.get(id).getTime()-1);
-				System.out.println(id+"의 시간 : "+FileManager.map.get(id).getTime());		
+//				System.out.println(id+"의 시간 : "+FileManager.map.get(id).getTime());		
 				FileManager.saveDB(id, FileManager.map.get(id));
 			}
 			//System.out.println("남은 시간 : "+ time);	
