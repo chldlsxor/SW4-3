@@ -5,13 +5,11 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -21,18 +19,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
-import db.Account;
-
 class GoodsManager extends JFrame {
 
 	private JPanel mainPanel = new JPanel();
 
-	private JPanel[] subPanel = new JPanel[20];
+	private JPanel[] subPanel = new JPanel[83];
 	private JPanel gNum = new JPanel();
 
 	private JLabel jlbtitle = new JLabel("상품 보기", JLabel.CENTER);
 
-	private JLabel[][] jlb = new JLabel[18][3];
+	private JLabel[][] jlb = new JLabel[81][4];
+
+	private JButton[] jbt = new JButton[9];
 
 	private JMenuBar jmb = new JMenuBar();
 
@@ -48,12 +46,16 @@ class GoodsManager extends JFrame {
 	private FileDialog fileOpen = new FileDialog(this, "파일 불러오기", FileDialog.LOAD);
 
 	private JScrollPane jsp = new JScrollPane(subPanel[1]);
-	
+
 	private String name;
 	private int price;
 	private String gName;
 	private String gPrice;
 	private ImageIcon gIcon;
+	private String gNumber;
+
+	private int pageN = 0;
+	private String pageC;
 
 	private int ret = 0;
 
@@ -68,12 +70,18 @@ class GoodsManager extends JFrame {
 		return ret;
 	}
 
+	public void jbtSet() {
+		for (int i = 0; i < jbt.length; i++) {
+			jbt[i] = new JButton("" + (i + 1));
+		}
+	}
+
 	public GoodsManager() {
-		this.display();
+		this.display(pageN);
 		this.event();
 		this.menu();
 
-		this.setSize(1500, 600);
+		this.setSize(1500, 700);
 		this.setTitle("메뉴판");
 		this.setLocationByPlatform(true);
 		this.setResizable(false);
@@ -92,22 +100,36 @@ class GoodsManager extends JFrame {
 	private void event() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
 
-		add.addActionListener(e -> {
-			AddManager amg = new AddManager(this,true);
-			System.out.println("dd");
-			
+		ActionListener btChang = (e) -> {
+			// System.out.println(e.getActionCommand());
+			pageC = e.getActionCommand();
+			pageN = Integer.parseInt(pageC) - 1;
 			this.menuReset();
-			this.menuSet();
+			this.menuSet(pageN);
 			this.revalidate();
 			this.repaint();
+		};
+
+		for (JButton i : jbt) {
+			i.addActionListener(btChang);
+		}
+
+		add.addActionListener(e -> {
+			AddManager amg = new AddManager(this, true);
+			System.out.println("dd");
+
+			this.menuReset();
+			this.menuSet(pageN);
+			subPanel[1].repaint();
+			subPanel[1].revalidate();
 		});
 
 		reset.addActionListener(e -> {
 			System.out.println("새로고침");
 			this.menuReset();
-			this.menuSet();
-			this.revalidate();
-			this.repaint();
+			this.menuSet(pageN);
+			subPanel[1].repaint();
+			subPanel[1].revalidate();
 		});
 
 		remove.addActionListener(e -> {
@@ -115,6 +137,7 @@ class GoodsManager extends JFrame {
 			try {
 				int size = AccountManager.account.size();
 				AccountManager.account.remove(Integer.parseInt(gNum));
+
 				int nSize = AccountManager.account.size();
 				// System.out.println(AccountManager.account.size());
 				// System.out.println(size);
@@ -129,9 +152,9 @@ class GoodsManager extends JFrame {
 					AccountManager.account.remove(i);
 				}
 				this.menuReset();
-				this.menuSet();
-				this.revalidate();
-				this.repaint();
+				this.menuSet(pageN);
+				mainPanel.revalidate();
+				mainPanel.repaint();
 				JOptionPane.showMessageDialog(this, "상품이 삭제되었습니다.");
 			} catch (Exception err) {
 				JOptionPane.showMessageDialog(this, "잘 못된 상품 번호입니다.");
@@ -140,77 +163,103 @@ class GoodsManager extends JFrame {
 
 		fix.addActionListener(e -> {
 			String uNum = JOptionPane.showInputDialog("수정할 상품 번호 입력");
-			FixManager fmg = new FixManager(Integer.parseInt(uNum),this,true);
+			FixManager fmg = new FixManager(Integer.parseInt(uNum), this, true);
 			this.menuReset();
-			this.menuSet();
-			this.revalidate();
-			this.repaint();
+			this.menuSet(pageN);
+			subPanel[1].revalidate();
+			subPanel[1].repaint();
 		});
 	}
 
 	public void menuReset() {
 		subPanel[1].removeAll();
 		subPanel[1].revalidate();
+
 	}
 
-	public void menuSet() {
+	public void setJlb() {
 		for (int i = 0; i < jlb.length; i++) {
+			jlb[i][0] = new JLabel();
+			jlb[i][1] = new JLabel();
+			jlb[i][2] = new JLabel();
+			jlb[i][3] = new JLabel();
+		}
+	}
+
+	public void menuSet(int n) {
+		for (int i = (n * 9); i < ((n + 1) * 9); i++) {
+			System.out.println("n " + n);
 			subPanel[1].add(subPanel[i + 2]);
 			subPanel[i + 2].setBorder(line);
+			System.out.println(i);
 
 			try {
-				if (AccountManager.account.size() > i) {
+//				if (AccountManager.account.size() > i) {
 					name = AccountManager.account.get(i + 1).getPName();
 					price = AccountManager.account.get(i + 1).getPprice();
 					gIcon = AccountManager.account.get(i + 1).getPIcon();
 					gName = "상품명 : " + name;
 					gPrice = "가격 : " + price;
+					gNumber = ""+(i+1);
+					
 
-				} else {
-					gIcon = null;
-					name = "";
-					price = 0;
-					gName = "";
-					gPrice = "";
-				}
-				jlb[i][0] = new JLabel(gIcon);
+//				} else {
+//					gIcon = null;
+//					name = "";
+//					price = 0;
+//					gName = "";
+//					gPrice = "";
+//				}
+				jlb[i][0].setIcon(gIcon);
 				jlb[i][0].setBounds(12, 10, 190, 123);
 				subPanel[i + 2].add(jlb[i][0]);
 
-				jlb[i][1] = new JLabel(gName);
+				jlb[i][1].setText(gName);
 				jlb[i][1].setBounds(214, 10, 169, 33);
 				subPanel[i + 2].add(jlb[i][1]);
 
-				jlb[i][2] = new JLabel(gPrice);
+				jlb[i][2].setText(gPrice);
 				jlb[i][2].setBounds(214, 81, 169, 33);
 				subPanel[i + 2].add(jlb[i][2]);
+
+				jlb[i][3].setText(gNumber);
+				jlb[i][3].setBounds(425, 0, 50, 50);
+				jlb[i][3].setFont(tFont);
+				subPanel[i + 2].add(jlb[i][3]);
 			} catch (Exception err) {
+				System.out.println("i = " + i);
 				gIcon = null;
 				name = "";
 				price = 0;
 				gName = "";
 				gPrice = "";
-				jlb[i][0] = new JLabel(gIcon);
+				gNumber = "";
+				
+				jlb[i][0].setIcon(gIcon);
 				jlb[i][0].setBounds(12, 10, 190, 123);
 				subPanel[i + 2].add(jlb[i][0]);
 
-				jlb[i][1] = new JLabel(gName);
+				jlb[i][1].setText(gName);
 				jlb[i][1].setBounds(214, 10, 169, 33);
 				subPanel[i + 2].add(jlb[i][1]);
 
-				jlb[i][2] = new JLabel(gPrice);
+				jlb[i][2].setText(gPrice);
 				jlb[i][2].setBounds(214, 81, 169, 33);
 				subPanel[i + 2].add(jlb[i][2]);
+
+				 jlb[i][3].setBounds(425, 0, 50, 50);
+				 jlb[i][3].setFont(tFont);
+				 subPanel[i + 2].add(jlb[i][3]);
 			}
 		}
 	}
 
-	private void display() {
+	private void display(int pageN) {
 		// mainPanel을 기본 패널로 설정
 		this.setLayout(null);
 		this.setContentPane(mainPanel);
 		mainPanel.setLayout(null);
-		mainPanel.setPreferredSize(new Dimension(1400, 5000));
+		mainPanel.setPreferredSize(new Dimension(1400, 600));
 		mainPanel.setBackground(Color.DARK_GRAY);
 
 		// subPanel 레이어 초기화
@@ -218,8 +267,10 @@ class GoodsManager extends JFrame {
 			subPanel[i] = new JPanel();
 			subPanel[i].setLayout(null);
 		}
+		// 라벨 생성
+		this.setJlb();
 		// subPanel[1] 그리드 레이어 적용 -> 메뉴판
-		subPanel[1].setLayout(new GridLayout(0, 4, 0, 0));
+		// subPanel[1].setLayout(new GridLayout(0, 4, 0, 0));
 
 		// 상품 보기 제목
 		subPanel[0].setBounds(12, 10, 1400, 99);
@@ -228,21 +279,32 @@ class GoodsManager extends JFrame {
 		subPanel[0].setLayout(null);
 
 		// 제목 라벨
-		jlbtitle.setBounds(12, 10, 1400, 79);
-		jlbtitle.setFont(tFont);
-		subPanel[0].add(jlbtitle);
+		// jlbtitle.setBounds(12, 10, 1400, 79);
+		// jlbtitle.setFont(tFont);
+		// subPanel[0].add(jlbtitle);
+		// 페이지 버튼으로 교체
+		this.jbtSet();
+		// jbt[0].setBounds(10, 20, 150, 60);
+		// subPanel[0].add(jbt[0]);
+		for (int i = 0; i < jbt.length; i++) {
+			jbt[i].setBounds(10 + (i * 150), 20, 150, 60);
+			subPanel[0].add(jbt[i]);
+		}
 
 		// 메뉴판 판넬
-		subPanel[1].setBounds(12, 119, 1400, 900);
+		subPanel[1].setBounds(12, 119, 1400, 500);
 		mainPanel.add(subPanel[1]);
 		subPanel[1].setBorder(line);
-		subPanel[1].setLayout(new GridLayout(0, 3, 0, 0));
+		subPanel[1].setLayout(new GridLayout(3, 3));
+
+		// 상품 번호 설정
+		// this.gNum();
 
 		// 메뉴 설정
-		this.menuSet();
+		this.menuSet(pageN);
 
-		jsp.setBounds(0, 0, 200,300);
-		this.add(jsp);
+		// jsp.setBounds(0, 0, 200,300);
+		// this.add(jsp);
 
 	}
 
