@@ -1,9 +1,12 @@
 package server;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -15,6 +18,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.event.MouseInputListener;
 
 import db.Account;
 
@@ -25,6 +30,7 @@ class CounterFrame extends JFrame{
 	private JPanel subPanel2 = new JPanel();
 	private JPanel subPanel3 = new JPanel();
 	private JPanel subPanel4 = new JPanel();
+	private JPanel goodsView = new JPanel();
 	
 	private JMenuBar jmb = new JMenuBar();
 	private JMenu file = new JMenu("파일(f)");
@@ -33,15 +39,16 @@ class CounterFrame extends JFrame{
 	private JMenuItem exit = new JMenuItem("종료");
 	
 	private JMenuItem view = new JMenuItem("보기");
-	private JMenuItem add = new JMenuItem("추가");
-	private JMenuItem remove = new JMenuItem("삭제");
-	private JMenuItem fix = new JMenuItem("수정");
 	
-	private JButton[] btList = new JButton[4]; 
+	private JButton[] btList = new JButton[60]; 
+	private JLabel[][] btlb = new JLabel[60][4];
+	
+	private JButton msg = new JButton("메세지 보내기");
+	
 	private JButton calculate = new JButton("정산");
 	private JButton management = new JButton("상품 관리");
 	
-	private JLabel jlbJari = new JLabel("1 번 자리");
+	private JLabel jlbJari = new JLabel();
 	private JLabel jlbUserId = new JLabel("아이디 : kim");
 	private JLabel jlbUserName = new JLabel("이름 : min");
 	
@@ -61,6 +68,8 @@ class CounterFrame extends JFrame{
 	private Border line = BorderFactory.createLineBorder(Color.BLACK,3);
 	private Font font = new Font("",Font.BOLD,30);
 	
+	private Dimension win = Toolkit.getDefaultToolkit().getScreenSize();
+	
 	
 	public CounterFrame() {
 		btset();
@@ -70,26 +79,36 @@ class CounterFrame extends JFrame{
 		this.menu();
 		
 		System.out.println(btList.length);
-		this.setSize(1280, 800);
+		
+		this.setSize(win.width, win.height);
 		this.setTitle("KG PC방 - 관리자");
 //		this.setLocation(100, 200);
 		//위치를 운영체제가 결정하도록 하자
-		this.setLocationByPlatform(true);
+		this.setLocationByPlatform(false);
 		//상단부분이 나오지 않도록 설정
-//		this.setUndecorated(true);
+		this.setUndecorated(true);
 		this.setResizable(true);
 		this.setVisible(true);
 	}
 	
 
 	private void btset() {
-		for(int i = 0; i < 4 ; i++) {
+		for(int i = 0; i < btList.length ; i++) {
 			btList[i] = new JButton();
-			btList[i].setLayout(new BorderLayout());
-			btList[i].add(new JLabel((i+1) + "번"),BorderLayout.NORTH);
-			btList[i].add(new JLabel("빈 자리"),BorderLayout.CENTER);
+			btList[i].setLayout(null);
+			btlb[i][0] = new JLabel((i+1) + "번");
+			btlb[i][0].setBounds(5, 5, 50,15);
+			btList[i].add(btlb[i][0]);
+			btlb[i][1] = new JLabel("빈 자리");
+			btlb[i][1].setBounds(45, 0, 200,200);
+			btList[i].add(btlb[i][1]);
+			btlb[i][2] = new JLabel("회원 이름 : ");
+			btlb[i][2].setBounds(5, 20, 100, 50);
+			btList[i].add(btlb[i][2]);
+			btlb[i][3] = new JLabel("남은 시간 : ");
+			btlb[i][3].setBounds(5, 40, 100, 50);
+			btList[i].add(btlb[i][3]);
 		}
-		System.out.println(btList[3]);
 	}
 	
 	public void basicSetting() {
@@ -99,6 +118,26 @@ class CounterFrame extends JFrame{
 		AccountManager.account.put(4, new Account(coca,"콜라", 1000));
 		AccountManager.account.put(5, new Account(sand,"샌드위치", 2500));
 		AccountManager.account.put(6, new Account(hotbar,"핫바", 1000));
+		AccountManager.account.put(7, new Account(ramen,"라면", 3500));
+		
+		AccountManager.account.put(8, new Account(ddug,"떡볶이", 4000));
+		AccountManager.account.put(9, new Account(ice,"아이스티", 1500));
+		AccountManager.account.put(10, new Account(coca,"콜라", 1000));
+		AccountManager.account.put(11, new Account(sand,"샌드위치", 2500));
+		AccountManager.account.put(12, new Account(hotbar,"핫바", 1000));
+		AccountManager.account.put(13, new Account(ramen,"라면", 3500));
+		AccountManager.account.put(14, new Account(ddug,"떡볶이", 4000));
+		AccountManager.account.put(15, new Account(ice,"아이스티", 1500));
+		AccountManager.account.put(16, new Account(coca,"콜라", 1000));
+		AccountManager.account.put(17, new Account(sand,"샌드위치", 2500));
+		
+		AccountManager.account.put(18, new Account(hotbar,"핫바", 1000));
+		AccountManager.account.put(19, new Account(ramen,"라면", 3500));
+		AccountManager.account.put(20, new Account(ddug,"떡볶이", 4000));
+		AccountManager.account.put(21, new Account(ice,"아이스티", 1500));
+		AccountManager.account.put(22, new Account(coca,"콜라", 1000));
+		AccountManager.account.put(23, new Account(sand,"샌드위치", 2500));
+		AccountManager.account.put(24, new Account(hotbar,"핫바", 1000));
 	}
 
 	private void menu() {
@@ -108,26 +147,48 @@ class CounterFrame extends JFrame{
 		jmb.add(setting);
 		file.add(exit);
 		setting.add(view);
-		setting.add(add);
-		setting.add(remove);
-		setting.add(fix);
 	}
 
 	private void event() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);//창 종료
 		
+		ActionListener btls = (e) ->{
+			System.out.println(e.getSource());
+			for(int i = 0 ; i < btList.length ; i ++) {
+				if(btList[i] == e.getSource()) {
+					jlbJari.setText(btlb[i][0].getText()+ " 자리");
+					break;
+				}
+			}
+		};
+		
+		MouseInputListener mil = new MouseInputAdapter() {	
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getClickCount() > 1) {
+					SeatManager smg = new SeatManager(); 
+				}
+			}
+		};
+		
+		for(JButton i : btList) {
+			i.addActionListener(btls);
+			i.addMouseListener(mil);
+		}
+		
+		exit.addActionListener(e -> {
+			System.exit(0);
+		});
+		
 		view.addActionListener(e -> {
 			GoodsManager gmg = new GoodsManager();
 		});
-		add.addActionListener(e -> {
-			
+		
+		management.addActionListener(e -> {
+			GoodsManager gmg = new GoodsManager();
 		});
-		remove.addActionListener(e -> {
-			
-		});
-		fix.addActionListener(e -> {
-			
-		});
+
 	}
 
 	private void display() {
@@ -138,12 +199,12 @@ class CounterFrame extends JFrame{
 		mainPanel.setBackground(Color.darkGray);
 		
 		//좌석 판넬
-		subPanel.setBounds(203, 20, 304, 441);
+		subPanel.setBounds(203, 20, win.width-500, win.height-20);
 		mainPanel.add(subPanel);
 		
 		//좌석 버튼 추가
-		subPanel.setLayout(new GridLayout(2, 2));
-		for(int i = 0 ; i < 4 ; i++) {
+		subPanel.setLayout(new GridLayout(0,10,0,0));
+		for(int i = 0 ; i < btList.length ; i++) {
 			subPanel.add(btList[i]);
 		}
 		
@@ -201,9 +262,21 @@ class CounterFrame extends JFrame{
 		jlbUserPrice.setBounds(12, 103, 141, 33);
 		subPanel4.add(jlbUserPrice);
 		
+		//메세지 보내기 버튼 출력
+		msg.setBounds(12, 500, 160, 60);
+		mainPanel.add(msg);
+		
+		//상품 관리 버튼 출력
+		management.setBounds(12, 600, 160, 60);
+		mainPanel.add(management);
+		
 		//폰트, 색상 설정
 		jlbJari.setFont(font);
 		jlbJari.setForeground(Color.BLACK);
+		
+		//상품 주문상황 판넬 추가
+		goodsView.setBounds(1315, 20, 275, 800);
+		mainPanel.add(goodsView);
 		
 	}	
 }
