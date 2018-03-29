@@ -50,12 +50,7 @@ class Sign extends JFrame{
 		this.setTitle("회원가입");
 		this.setSize(500, 400);
 		
-//		this.setLocation(100, 100);
-		//위치를 운영체제가 결정하도록 하자
-		this.setLocationByPlatform(true);
-		
-		//상단 부분이 나오지 않도록 설정
-//		this.setUndecorated(true);
+		this.setLocation(500, 150);
 		
 		this.setResizable(false);
 		this.setVisible(true);
@@ -125,11 +120,8 @@ class Sign extends JFrame{
 			else if(birthInput.getText().equals(""))
 				JOptionPane.showMessageDialog(mainPanel, "생년월일을 입력하세요");
 			else {
-				System.out.println("왔어?");
 				Member m = new Member(pwInput.getText(),nameInput.getText(),birthInput.getText());
-				System.out.println("응");
 				cmg.memberSend(m);
-				System.out.println("아니");
 				dispose();
 			}
 		});

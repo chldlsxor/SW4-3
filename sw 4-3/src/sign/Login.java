@@ -35,8 +35,11 @@ public class Login extends JFrame{
 	
 	Date today = new Date();
 	SimpleDateFormat date = new SimpleDateFormat("h시 mm분");
+	SimpleDateFormat exit10 = new SimpleDateFormat("HH-mm-ss");
 	
-	private int timeSet;
+	public static int timeSet;
+
+//	ClientManager2 cm = new ClientManager2();
 	
 	public Login(String num, String idInput, int time){	
 		seatNum = num;
@@ -45,12 +48,14 @@ public class Login extends JFrame{
 		this.display();
 		this.event();
 		this.menu();
-		
+
 		this.setTitle(num+"번 자리");
 		this.setSize(500,400);
 		this.setLocation(1000, 50);
 		this.setResizable(false);
 		this.setVisible(true);
+		
+		
 	}
 	
 	private void display() {
@@ -70,38 +75,21 @@ public class Login extends JFrame{
 		restTimeOut.setBorder(line);
 	}
 
+	public static void plus(int plus) {
+		timeSet += plus;
+	}
+	
 	private void event() {
-		cmg.connect();//나중에 다시..
-		Thread t = new Thread() { // 받는 스레드
-			public void run() {
-				while(true) {
-					char header = cmg.headerReceive();
-//					char header = 'z';
-					System.out.println("이거1?"+header);
-					if(header == Header.PLUS)
-						timeSet+=cmg.plusReceive();
-					if(header == Header.MESSAGE) {
-						aaa = cmg.strReceive();
-						System.out.println(aaa);
-						JOptionPane.showMessageDialog(mainPanel, aaa);
-						cmg.aaa();
-					}
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e1) {}
-				}
-			}
-		};
-		t.setDaemon(true);
-		t.start();
-
-		Thread t2 = new Thread() { // 시간출력 스레드
+		
+		Thread t1 = new Thread() { // 시간출력 스레드
 			public void run() {
 				while(timeSet>0){
 					int hour = timeSet/60;
 					int min = timeSet%60;
 					restTimeOut.setText(hour+"시간 "+min+"분");
 					timeSet--;
+					if(timeSet==300)
+						System.out.println("선불 이용 시간이 5분 남았습니다.");
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e1) {}
@@ -112,20 +100,45 @@ public class Login extends JFrame{
 				dispose();
 			}
 		};
-		t2.setDaemon(true);
-		t2.start();
+		t1.setDaemon(true);
+		t1.start();
 		
+//		cmg.connect();//나중에 다시..
+
+//		Thread t2 = new Thread() { // 받는 스레드
+//			public void run() {
+//				char header = cmg.headerReceive();
+////				char header = 'z';
+//				System.out.println("이거1?"+header);
+//				if(header == Header.PLUS)
+//					timeSet+=cmg.plusReceive();
+//				if(header == Header.MESSAGE) {
+//					aaa = cmg.strReceive();
+//					System.out.println(aaa);
+//					JOptionPane.showMessageDialog(mainPanel, aaa);
+//					cmg.aaa();
+//				}
+////				try {
+////					Thread.sleep(1000);
+////				} catch (InterruptedException e1) {}
+//			}
+//		};
+//		t2.setDaemon(true);
+//		t2.start();
+//		
 		exit.addActionListener(e->{ //종료
+			cmg.connect();
 			cmg.headerSend(Header.SAVE);
 			cmg.send(id);
 //			cmg.exit();
-			t.stop();
+			t1.stop();
 //			t2.stop();
 			Wait wait = new Wait(seatNum);
 			dispose();
 		});
 		
 		message.addActionListener(e->{ // 메세지 보내기
+			cmg.connect();//나중에 다시..
 			String str = JOptionPane.showInputDialog(mainPanel,"입력","메세지 보내기",JOptionPane.PLAIN_MESSAGE);
 			cmg.headerSend(Header.MESSAGE);
 			cmg.send(seatNum);
@@ -133,12 +146,14 @@ public class Login extends JFrame{
 		});
 		
 		startTimeOut.setText(date.format(today)); // 시작시간
+		
+		String a = exit10.format(today);
+		System.out.println(exit10.format(today));
+		String numArr[] = a.split("-");
+		System.out.println(numArr[0]);
+		System.out.println(numArr[1]);
+		System.out.println(numArr[2]);
 	}
-
-
-		
-		
-		
 
 //		rogin.addActionListener(e->{
 //			//아이디 비번 보내고
