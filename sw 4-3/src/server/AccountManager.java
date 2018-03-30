@@ -40,6 +40,11 @@ public class AccountManager {
 		account.get(PID).setSellNum(account.get(PID).getSellNum()+num);
 	}
 	
+	//판매 금액 계산
+	public static int calcMoney(int PID, int PNum) {
+		return account.get(PID).getPprice()*PNum;
+	}
+	
 	//총판매이익
 	public static int totalPrice() {
 		int total=0;
