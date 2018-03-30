@@ -51,38 +51,7 @@ public class ServerManager {
 				e.printStackTrace();
 			}
 		}
-		//클라이언트에게 참거짓을 보내는 기능
-//		public void sendHeader(char header) {
-//			try {
-//				out.writeChar(header);
-//				out.flush();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-		//클라이언트에게 메세지를 보내는 기능
-		public void sendMessage(String text) {
-			try {
-				//sendHeader(Header.MESSAGE);
-				out.writeObject(text);
-				out.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		//클라이언트에게 시간을 보내는 기능
-		public void sendTime(int time) {
-			try {
-				//sendHeader(Header.PLUS);
-				out.writeInt(time);
-				out.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		
 		//회원가입
 		private void signup() {
 			try {
@@ -98,9 +67,10 @@ public class ServerManager {
 				}		
 				Member member = (Member)in.readObject();
 				System.out.println("아이디의 멤버 클래스 : "+member);
-				FileManager.saveDB(id, member);
+				FileManager.saveDB(id, member);			
 			}catch(Exception e) {}	
 		}
+		
 		//로그인
 		private void login() {
 			try {
@@ -110,20 +80,27 @@ public class ServerManager {
 				System.out.println("비번 : "+pw);
 				//map에 아이디랑 비번 존재하는지 보내기
 				boolean loginCheck =FileManager.loginCheck(id, pw);
+				System.out.println("loginCheck : "+loginCheck);
+				
 				send(loginCheck);
+				
 				if(loginCheck) {
-					idList.add(id);
-					String PCNum = in.readObject().toString();	//피씨 번호 받음
-					FileManager.setPCNUM(id, PCNum);			//멤버에 피씨번호 저장
-					
-					int availableTime = FileManager.getUserTime(id);	//해당 아이디 가능한 시간 가져옴
-					System.out.println("보낸 시간 : "+ availableTime);
-					out.writeInt(availableTime);						//헤더 없이 시간 보냄
-					out.flush();
-					//sendTime(availableTime);							
+					out.writeObject(FileManager.getUserBirth(id));//생년월일 보냄		//★★★★★미성년자면 클라이언트는 피씨번호 안보내는데 그럼 어케 되..?
+					String PCNum = in.readObject().toString();	//피씨 번호 받음	//미성년자면 0보낼꺼
+					System.out.println("PCNum : "+PCNum);
+					if(!PCNum.equals("-1")) {					//미성년자가 아니면
+						idList.add(id);								//로그인한 회원리스트에 추가하고 카운트 다운 시작	
+						FileManager.setUserPCNum(id, PCNum);			//해당 아이디 멤버에 피씨번호 저장
+						
+						int availableTime = FileManager.getUserTime(id);	//해당 아이디 가능한 시간 가져옴
+						System.out.println("보낸 시간 : "+ availableTime);
+						out.writeInt(availableTime);						//헤더 없이 시간 보냄
+						out.flush();		
+					}				
 				}
 			}catch(Exception e) {}
 		}
+		
 		//충전하기
 		private void charge() {
 			try {
@@ -132,7 +109,8 @@ public class ServerManager {
 				System.out.println(id);
 				send(FileManager.IDcheck(id));
 				if(FileManager.IDcheck(id)) {	//아이디가 존재하면					
-					FileManager.chargeTime(id, money);	//시간 충전
+					FileManager.chargeUserTime(id, money);	//시간 충전
+					FileManager.plusUserMoney(id, money);	//사용금액 갱신
 				}			
 				//만약 회원아이디가 로그인 된 아이디 리스트에 존재한다면 충전한 시간을 해당 PC로 보내줘야되..
 				if(idList.contains(id)) {	
@@ -141,42 +119,45 @@ public class ServerManager {
 					System.out.println("보낼 클라이언트의 아이피 : "+FileManager.getUserIP(id));
 					ssm.sendPCTime(FileManager.plusTime(money));		
 					ssm.disconnect();
-				}
-//				
+				}	
 			}catch(Exception e) {}
 		}
+		
+		//주문받기
 		private void order() {
 			try {
-				String PCNum= in.readObject().toString();//주문자의 피씨 번호 받아옴
-				System.out.println(PCNum);
-				int PID = in.readInt();	//주문할 메뉴 받아옴
-				int num = in.readInt();	//주문할 메뉴 수량 받아옴
-				System.out.println(PID);
-				//결제완료되면
-				AccountManager.addSellNum(PID, num);
-					
+				String id= in.readObject().toString();//주문자의 아이디 받아옴->피씨 번호 알아올 수 있당..
+				System.out.println(FileManager.getUserPCNum(id));	//피씨 번호 표시
+				int Menunum = in.readInt();//메뉴 종류 개수 받아오기
+				for(int i=0;i<Menunum;i++) {
+					int PID = in.readInt();	//주문할 메뉴 받아옴
+					int PNum = in.readInt();	//주문할 메뉴 수량 받아옴
+					System.out.println(PID+"를 "+PNum +"개 주문");
+					AccountManager.addSellNum(PID, PNum);//주문한 제품이랑 수량갱신
+					//해당아이디 가 지금까지 얼마 썻는지 갱신
+					int money = AccountManager.calcMoney(PID, PNum);
+					FileManager.plusUserMoney(id, money);
+				}			
 			}catch(Exception e) {}
 		}
+		
+		//메세지 받기
 		public void message() {
 			try {
-				String PCNum = in.readObject().toString();
-				String message = in.readObject().toString();
-				System.out.println(PCNum +"에서 메세지 보냄 ->" + message);
-				sendTime(1000);
-				sendMessage(message);
-				
+				String PCNum = in.readObject().toString();		//피씨 번호 받
+				String message = in.readObject().toString();	//메세지 받
+				System.out.println(PCNum +"에서 메세지 보냄 ->" + message);				
 			} catch (Exception e) {} 
 			
 		}
+		
+		//client 피씨 종료 시  갱신 정보 저장하기
 		public void save() {
 			try {
 				String id = in.readObject().toString();
-				//남은시간을 Member.setTime으로..
-				//추가 : 자리 널로★★★★★★★★★★★★★★★★★
-				FileManager.setPCNUM(id, null);
-				idList.remove(id);	
-				
-				
+				FileManager.setUserPCNum(id, null);	// 해당아이디의 Member에 저장된 피씨자리를 Null로
+				idList.remove(id);				// countdown 스레드에 아이디가 빠지면서 시간이 줄지 않고 그대로 저장
+							
 				for(String i : idList) {
 					System.out.println(i);
 				}	
@@ -192,27 +173,16 @@ public class ServerManager {
 			try {
 				char header = in.readChar();
 				System.out.println("헤더 : "+header);
-				if(header==Header.SIGNUP) {		//회원가입 헤더
-					signup();
-				}
-				else if(header==Header.LOGIN) {	//로그인 헤더
-					login();
-				}
-				else if(header ==Header.CHARGE) {
-					charge();
-				}else if(header==Header.MESSAGE) {
-					message();
-					//sendMessage("안녕");
-				}else if(header ==  Header.SAVE) {
-					save();
-				}
-//				else if(header == Header.ORDER) {
-//					order();
-//				}
+				if(header==Header.SIGNUP) signup();
+				else if(header==Header.LOGIN) login();
+				else if(header ==Header.CHARGE) charge();
+				else if(header==Header.MESSAGE) message();
+				else if(header ==  Header.SAVE) save();
+				else if(header == Header.ORDER) order();
+
 				out.close();
 				in.close();			
 				socket.close();
-				System.out.println("소켓 : "+socket.isConnected());
 				
 				System.out.print("지금까지 로그인 한 아이디 :  ");
 				for(String id : ServerManager.idList) {
@@ -220,8 +190,7 @@ public class ServerManager {
 				}
 				
 				System.out.println("--------------");
-			}catch(Exception e) {
-			}
+			}catch(Exception e) {}
 			Client.remove(this);
 			System.out.println("나가리");
 		}
@@ -257,8 +226,8 @@ public class ServerManager {
 				c.setDaemon(true);
 				c.start();
 				
-				System.out.println(socket.getInetAddress());
-				System.out.println(socket.getPort());
+				System.out.println("Server에게 신호 보낸 client의 ip : "+socket.getInetAddress());
+				System.out.println("Server에게 신호 보낸 client의 port : "+socket.getPort());
 			}
 			
 		} catch (IOException e) {}		
