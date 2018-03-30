@@ -21,10 +21,10 @@ class Sign extends JFrame{
 	private JPanel mainPanel = new JPanel();
 	
 	private JLabel name = new JLabel("이름",JLabel.CENTER);
-	private JLabel id = new JLabel("아이디",JLabel.CENTER);
-	private JLabel pw = new JLabel("비밀번호",JLabel.CENTER);
+	private JLabel id = new JLabel("아이디(3~14)",JLabel.CENTER);
+	private JLabel pw = new JLabel("비밀번호(6~20)",JLabel.CENTER);
 	private JLabel pwCheck = new JLabel("비밀번호 확인",JLabel.CENTER);
-	private JLabel birth = new JLabel("주민등록번호 앞자리",JLabel.CENTER);
+	private JLabel birth = new JLabel("생년월일(8자리)",JLabel.CENTER);
 	
 	private JTextArea nameInput = new JTextArea();
 	private JTextArea idInput = new JTextArea();
@@ -94,15 +94,18 @@ class Sign extends JFrame{
 			//중복확인
 			//회원db에 같은 아이디가 등록되어있는지 확인후 메시지 출력
 			String str=idInput.getText();
-			cmg.send(str);//아이디 보내고
-			
-			overlapCheck = cmg.receive();//널값 받고
-			if(overlapCheck) {
-				JOptionPane.showMessageDialog(mainPanel, "사용 가능한 아이디입니다.");
-				overlap.setEnabled(false);
+			if(str.length()>=3 && str.length()<=14) {
+				cmg.send(str);//아이디 보내고
+				overlapCheck = cmg.receive();//널값 받고
+				if(overlapCheck) {
+					JOptionPane.showMessageDialog(mainPanel, "사용 가능한 아이디입니다.");
+					overlap.setEnabled(false);
+				}
+				else
+					JOptionPane.showMessageDialog(mainPanel, "이미 존재하는 아이디입니다.");
 			}
 			else
-				JOptionPane.showMessageDialog(mainPanel, "이미 존재하는 아이디입니다.");
+				JOptionPane.showMessageDialog(mainPanel, "아이디는 3~14글자만 가능합니다");
 		});
 		
 		ok.addActionListener(e->{
@@ -113,12 +116,12 @@ class Sign extends JFrame{
 				JOptionPane.showMessageDialog(mainPanel, "이름을 입력하세요");
 			else if(!overlapCheck)
 				JOptionPane.showMessageDialog(mainPanel, "아이디 중복확인을 해주세요");
-			else if(pwInput.getText().equals(""))
-				JOptionPane.showMessageDialog(mainPanel, "비밀번호를 입력하세요");
+			else if(pwInput.getText().length()<6 || pwInput.getText().length()>20)
+				JOptionPane.showMessageDialog(mainPanel, "비밀번호는 6~20글자만 가능합니다");
 			else if(!pwInput.getText().equals(pwCheckInput.getText()))
 				JOptionPane.showMessageDialog(mainPanel, "비밀번호를 다시 확인해주세요");
-			else if(birthInput.getText().equals(""))
-				JOptionPane.showMessageDialog(mainPanel, "생년월일을 입력하세요");
+			else if(birthInput.getText().length()!=8)
+				JOptionPane.showMessageDialog(mainPanel, "생년월일이 잘못 입력됐습니다");
 			else {
 				Member m = new Member(pwInput.getText(),nameInput.getText(),birthInput.getText());
 				cmg.memberSend(m);
