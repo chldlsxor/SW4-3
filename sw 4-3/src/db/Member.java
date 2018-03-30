@@ -6,7 +6,7 @@ public class Member implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2L;//★나이거 고침 3으로 바꿔야해
+	private static final long serialVersionUID = 3L;
 	private String pw;
 	private String name;
 	private String birth;
