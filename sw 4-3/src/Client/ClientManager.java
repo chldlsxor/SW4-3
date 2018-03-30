@@ -11,54 +11,29 @@ import java.net.Socket;
 import db.Member;
 
 public class ClientManager {
-	private String ip = "192.168.0.130";
+	private String ip = "192.168.0.177";
 	private int port = 20000;
 	private InetAddress inet;
 	private Socket socket;
-	private Boolean my;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
-	private char header;
-	private int time;
-	private String str;
 
 	public ClientManager() {
 		try {
 			inet = InetAddress.getByName(ip);
-//			System.out.println("inet 연결");
-//			connect();
-//			System.out.println("커넥트");
-//			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-//			System.out.println("out 스트림");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("d");
 		}
 	}
 
 	public void connect() {
 		try {
-//			System.out.println("커넥트 진입");
-			System.out.println("연결전"+socket);
 			socket = new Socket(inet, port);
-			System.out.println("연결후"+socket);
+			System.out.println("socket : "+socket);
 			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-			System.out.println("11111");
 			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
-			System.out.println("22222");
-//			System.out.println("소켓 연결완료");
+			System.out.println("소켓 연결완료");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void aaa() {
-		try {
-			in.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -70,7 +45,6 @@ public class ClientManager {
 			socket.close();
 			System.out.println("끊고"+socket);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -81,7 +55,6 @@ public class ClientManager {
 			out.flush();
 			Thread.sleep(100);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -92,10 +65,8 @@ public class ClientManager {
 			out.flush();
 			Thread.sleep(100);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public void memberSend(Member member) {
@@ -104,7 +75,6 @@ public class ClientManager {
 			out.flush();
 			Thread.sleep(100);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -114,18 +84,16 @@ public class ClientManager {
 			out.writeInt(money);
 			out.flush();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public Boolean receive() {
 		try {
-			my = in.readBoolean();
+			boolean ok = in.readBoolean();
 			Thread.sleep(100);
-			return my;
+			return ok;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -133,32 +101,29 @@ public class ClientManager {
 	
 	public char headerReceive() {
 		try {
-			header = in.readChar();
+			char header = in.readChar();
 			Thread.sleep(100);
 			return header;
 		} catch (Exception e) {
-			// TODO: handle exception
 			return '\0';
 		}
 	}
 
 	public int plusReceive() {
 		try {
-			time = in.readInt();
+			int time = in.readInt();
 			Thread.sleep(100);
 			return time;
 		} catch (Exception e) {
-			// TODO: handle exception
 			return 0;
 		}
 	}
 	public String strReceive() {
 		try {
-			str = in.readObject().toString();
+			String str = in.readObject().toString();
 			Thread.sleep(100);
 			return str;
 		} catch (Exception e) {
-			// TODO: handle exception
 			return null;
 		}
 	}

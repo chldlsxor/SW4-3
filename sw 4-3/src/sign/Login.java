@@ -28,35 +28,26 @@ public class Login extends JFrame{
 	private JLabel restTime = new JLabel("남은 시간",JLabel.CENTER);
 	private JLabel restTimeOut = new JLabel("",JLabel.CENTER);
 	
-	private String seatNum;
-	private String id;
-	private int adult;
 	ClientManager cmg = new ClientManager();
 	
-	Date today = new Date();
-	SimpleDateFormat date = new SimpleDateFormat("h시 mm분");
-	SimpleDateFormat exit22 = new SimpleDateFormat("HH-mm-ss");
+	Date date = new Date();
+	SimpleDateFormat now = new SimpleDateFormat("h시 mm분");
+	SimpleDateFormat cal = new SimpleDateFormat("HH-mm-ss");
 	
-	String a = exit22.format(today);
-	String timeArr[] = a.split("-");
+	String nowTime = cal.format(date);
+	String timeArr[] = nowTime.split("-");
 	int timer = (21-Integer.parseInt(timeArr[0]))*3600
 			+(59-Integer.parseInt(timeArr[1]))*60
 			+(59-Integer.parseInt(timeArr[2]));
 	
 	public static int timeSet;
-
-//	ClientManager2 cm = new ClientManager2();
 	
-	public Login(String num, String idInput, int time, int age){	
-		seatNum = num;
-		id = idInput;
+	public Login(String pcNum, String id, int time, int age){	
 		timeSet = time;
-		adult = age;
 		this.display();
-		this.event();
-		this.menu();
+		this.event(pcNum, id, age);
 
-		this.setTitle(num+"번 자리");
+		this.setTitle(pcNum+"번 자리");
 		this.setSize(500,400);
 		this.setLocation(1000, 50);
 		this.setResizable(false);
@@ -84,7 +75,7 @@ public class Login extends JFrame{
 		timeSet += plus;
 	}
 	
-	private void event() {
+	private void event(String pcNum, String id, int age) {
 		Thread t = new Thread() { // 시간출력 스레드
 			public void run() {
 				while(timeSet>0){
@@ -98,9 +89,10 @@ public class Login extends JFrame{
 						Thread.sleep(1000);
 					} catch (InterruptedException e1) {}
 				}
+				cmg.connect();
 				cmg.headerSend(Header.SAVE);
 				cmg.send(id);
-				Wait wait = new Wait(seatNum);
+				Wait wait = new Wait(pcNum);
 				dispose();
 			}
 		};
@@ -116,55 +108,41 @@ public class Login extends JFrame{
 						Thread.sleep(1000);
 					} catch (InterruptedException e1) {}
 				}
+				cmg.connect();
 				cmg.headerSend(Header.SAVE);
 				cmg.send(id);
-				Wait wait = new Wait(seatNum);
+				Wait wait = new Wait(pcNum);
 				dispose();
 			}
 		};
-		if(adult<20) {
+		if(age<20) {
 			student.setDaemon(true);
 			student.start();
 		}
+		
+		order.addActionListener(e->{
+			
+		});
 		
 		exit.addActionListener(e->{ //종료
 			cmg.connect();
 			cmg.headerSend(Header.SAVE);
 			cmg.send(id);
-//			cmg.exit();
 			t.stop();
-			Wait wait = new Wait(seatNum);
+			if(age<20)
+				student.stop();
+			Wait wait = new Wait(pcNum);
 			dispose();
 		});
 		
 		message.addActionListener(e->{ // 메세지 보내기
-			cmg.connect();//나중에 다시..
+			cmg.connect();
 			String str = JOptionPane.showInputDialog(mainPanel,"입력","메세지 보내기",JOptionPane.PLAIN_MESSAGE);
 			cmg.headerSend(Header.MESSAGE);
-			cmg.send(seatNum);
+			cmg.send(pcNum);
 			cmg.send(str);
 		});
 		
-		startTimeOut.setText(date.format(today)); // 시작시간
-	}
-
-//		rogin.addActionListener(e->{
-//			//아이디 비번 보내고
-//			cmg.connect();
-//			cmg.headerSend(Header.LOGIN);
-//			System.out.println(idInput.getText());
-//			System.out.println(pwInput.getText());
-//			cmg.send(idInput.getText());
-//			cmg.send(pwInput.getText());
-//			//로그인 눌렀을때 정보가 맞으면 종료, 틀리면 메시지 출력
-//			if(cmg.receive()) {
-//				JOptionPane.showMessageDialog(mainPanel, "로그인 됨.");
-//				dispose();
-//			}
-//			else
-//				JOptionPane.showMessageDialog(mainPanel, "틀림.");
-//		});
-	private void menu() {
-		
+		startTimeOut.setText(now.format(date)); // 시작시간
 	}
 }
