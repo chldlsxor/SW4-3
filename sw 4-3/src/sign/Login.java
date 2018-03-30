@@ -30,21 +30,28 @@ public class Login extends JFrame{
 	
 	private String seatNum;
 	private String id;
-	private String aaa;
+	private int adult;
 	ClientManager cmg = new ClientManager();
 	
 	Date today = new Date();
 	SimpleDateFormat date = new SimpleDateFormat("h시 mm분");
-	SimpleDateFormat exit10 = new SimpleDateFormat("HH-mm-ss");
+	SimpleDateFormat exit22 = new SimpleDateFormat("HH-mm-ss");
+	
+	String a = exit22.format(today);
+	String timeArr[] = a.split("-");
+	int timer = (21-Integer.parseInt(timeArr[0]))*3600
+			+(59-Integer.parseInt(timeArr[1]))*60
+			+(59-Integer.parseInt(timeArr[2]));
 	
 	public static int timeSet;
 
 //	ClientManager2 cm = new ClientManager2();
 	
-	public Login(String num, String idInput, int time){	
+	public Login(String num, String idInput, int time, int age){	
 		seatNum = num;
 		id = idInput;
 		timeSet = time;
+		adult = age;
 		this.display();
 		this.event();
 		this.menu();
@@ -54,8 +61,6 @@ public class Login extends JFrame{
 		this.setLocation(1000, 50);
 		this.setResizable(false);
 		this.setVisible(true);
-		
-		
 	}
 	
 	private void display() {
@@ -80,8 +85,7 @@ public class Login extends JFrame{
 	}
 	
 	private void event() {
-		
-		Thread t1 = new Thread() { // 시간출력 스레드
+		Thread t = new Thread() { // 시간출력 스레드
 			public void run() {
 				while(timeSet>0){
 					int hour = timeSet/60;
@@ -100,39 +104,35 @@ public class Login extends JFrame{
 				dispose();
 			}
 		};
-		t1.setDaemon(true);
-		t1.start();
+		t.setDaemon(true);
+		t.start();
 		
-//		cmg.connect();//나중에 다시..
-
-//		Thread t2 = new Thread() { // 받는 스레드
-//			public void run() {
-//				char header = cmg.headerReceive();
-////				char header = 'z';
-//				System.out.println("이거1?"+header);
-//				if(header == Header.PLUS)
-//					timeSet+=cmg.plusReceive();
-//				if(header == Header.MESSAGE) {
-//					aaa = cmg.strReceive();
-//					System.out.println(aaa);
-//					JOptionPane.showMessageDialog(mainPanel, aaa);
-//					cmg.aaa();
-//				}
-////				try {
-////					Thread.sleep(1000);
-////				} catch (InterruptedException e1) {}
-//			}
-//		};
-//		t2.setDaemon(true);
-//		t2.start();
-//		
+		Thread student = new Thread() {
+			public void run() {
+				while(timer>0) {
+					timer--;
+					System.out.println(timer);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {}
+				}
+				cmg.headerSend(Header.SAVE);
+				cmg.send(id);
+				Wait wait = new Wait(seatNum);
+				dispose();
+			}
+		};
+		if(adult<20) {
+			student.setDaemon(true);
+			student.start();
+		}
+		
 		exit.addActionListener(e->{ //종료
 			cmg.connect();
 			cmg.headerSend(Header.SAVE);
 			cmg.send(id);
 //			cmg.exit();
-			t1.stop();
-//			t2.stop();
+			t.stop();
 			Wait wait = new Wait(seatNum);
 			dispose();
 		});
@@ -146,13 +146,6 @@ public class Login extends JFrame{
 		});
 		
 		startTimeOut.setText(date.format(today)); // 시작시간
-		
-		String a = exit10.format(today);
-		System.out.println(exit10.format(today));
-		String numArr[] = a.split("-");
-		System.out.println(numArr[0]);
-		System.out.println(numArr[1]);
-		System.out.println(numArr[2]);
 	}
 
 //		rogin.addActionListener(e->{

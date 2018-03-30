@@ -2,6 +2,8 @@ package sign;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -81,6 +83,11 @@ public class Wait extends JFrame{
 		});
 		
 		rogin.addActionListener(e->{
+			Date today = new Date();
+			SimpleDateFormat exit22 = new SimpleDateFormat("HH");
+			SimpleDateFormat adult = new SimpleDateFormat("yyyy");
+			int timer = Integer.parseInt(exit22.format(today));//16시
+			int year = Integer.parseInt(adult.format(today));//2018년
 			//아이디 비번 보내고
 			cmg.connect();
 			cmg.headerSend(Header.LOGIN);
@@ -88,14 +95,24 @@ public class Wait extends JFrame{
 			cmg.send(pwInput.getText());
 			//로그인 눌렀을때 정보가 맞으면 종료, 틀리면 메시지 출력
 			if(cmg.receive()) {
-				cmg.send(pcNum);
-				int time = cmg.plusReceive();
-				if(time<60)
-					JOptionPane.showMessageDialog(mainPanel, "시간을 충전하고 오세요");
+				//나이를 받아서 시간체크
+				String birth = cmg.strReceive();
+				int age = year + 1 - Integer.parseInt(adult.format(birth));//2018-1993=25
+				System.out.println(age);
+				if(age<20 && (timer>=17 || timer<=8)) {
+					JOptionPane.showMessageDialog(mainPanel, "미성년자 이용 불가 시간입니다");
+					cmg.send("-1");
+				}
 				else {
-//					cmg.exit();
-					Login login = new Login(pcNum,idInput.getText(),time);					
-					dispose();
+					cmg.send(pcNum);
+					int time = cmg.plusReceive();
+					if(time<60)
+						JOptionPane.showMessageDialog(mainPanel, "시간을 충전하고 오세요");
+					else {
+//						cmg.exit();
+						Login login = new Login(pcNum,idInput.getText(),time,age);					
+						dispose();
+					}
 				}
 			}
 			else
