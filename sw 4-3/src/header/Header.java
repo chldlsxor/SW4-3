@@ -12,4 +12,5 @@ public class Header {
 	public static final char SAVE = 'd';
 	public static final char PLUS = 'e';
 	public static final char MESSAGE = 'f';
+	public static final char ORDER = 'g';
 }
