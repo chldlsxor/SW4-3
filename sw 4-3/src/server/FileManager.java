@@ -39,6 +39,11 @@ public class FileManager {
        }
 	}
 	
+	public static String getUserName(String id) {
+		// TODO Auto-generated method stub
+		return map.get(id).getName();
+	}
+	
 	//아이디 중복 확인
 	public static boolean IDcheck(String id) {		
 		return map.containsKey(id);	//아이디 존재 하면 true

@@ -10,10 +10,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import db.Member;
 import header.Header;
 
-public class ServerManager {
+public class ServerManager extends Thread{
+	
 	public static Set<String> idList = new HashSet<>();
 	
 	private static class Client extends Thread{
@@ -89,13 +92,16 @@ public class ServerManager {
 					String PCNum = in.readObject().toString();	//피씨 번호 받음	//미성년자면 0보낼꺼
 					System.out.println("PCNum : "+PCNum);
 					if(!PCNum.equals("-1")) {					//미성년자가 아니면
-						idList.add(id);								//로그인한 회원리스트에 추가하고 카운트 다운 시작	
-						FileManager.setUserPCNum(id, PCNum);			//해당 아이디 멤버에 피씨번호 저장
 						
 						int availableTime = FileManager.getUserTime(id);	//해당 아이디 가능한 시간 가져옴
 						System.out.println("보낸 시간 : "+ availableTime);
+						CounterFrame.seatCheck[Integer.parseInt(PCNum)-120] = true;
 						out.writeInt(availableTime);						//헤더 없이 시간 보냄
-						out.flush();		
+						out.flush();
+						if(availableTime>60) {							
+							idList.add(id);								//로그인한 회원리스트에 추가하고 카운트 다운 시작	
+							FileManager.setUserPCNum(id, PCNum);			//해당 아이디 멤버에 피씨번호 저장
+						}
 					}				
 				}
 			}catch(Exception e) {}
@@ -118,7 +124,7 @@ public class ServerManager {
 					ServerSendManager ssm = new ServerSendManager(FileManager.getUserIP(id));
 					System.out.println("보낼 클라이언트의 아이피 : "+FileManager.getUserIP(id));
 					ssm.sendPCTime(FileManager.plusTime(money));		
-					ssm.disconnect();
+//					ssm.disconnect();
 				}	
 			}catch(Exception e) {}
 		}
@@ -141,11 +147,13 @@ public class ServerManager {
 			}catch(Exception e) {}
 		}
 		
+		
 		//메세지 받기
 		public void message() {
 			try {
 				String PCNum = in.readObject().toString();		//피씨 번호 받
 				String message = in.readObject().toString();	//메세지 받
+				JOptionPane.showMessageDialog(null, message,PCNum+" 자리",JOptionPane.PLAIN_MESSAGE);
 				System.out.println(PCNum +"에서 메세지 보냄 ->" + message);				
 			} catch (Exception e) {} 
 			
@@ -155,6 +163,7 @@ public class ServerManager {
 		public void save() {
 			try {
 				String id = in.readObject().toString();
+				CounterFrame.seatCheck[Integer.parseInt(FileManager.getUserPCNum(id))-120] = false;
 				FileManager.setUserPCNum(id, null);	// 해당아이디의 Member에 저장된 피씨자리를 Null로
 				idList.remove(id);				// countdown 스레드에 아이디가 빠지면서 시간이 줄지 않고 그대로 저장
 							
@@ -208,10 +217,10 @@ public class ServerManager {
 //		th.setDaemon(true);
 //		th.start();
 		
-		connect();
+//		connect();
 	}
 	
-	public void connect() {	
+	public void run() {	
 		try {
 			ServerSocket server =new ServerSocket(20000);
 			FileManager.readDB();

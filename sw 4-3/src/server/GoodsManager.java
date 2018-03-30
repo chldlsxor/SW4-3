@@ -75,6 +75,8 @@ class GoodsManager extends JFrame {
 			jbt[i] = new JButton("" + (i + 1));
 		}
 	}
+	
+
 
 	public GoodsManager() {
 		this.display(pageN);
