@@ -1,6 +1,7 @@
 package header;
 
 public class Header {
+	public static final int PCID = 0;
 	public static final int PC1HOUR = 1000;
 	public static final int PC3HOUR = 2500;
 	public static final int PC5HOUR = 4000;

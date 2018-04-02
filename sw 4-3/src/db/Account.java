@@ -14,12 +14,14 @@ public class Account implements Serializable{
 	private String PName;	//제품명
 	private int Pprice ;//가격
 	private int sellNum;//판매량	
+	private int totalPrice;//해당제품 총 판매 금액
 	
 	public Account(ImageIcon PIcon, String pName, int pprice) {
 		this.setPIcon(PIcon);
 		this.setPName(pName);
 		this.setPprice(pprice);
 		this.setSellNum(0);
+		this.setTotalPrice(0);
 	}
 	public ImageIcon getPIcon() {
 		return PIcon;
@@ -47,10 +49,16 @@ public class Account implements Serializable{
 	}
 	public void setSellNum(int sellNum) {
 		this.sellNum = sellNum;
+	}	
+	public int getTotalPrice() {
+		return totalPrice;
 	}
-	//해당제품의 판매이익
-	public int getPTotalPrice() {
-		return this.Pprice*this.sellNum;
+	public void setTotalPrice() {
+		this.totalPrice = this.Pprice*this.sellNum;
 	}
-	
+	//PC계산용
+	public void setTotalPrice(int price) {
+		this.totalPrice +=price;
+	}
+
 }
