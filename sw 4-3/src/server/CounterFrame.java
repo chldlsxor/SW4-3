@@ -78,13 +78,6 @@ class CounterFrame extends JFrame {
 	private JLabel jlbUserUseT = new JLabel("사용 시간 : 00시40분");
 	private JLabel jlbUserPrice = new JLabel("정산 요금 : 1000원");
 
-	private ImageIcon ramen = new ImageIcon("image/ramen.jpg");
-	private ImageIcon ddug = new ImageIcon("image/ddug.jpg");
-	private ImageIcon coca = new ImageIcon("image/coca.JPG");
-	private ImageIcon ice = new ImageIcon("image/ice.jpg");
-	private ImageIcon sand = new ImageIcon("image/sand.jpg");
-	private ImageIcon hotbar = new ImageIcon("image/hotbar.jpg");
-
 	private Border line = BorderFactory.createLineBorder(Color.BLACK, 3);
 	private Font font = new Font("", Font.BOLD, 30);
 
@@ -257,11 +250,11 @@ class CounterFrame extends JFrame {
 		});
 
 		view.addActionListener(e -> {
-			GoodsManager gmg = new GoodsManager();
+			GoodsManager gmg = new GoodsManager(0);
 		});
 
 		management.addActionListener(e -> {
-			GoodsManager gmg = new GoodsManager();
+			GoodsManager gmg = new GoodsManager(0);
 		});
 
 		Thread t = new Thread() {
