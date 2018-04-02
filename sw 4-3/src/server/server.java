@@ -16,9 +16,9 @@ import header.Header;
 public class server {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		ServerManager sm = new ServerManager();
-		
-
+//		ServerManager sm = new ServerManager();
+		System.out.println("a");
+		CounterFrame cf = new CounterFrame();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {}		

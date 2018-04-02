@@ -27,10 +27,10 @@ class SeatManager extends JDialog {
 	private JButton cancel = new JButton("취소");
 	
 
-	public SeatManager() {
-		this.set();
+	public SeatManager(String id) {
+		this.set(id);
 		this.display();
-		this.event();
+		this.event(id);
 		this.menu();
 
 		this.setSize(300, 450);
@@ -49,7 +49,7 @@ class SeatManager extends JDialog {
 
 	}
 
-	private void event() {
+	private void event(String id) {
 		// this.setDefaultCloseOperation(EXIT_ON_CLOSE);//프로그램 종료
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
 		// this.setDefaultCloseOperation(HIDE_ON_CLOSE);//창숨김
@@ -58,6 +58,9 @@ class SeatManager extends JDialog {
 		
 		msgSend.addActionListener(e -> {
 			String uMsg = JOptionPane.showInputDialog("메세지 입력");
+			JOptionPane.showMessageDialog(this, FileManager.getUserIP(id)+"");
+			ServerSendManager ssm = new ServerSendManager(FileManager.getUserIP(id));
+			ssm.sendMessage(uMsg);
 		});
 		
 		cancel.addActionListener(e -> {
@@ -65,16 +68,15 @@ class SeatManager extends JDialog {
 		});
 		
 		save.addActionListener(e -> {
-			
 		});
 		
 
 	}
 	
-	public void set() {
-		uName.setText("이         름 : ");
-		uBirth.setText("생년월일 	: ");
-		uPay.setText("사용금액 :");
+	public void set(String id) {
+		uName.setText("이         름 : "+FileManager.getUserName(id));
+		uBirth.setText("생년월일 	: "+FileManager.getUserBirth(id));
+		uPay.setText("사용금액 : ");
 	}
 
 	private void display() {
