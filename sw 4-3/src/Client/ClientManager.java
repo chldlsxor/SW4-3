@@ -11,7 +11,7 @@ import java.net.Socket;
 import db.Member;
 
 public class ClientManager {
-	private String ip = "192.168.0.177";
+	private String ip = "192.168.0.130";
 	private int port = 20000;
 	private InetAddress inet;
 	private Socket socket;
