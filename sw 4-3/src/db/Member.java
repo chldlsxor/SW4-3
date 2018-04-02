@@ -6,13 +6,14 @@ public class Member implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 4L;
 	private String pw;
 	private String name;
 	private String birth;
 	private int time;
 	private String pcNum;
 	private int money;
+	private String memo;
 	
 	public Member(String pw, String name, String birth) {
 		this.setPw(pw);
@@ -21,6 +22,15 @@ public class Member implements Serializable{
 		this.setTime(0);
 		
 	} 
+	
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+	
+	public String getMemo() {
+		return memo;
+	}
+	
 	public String getName() {
 		return name;
 	}

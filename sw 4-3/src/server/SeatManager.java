@@ -1,7 +1,6 @@
 package server;
 
 import java.awt.Color;
-import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -68,6 +67,7 @@ class SeatManager extends JDialog {
 		});
 		
 		save.addActionListener(e -> {
+			FileManager.saveDB(id, FileManager.map.get(id));
 		});
 		
 
@@ -77,6 +77,7 @@ class SeatManager extends JDialog {
 		uName.setText("이         름 : "+FileManager.getUserName(id));
 		uBirth.setText("생년월일 	: "+FileManager.getUserBirth(id));
 		uPay.setText("사용금액 : ");
+		ta.setText(FileManager.map.get(id).getMemo());
 	}
 
 	private void display() {
