@@ -1,26 +1,34 @@
-package server;
+package sign;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
-class GoodsManager2 extends JFrame {
+import Client.ClientManager;
+import db.Account;
+import header.Header;
 
+public class Menu extends JFrame {
+	private Map<Integer, Account> account = new HashMap<>();
+    
+	ClientManager cmg = new ClientManager();
 	// 클라 주문판
 	private JPanel mainPanel = new JPanel();
 
@@ -28,19 +36,16 @@ class GoodsManager2 extends JFrame {
 	// 클라 관리용
 	private JButton[] goodsBt = new JButton[81];
 
-	private JPanel gNum = new JPanel();
-
 	private JPanel gBasket = new JPanel();
 	private JButton[] gButton = new JButton[9];
-	private JLabel[][] gJlb = new JLabel[9][3];
-	private JButton[] gBcheck = new JButton[9];
+	private JLabel[][] gJlb = new JLabel[9][4];
 
+	private int cnt = 0;
+	
 	private JPanel gRet = new JPanel();
 
 	private JLabel gRetLb = new JLabel("총 요금 : 0원");
 	private JButton gRetBt = new JButton("주문하기");
-
-	private JLabel jlbtitle = new JLabel("상품 보기", JLabel.CENTER);
 
 	private JLabel[][] jlb = new JLabel[81][4];
 
@@ -50,10 +55,6 @@ class GoodsManager2 extends JFrame {
 	private Font rFont = new Font("", Font.BOLD, 20);
 
 	private Border line = BorderFactory.createLineBorder(Color.black, 3);
-
-	private FileDialog fileOpen = new FileDialog(this, "파일 불러오기", FileDialog.LOAD);
-
-	private JScrollPane jsp = new JScrollPane(subPanel[1]);
 
 	private String name;
 	private int price;
@@ -67,8 +68,6 @@ class GoodsManager2 extends JFrame {
 
 	private int ret = 0;
 	
-	private int retPrice = 0;
-
 	public int check() {
 		for (int i = 0; i < jlb.length; i++) {
 			if (jlb[i][1].equals("")) {
@@ -86,25 +85,44 @@ class GoodsManager2 extends JFrame {
 		}
 	}
 
-	public GoodsManager2() {
-		AccountManager.readDB();
+	public Menu(String id) {
+		readDB();
 		this.display(pageN);
-		this.event();
+		this.event(id);
 
 		this.setSize(1500, 850);
 		this.setTitle("메뉴판");
-		this.setLocationByPlatform(true);
+		this.setLocation(10,10);
 		this.setResizable(false);
 		this.setVisible(true);
 	}
-
-	private void menu() {
-		// TODO Auto-generated method stub
+	 //회계디비 가져오기
+	private void readDB() {
+		try (ObjectInputStream fin = new ObjectInputStream(
+                new BufferedInputStream(
+                        new FileInputStream(new File("DBFile", "Account.txt"))));){
+			account= (Map<Integer, Account>) fin.readObject();
+        } catch (Exception e) {
+        	account = new HashMap<>();
+       }
 	}
-
-	private void event() {
+	
+	private void event(String id) {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
 
+		gRetBt.addActionListener(e->{
+			if(cnt==0) return;
+			cmg.connect();
+			cmg.headerSend(Header.ORDER);
+			cmg.send(id);
+			cmg.intSend(cnt);
+			System.out.println(cnt);
+			for(int i=0;i<cnt;i++) {
+				cmg.intSend(Integer.parseInt(gJlb[i][3].getText()));//파스인트
+				cmg.intSend(Integer.parseInt(gJlb[i][1].getText().substring(5)));//:기준으로 짤라서 뒤에꺼
+			}
+			dispose();
+		});
 		ActionListener btChang = (e) -> {
 			// System.out.println(e.getActionCommand());
 			pageC = e.getActionCommand();
@@ -119,23 +137,20 @@ class GoodsManager2 extends JFrame {
 			i.addActionListener(btChang);
 		}
 		
-		ActionListener gbt = (e)-> {
-		};
-		
 		for (int i = 0; i < goodsBt.length; i++) {
 			int k = i;
 			goodsBt[i].addActionListener(e -> {
 				String su = JOptionPane.showInputDialog("수량을 입력해 주세요");
+				if(su == null) return;
 				for (int j = 0; j < gJlb.length; j++) {
 					if(gJlb[j][0].getText().equals(jlb[k][1].getText())) {
-						gJlb[j][1].setText("수량 : "+su);
-						int a = Integer.parseInt(su);
-						String sPrice = jlb[k][2].getText().substring(5);
-						gJlb[j][2].setText(sPrice);
-						int b = Integer.parseInt(sPrice);
-						ret = ret + (a*b);
-						gRetLb.setText("총 요금 : "+(ret)+"원");
-						break;
+						int a = Integer.parseInt(gJlb[j][1].getText().substring(5));
+						int b = Integer.parseInt(gJlb[j][2].getText());
+						gJlb[j][0].setText("");
+						gJlb[j][1].setText("");
+						gJlb[j][3].setText("");
+						ret = ret - (a*b);
+						cnt--;
 					} 
 					if (gJlb[j][0].getText().equals("")) {
 						gJlb[j][0].setText(jlb[k][1].getText());
@@ -144,8 +159,12 @@ class GoodsManager2 extends JFrame {
 						String sPrice = jlb[k][2].getText().substring(5);
 						gJlb[j][2].setText(sPrice);
 						int b = Integer.parseInt(sPrice);
+						System.out.println("a"+a+" b "+b);
 						ret = ret + (a*b);
 						gRetLb.setText("총 요금 : "+(ret)+"원");
+						gJlb[j][3].setText(jlb[k][3].getText());
+						System.out.println(gJlb[j][3].getText());
+						cnt++;
 						break;
 					}
 				}
@@ -169,20 +188,17 @@ class GoodsManager2 extends JFrame {
 					ret = ret - (a*b);
 					System.out.println(ret);
 					gRetLb.setText("총 요금 : "+(ret)+"원");
-					break;
+					gJlb[j][3].setText("");
+					cnt--;
+					break;	
 				}
 			});
 		}
-		
-		
-		
-
 	}
 
 	public void menuReset() {
 		subPanel[1].removeAll();
 		subPanel[1].revalidate();
-
 	}
 
 	public void setJlb() {
@@ -191,6 +207,7 @@ class GoodsManager2 extends JFrame {
 			jlb[i][1] = new JLabel();
 			jlb[i][2] = new JLabel();
 			jlb[i][3] = new JLabel();
+			
 		}
 	}
 
@@ -203,18 +220,17 @@ class GoodsManager2 extends JFrame {
 
 	public void menuSet(int n) {
 		for (int i = (n * 9); i < ((n + 1) * 9); i++) {
-			System.out.println("n " + n);
+			System.out.println("페이지-1 : " + n);
 			subPanel[1].add(goodsBt[i]);
 			goodsBt[i].setBorder(line);
-			System.out.println(i);
-			System.out.println(AccountManager.account.size());
+			System.out.println("상품번호 : "+i);
 
 			try {
-				// if (AccountManager.account.size() > i) {
-				name = AccountManager.account.get(i + 1).getPName();
-				System.out.println(name);
-				price = AccountManager.account.get(i + 1).getPprice();
-				gIcon = AccountManager.account.get(i + 1).getPIcon();
+				// if (gm2.account.size() > i) {
+				name = account.get(i + 1).getPName();
+				System.out.println("상품명 : "+ name);
+				price = account.get(i + 1).getPprice();
+				gIcon = account.get(i + 1).getPIcon();
 				gName = "상품명 : " + name;
 				gPrice = "가격 : " + price;
 				gNumber = "" + (i + 1);
@@ -348,7 +364,9 @@ class GoodsManager2 extends JFrame {
 			
 			//가격 저장 라벨
 			gJlb[i][2] = new JLabel();
-
+			
+			//키값 저장
+			gJlb[i][3] = new JLabel();
 		}
 
 		// 주문버튼 , 주문 요금
@@ -364,6 +382,5 @@ class GoodsManager2 extends JFrame {
 		gRetLb.setBounds(10, 10, 180, 50);
 		gRetLb.setFont(rFont);
 		gRet.add(gRetLb);
-
 	}
 }
