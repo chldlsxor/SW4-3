@@ -94,10 +94,6 @@ class GoodsManager extends JFrame {
 			this.setResizable(false);
 			this.setVisible(true);
 			break;
-			
-		case 1:
-			GoodsManager2 gmg2 = new GoodsManager2();
-			break;
 		}
 	}
 

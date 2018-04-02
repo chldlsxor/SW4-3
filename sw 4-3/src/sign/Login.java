@@ -121,7 +121,7 @@ public class Login extends JFrame{
 		}
 		
 		order.addActionListener(e->{
-			
+			Menu menu = new Menu(id);
 		});
 		
 		exit.addActionListener(e->{ //Á¾·á

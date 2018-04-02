@@ -10,8 +10,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -54,7 +56,7 @@ class CounterFrame extends JFrame {
 
 	// 자리 표시 버튼 / 자리 버튼 내 텍스트
 	private JButton[] btList = new JButton[60];
-	private JLabel[][] btlb = new JLabel[60][5];
+	private JLabel[][] btlb = new JLabel[60][6];
 
 	// 주문 내역 라벨
 	private JLabel orderLb = new JLabel("주문 내역");
@@ -86,6 +88,9 @@ class CounterFrame extends JFrame {
 	private Dimension win = Toolkit.getDefaultToolkit().getScreenSize();
 	
 	private Iterator<String> userId;
+	
+	private SimpleDateFormat f = new SimpleDateFormat("hh : mm");
+	private String startTime;
 
 	// private ServerManager sm;
 
@@ -133,7 +138,10 @@ class CounterFrame extends JFrame {
 			btlb[i][3] = new JLabel("남은 시간 : ");
 			btlb[i][3].setBounds(5, 40, 100, 50);
 			btList[i].add(btlb[i][3]);
+			//회원 아이디 저장
 			btlb[i][4] = new JLabel();
+			//시작 시간 저장
+			btlb[i][5] = new JLabel();
 		}
 
 		for (int i = 0; i < btGList.length; i++) {
@@ -182,7 +190,7 @@ class CounterFrame extends JFrame {
 		bExit.addActionListener(e -> {
 			// seatCheck[(int)(Math.random()*60)] = true;
 
-			// System.exit(0);
+			 System.exit(0);
 		});
 
 		msg.addActionListener(e -> {
@@ -197,6 +205,9 @@ class CounterFrame extends JFrame {
 				if (btList[i] == e.getSource()) {
 					jlbJari.setText(btlb[i][0].getText() + " 자리");
 					jlbUserName.setText(btlb[i][2].getText());
+					jlbUserStartT.setText(btlb[i][5].getText());
+					jlbUserUseT.setText(btlb[i][3].getText());
+					jlbUserPrice.setText("");
 					break;
 				}
 			}
@@ -220,20 +231,23 @@ class CounterFrame extends JFrame {
 			i.addActionListener(e -> {
 				if (!e.getActionCommand().equals("")) {
 					int uc = JOptionPane.showConfirmDialog(mainPanel, "주문 내역을 삭제 하시겠습니까?", "주문 내역 삭제",
-							JOptionPane.YES_NO_OPTION);
+							JOptionPane.YES_NO_CANCEL_OPTION);
 					// 선택된 주문 삭제
 					if (uc == 0) {
 						for (int j = 0; j < btGList.length; j++) {
 							if (btGList[j] == e.getSource()) {
 								btGList[j].setText("");
 								orderList.remove(j);
+								this.orderReset();
+								JOptionPane.showMessageDialog(mainPanel, "주문 내역을 삭제하였습니다.");
 								break;
 							}
 						}
+					}else if(uc == 1) {
+						OrderManager omg = new OrderManager(e.getActionCommand());
 					}
-					this.orderReset();
+					
 
-					JOptionPane.showMessageDialog(mainPanel, "주문 내역을 삭제하였습니다.");
 				} else {
 					JOptionPane.showMessageDialog(mainPanel, "주문 내역이 없습니다.");
 				}
@@ -270,6 +284,7 @@ class CounterFrame extends JFrame {
 //							mainReset();
 							for (int i = 0; i < btList.length; i++) {
 								if (seatCheck[i]) {
+									btlb[i][5].setText(f.format(new Date()));
 									btlb[i][4].setText(uId);
 									btlb[i][1].setText("사용중");
 									btlb[i][2].setText("이름 : " + FileManager.getUserName(uId));
@@ -285,6 +300,8 @@ class CounterFrame extends JFrame {
 								btlb[i][1].setText("");
 								btlb[i][2].setText("");
 								btlb[i][3].setText("");
+								btlb[i][4].setText("");
+								btlb[i][5].setText("");
 								btList[i].setBackground(Color.WHITE);
 							}
 //							subPanel2.repaint();
@@ -410,6 +427,9 @@ class CounterFrame extends JFrame {
 		jlbJari.setFont(font);
 		jlbJari.setForeground(Color.BLACK);
 		jlbUserName.setForeground(Color.black);
+		jlbUserId.setForeground(Color.BLACK);
+		jlbUserStartT.setForeground(Color.black);
+		jlbUserUseT.setForeground(Color.black);
 
 		// 상품 주문상황 판넬 추가
 		goodsView.setLayout(new GridLayout(0, 1, 0, 0));

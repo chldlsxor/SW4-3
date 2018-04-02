@@ -16,7 +16,7 @@ import Client.ClientManager;
 import db.Member;
 import header.Header;
 
-class Sign extends JFrame{
+public class Sign extends JFrame{
 	private JPanel mainPanel = new JPanel();
 	
 	private JLabel name = new JLabel("¿Ã∏ß",JLabel.CENTER);
