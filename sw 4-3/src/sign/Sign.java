@@ -14,7 +14,6 @@ import javax.swing.border.Border;
 
 import Client.ClientManager;
 import db.Member;
-//import header.Header;
 import header.Header;
 
 class Sign extends JFrame{
@@ -39,7 +38,6 @@ class Sign extends JFrame{
 	ClientManager cmg = new ClientManager();
 	
 	boolean overlapCheck = false;
-
 	
 	public Sign(){
 		cmg.connect();
@@ -49,18 +47,13 @@ class Sign extends JFrame{
 		
 		this.setTitle("회원가입");
 		this.setSize(500, 400);
-		
 		this.setLocation(500, 150);
-		
 		this.setResizable(false);
 		this.setVisible(true);
 	}
 	private void display() {
 		this.setContentPane(mainPanel);
 		mainPanel.setLayout(new GridLayout(7,2));
-		//모든 컴포넌트의 추가는 mainPanel에 수행	
-//		name.setBounds(100,100,100,100);
-//		nameInput.setBounds(1000, 1000, 1000, 1000);
 		mainPanel.add(name);
 		mainPanel.add(nameInput);
 		mainPanel.add(id);
@@ -74,6 +67,7 @@ class Sign extends JFrame{
 		mainPanel.add(ok);
 		mainPanel.add(no);
 		mainPanel.add(overlap);
+		
 		Border line = BorderFactory.createLineBorder(Color.BLACK,1);
 		name.setBorder(line);
 		nameInput.setBorder(line);
@@ -88,8 +82,6 @@ class Sign extends JFrame{
 	}
 
 	private void event() {
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);//창 종료
-
 		overlap.addActionListener(e->{
 			//중복확인
 			//회원db에 같은 아이디가 등록되어있는지 확인후 메시지 출력

@@ -22,8 +22,8 @@ public class ClientManager2 {
 			this.socket = socket;
 			this.out = new ObjectOutputStream(socket.getOutputStream());
 			this.in = new ObjectInputStream(socket.getInputStream());
-			
 		}
+		
 		public void message() {
 			try {
 				String message = in.readObject().toString();
@@ -31,6 +31,7 @@ public class ClientManager2 {
 				JOptionPane.showMessageDialog(null, message);
 			} catch (Exception e) {} 
 		}
+		
 		private void charge() {
 			try {
 				int time = in.readInt();
@@ -39,6 +40,7 @@ public class ClientManager2 {
 				System.out.println(time);
 			}catch(Exception e) {}
 		}
+		
 		public void run() {
 			try {
 				char header = in.readChar();
@@ -49,23 +51,23 @@ public class ClientManager2 {
 				else if(header==Header.CHARGE) {
 					charge();
 				}
-				System.out.println("aaa");
 				out.close();
 				in.close();			
 				socket.close();
 			}catch(Exception e) {}
 		}
 	}
+	
 	public ClientManager2(){
 		connectWait();
 	}
 	
 	public void connectWait() {
 		try {
-			ServerSocket server = new ServerSocket(30000);
+			ServerSocket server = new ServerSocket(30001);
 			while(true) {
 				Socket socket = server.accept();
-				System.out.println("연결 가능");
+				System.out.println("연결 완료");
 				
 				Client c = new Client(socket);
 				c.setDaemon(true);
@@ -75,7 +77,6 @@ public class ClientManager2 {
 				System.out.println(socket.getPort());
 			}
 		}catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
