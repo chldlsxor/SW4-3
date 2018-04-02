@@ -50,6 +50,7 @@ class Sign extends JFrame{
 		this.setLocation(500, 150);
 		this.setResizable(false);
 		this.setVisible(true);
+		this.setAlwaysOnTop(true);//항상 위에
 	}
 	private void display() {
 		this.setContentPane(mainPanel);

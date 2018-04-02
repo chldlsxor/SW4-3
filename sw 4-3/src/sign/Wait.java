@@ -1,21 +1,26 @@
 package sign;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Panel;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 
 import Client.ClientManager;
@@ -29,18 +34,20 @@ public class Wait extends JFrame{
 	
 	private JLabel id = new JLabel("아이디",JLabel.CENTER);
 	private JLabel pw = new JLabel("비밀번호",JLabel.CENTER);
-	private JLabel card = new JLabel("카드번호",JLabel.CENTER);
 	private JLabel pcNum = new JLabel("자리번호",JLabel.CENTER);
 	private JLabel pcNumInput = new JLabel("",JLabel.CENTER);
 	
 	private JTextArea idInput = new JTextArea();
 	private JTextArea pwInput = new JTextArea();
-	private JTextArea cardInput = new JTextArea();
 	
 	private JButton rogin = new JButton("로그인");
 	private JButton signUp = new JButton("회원가입");
 	private JButton charger = new JButton("충전기");
-
+	private JButton exit = new JButton("프로그램 종료");
+	
+	private JLabel display = new JLabel();
+	private ImageIcon i1 = new ImageIcon("image/1600x900.jpg");
+	
 	ClientManager cmg = new ClientManager();
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -63,32 +70,26 @@ public class Wait extends JFrame{
 	
 	private void display() {
 		this.setContentPane(mainPanel);
-		mainPanel.setLayout(new BorderLayout());
-		mainPanel.add(p, BorderLayout.EAST);
+//		mainPanel.setLayout(new BorderLayout());
+//		mainPanel.add(p, BorderLayout.EAST);
+		mainPanel.setLayout(null);
+		mainPanel.add(p);
+		mainPanel.add(display);
+		display.setIcon(i1);
+		display.setBounds(0, 0, (int)width, (int)height);
+		p.setBounds((int)width*6/10, (int)height*3/10, (int)width*3/10, (int)height*5/10);
 		
-		p.setLayout(new GridLayout(6,2));
+		p.setLayout(new GridLayout(5,2));
 		p.add(pcNum);
 		p.add(pcNumInput);
 		p.add(id);
 		p.add(idInput);
 		p.add(pw);
 		p.add(pwInput);
-		p.add(card);
-		p.add(cardInput);
 		p.add(rogin);
 		p.add(signUp);
 		p.add(charger);
-		
-//		mainPanel.setLayout(new GridLayout(5,2));
-//		mainPanel.add(id);
-//		mainPanel.add(idInput);
-//		mainPanel.add(pw);
-//		mainPanel.add(pwInput);
-//		mainPanel.add(card);
-//		mainPanel.add(cardInput);
-//		mainPanel.add(rogin);
-//		mainPanel.add(signUp);
-//		mainPanel.add(charger);
+		p.add(exit);
 
 		Border line = BorderFactory.createLineBorder(Color.BLACK,1);
 		pcNum.setBorder(line);
@@ -97,12 +98,34 @@ public class Wait extends JFrame{
 		idInput.setBorder(line);
 		pw.setBorder(line);
 		pwInput.setBorder(line);
-		card.setBorder(line);
-		cardInput.setBorder(line);
 	}
 
 	private void event(String num) {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		KeyStroke altF4 = KeyStroke.getKeyStroke(KeyEvent.VK_F4,KeyEvent.ALT_DOWN_MASK);
+		Action altF4Action = new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(mainPanel, "알트f4 누르지마");
+			}
+		};
+		mainPanel.getInputMap().put(altF4, "f4");
+		mainPanel.getActionMap().put("f4", altF4Action);
+		rogin.getInputMap().put(altF4, "f4");
+		rogin.getActionMap().put("f4", altF4Action);
+		signUp.getInputMap().put(altF4, "f4");
+		signUp.getActionMap().put("f4", altF4Action);
+		charger.getInputMap().put(altF4, "f4");
+		charger.getActionMap().put("f4", altF4Action);
+		idInput.getInputMap().put(altF4, "f4");
+		idInput.getActionMap().put("f4", altF4Action);
+		pwInput.getInputMap().put(altF4, "f4");
+		pwInput.getActionMap().put("f4", altF4Action);
+		
+		exit.addActionListener(e->{
+			System.exit(0);
+		});
 		
 		pcNumInput.setText(num);
 		
