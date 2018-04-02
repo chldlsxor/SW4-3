@@ -29,6 +29,7 @@ public class Charger extends JFrame{
 		this.setLocation(0, 0);
 		this.setResizable(false);
 		this.setVisible(true);
+		this.setAlwaysOnTop(true);//항상 위에
 	}
 	
 	private void display() {
