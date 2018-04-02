@@ -11,6 +11,7 @@ import java.util.Map;
 
 import db.Account;
 import db.Member;
+import header.Header;
 
 public class AccountManager {
 	public static Map<Integer, Account> account = new HashMap<>();
@@ -34,25 +35,64 @@ public class AccountManager {
         	account = new HashMap<>();
        }
 	}
+	//해당 제품의 Account가져오기
+	public static Account getAccount(int PID) {
+		return account.get(PID);
+	}
 	
-	//판매량 추가
+	//해당 제품의 판매량 추가
 	public static void addSellNum(int PID, int num) {
 		account.get(PID).setSellNum(account.get(PID).getSellNum()+num);
 	}
 	
-	//판매 금액 계산
-	public static int calcMoney(int PID, int PNum) {
+	//특정 제품 특정 수량 만킄 구매시 금액 계산
+	public static int calcOrderMoney(int PID, int PNum) {
 		return account.get(PID).getPprice()*PNum;
+	}
+	//해당 제품 이름 가져오기
+	public static String getPName(int PID) {
+		return account.get(PID).getPName();
+	}	
+	//해당 제품 가격 가져오기
+	public static int getPPrice(int PID) {
+		return account.get(PID).getPprice();
+	}	
+	
+	//해당 제품 총 판매량 계산
+	public static int getSellNum(int PID) {
+		return account.get(PID).getSellNum();
+	}	
+	
+	//해당 제품 총 판매 금액 계산
+	public static int calcMoney(int PID) {
+		return account.get(PID).getTotalPrice();
+	}
+		
+	//피씨 수익 계산 (PID==0)
+	public static int getTotalPCPrice() {
+		return account.get(Header.PCID).getTotalPrice();
+	}	
+	
+	//피씨 수익 추가 (Header.PCID)
+	public static void addTotalPCPrice(int money) {
+		account.get(Header.PCID).setTotalPrice(money);
+	}
+	
+	//총  판매 수량
+	public static int totalSellNum() {
+		int total=0;
+		for(Integer PID : account.keySet()) {
+			total +=account.get(PID).getSellNum();
+		}
+		return total;
 	}
 	
 	//총판매이익
 	public static int totalPrice() {
 		int total=0;
 		for(Integer PID : account.keySet()) {
-			total +=account.get(PID).getPTotalPrice();
+			total +=account.get(PID).getTotalPrice();
 		}
 		return total;
 	}
-	
-
 }

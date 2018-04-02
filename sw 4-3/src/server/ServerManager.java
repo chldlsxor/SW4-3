@@ -117,6 +117,8 @@ public class ServerManager extends Thread{
 				if(FileManager.IDcheck(id)) {	//아이디가 존재하면					
 					FileManager.chargeUserTime(id, money);	//시간 충전
 					FileManager.plusUserMoney(id, money);	//사용금액 갱신
+					AccountManager.addTotalPCPrice(money);	//회계에 PC 사용금액 추가
+					AccountManager.saveDB(Header.PCID,AccountManager.getAccount(Header.PCID) );
 				}			
 				//만약 회원아이디가 로그인 된 아이디 리스트에 존재한다면 충전한 시간을 해당 PC로 보내줘야되..
 				if(idList.contains(id)) {	
@@ -141,8 +143,9 @@ public class ServerManager extends Thread{
 					System.out.println(PID+"를 "+PNum +"개 주문");
 					AccountManager.addSellNum(PID, PNum);//주문한 제품이랑 수량갱신
 					//해당아이디 가 지금까지 얼마 썻는지 갱신
-					int money = AccountManager.calcMoney(PID, PNum);
+					int money = AccountManager.calcOrderMoney(PID, PNum);
 					FileManager.plusUserMoney(id, money);
+					AccountManager.saveDB(PID, AccountManager.getAccount(PID));
 				}			
 			}catch(Exception e) {}
 		}
@@ -224,6 +227,7 @@ public class ServerManager extends Thread{
 		try {
 			ServerSocket server =new ServerSocket(20000);
 			FileManager.readDB();
+			AccountManager.readDB();
 			Countdown cd = new Countdown();
 			cd.setDaemon(true);
 			cd.start();
