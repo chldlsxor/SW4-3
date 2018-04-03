@@ -1,4 +1,4 @@
-package sign;
+package client;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,7 +23,6 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 
-import Client.ClientManager;
 import header.Header;
 
 public class Wait extends JFrame{

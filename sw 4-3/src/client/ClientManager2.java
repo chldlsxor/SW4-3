@@ -1,4 +1,4 @@
-package Client;
+package client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,7 +9,6 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 import header.Header;
-import sign.Login;
 
 public class ClientManager2 {
 	private static class Client extends Thread{

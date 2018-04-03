@@ -1,4 +1,4 @@
-package sign;
+package client;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
-import Client.ClientManager;
 import db.Member;
 import header.Header;
 
