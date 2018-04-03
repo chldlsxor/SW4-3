@@ -80,13 +80,13 @@ class CounterFrame extends JFrame {
 	private JButton calculate = new JButton("정산");
 	private JButton management = new JButton("상품 관리");
 
-	private JLabel jlbJari = new JLabel();
+	private JLabel jlbJari = new JLabel("자리 정보");
 	private JLabel jlbUserId = new JLabel("아이디 : ");
 	private JLabel jlbUserName = new JLabel("이름 : ");
 
 	private JLabel jlbUserStartT = new JLabel("시작 시간 : ");
 	private JLabel jlbUserUseT = new JLabel("사용 시간 : ");
-	private JLabel jlbUserPrice = new JLabel("정산 요금 : ");
+	private JLabel jlbUserPrice = new JLabel("");
 
 	private Border line = BorderFactory.createLineBorder(Color.BLACK, 3);
 	private Font font = new Font("", Font.BOLD, 30);
@@ -221,6 +221,7 @@ class CounterFrame extends JFrame {
 			for (int i = 0; i < btList.length; i++) {
 				if (btList[i] == e.getSource()) {
 					jlbJari.setText(btlb[i][0].getText()+"번 자리");
+					System.out.println(btlb[i][0].getText());
 					jlbUserId.setText("아이디 : "+uId[i]);
 					jlbUserName.setText(btlb[i][2].getText());
 					jlbUserStartT.setText("시작 시간 : " +btlb[i][5].getText());
