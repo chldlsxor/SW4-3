@@ -31,7 +31,7 @@ public class Login extends JFrame{
 	ClientManager cmg = new ClientManager();
 	
 	Date date = new Date();
-	SimpleDateFormat now = new SimpleDateFormat("h시 mm분");
+	SimpleDateFormat now = new SimpleDateFormat("a h시 mm분");
 	SimpleDateFormat cal = new SimpleDateFormat("HH-mm-ss");
 	
 	String nowTime = cal.format(date);
@@ -79,9 +79,10 @@ public class Login extends JFrame{
 		Thread t = new Thread() { // 시간출력 스레드
 			public void run() {
 				while(timeSet>0){
-					int hour = timeSet/60;
-					int min = timeSet%60;
-					restTimeOut.setText(hour+"시간 "+min+"분");
+					int hour = timeSet/3600;
+					int min = timeSet%3600/60;
+					int sec = timeSet%3600%60;
+					restTimeOut.setText(hour+"시간 "+min+"분 "+sec+"초");
 					timeSet--;
 					if(timeSet==300)
 						System.out.println("선불 이용 시간이 5분 남았습니다.");

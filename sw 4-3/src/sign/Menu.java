@@ -123,8 +123,8 @@ public class Menu extends JFrame {
 			}
 			dispose();
 		});
+		
 		ActionListener btChang = (e) -> {
-			// System.out.println(e.getActionCommand());
 			pageC = e.getActionCommand();
 			pageN = Integer.parseInt(pageC) - 1;
 			this.menuReset();
@@ -207,7 +207,6 @@ public class Menu extends JFrame {
 			jlb[i][1] = new JLabel();
 			jlb[i][2] = new JLabel();
 			jlb[i][3] = new JLabel();
-			
 		}
 	}
 
@@ -220,28 +219,20 @@ public class Menu extends JFrame {
 
 	public void menuSet(int n) {
 		for (int i = (n * 9); i < ((n + 1) * 9); i++) {
-			System.out.println("페이지-1 : " + n);
+//			System.out.println("페이지-1 : " + n);
 			subPanel[1].add(goodsBt[i]);
 			goodsBt[i].setBorder(line);
-			System.out.println("상품번호 : "+i);
+//			System.out.println("상품번호 : "+i);
 
 			try {
-				// if (gm2.account.size() > i) {
 				name = account.get(i + 1).getPName();
-				System.out.println("상품명 : "+ name);
+//				System.out.println("상품명 : "+ name);
 				price = account.get(i + 1).getPprice();
 				gIcon = account.get(i + 1).getPIcon();
 				gName = "상품명 : " + name;
 				gPrice = "가격 : " + price;
 				gNumber = "" + (i + 1);
 
-				// } else {
-				// gIcon = null;
-				// name = "";
-				// price = 0;
-				// gName = "";
-				// gPrice = "";
-				// }
 				jlb[i][0].setIcon(gIcon);
 				jlb[i][0].setBounds(12, 10, 190, 123);
 				goodsBt[i].add(jlb[i][0]);
@@ -296,30 +287,25 @@ public class Menu extends JFrame {
 
 		// 버튼 레이어 초기황
 		this.cBtSet();
+		
 		// subPanel 레이어 초기화
 		for (int i = 0; i < subPanel.length; i++) {
 			subPanel[i] = new JPanel();
 			subPanel[i].setLayout(null);
 		}
+		
 		// 라벨 생성
 		this.setJlb();
-		// subPanel[1] 그리드 레이어 적용 -> 메뉴판
-		// subPanel[1].setLayout(new GridLayout(0, 4, 0, 0));
-
+		
 		// 상품 보기 제목
 		subPanel[0].setBounds(12, 10, 1400, 99);
 		mainPanel.add(subPanel[0]);
 		subPanel[0].setBorder(line);
 		subPanel[0].setLayout(null);
 
-		// 제목 라벨
-		// jlbtitle.setBounds(12, 10, 1400, 79);
-		// jlbtitle.setFont(tFont);
-		// subPanel[0].add(jlbtitle);
 		// 페이지 버튼으로 교체
 		this.jbtSet();
-		// jbt[0].setBounds(10, 20, 150, 60);
-		// subPanel[0].add(jbt[0]);
+
 		for (int i = 0; i < jbt.length; i++) {
 			jbt[i].setBounds(10 + (i * 150), 20, 150, 60);
 			subPanel[0].add(jbt[i]);
@@ -331,14 +317,8 @@ public class Menu extends JFrame {
 		subPanel[1].setBorder(line);
 		subPanel[1].setLayout(new GridLayout(3, 3));
 
-		// 상품 번호 설정
-		// this.gNum();
-
 		// 메뉴 설정
 		this.menuSet(pageN);
-
-		// jsp.setBounds(0, 0, 200,300);
-		// this.add(jsp);
 
 		// 주문창
 		gBasket.setBounds(12, 600, 1200, 200);

@@ -9,7 +9,6 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import db.Account;
 import db.Member;
 import header.Header;
 
@@ -38,7 +37,12 @@ public class FileManager {
             map = new HashMap<>();
        }
 	}
+	//해당 아이디의 멤버 클래스 가져오기
+	public static Member getUserClass(String id) {
+		return map.get(id);
+	}
 	
+	//사용자 이름 가져오기
 	public static String getUserName(String id) {
 		// TODO Auto-generated method stub
 		return map.get(id).getName();
@@ -106,5 +110,14 @@ public class FileManager {
 		map.get(id).setMoney(map.get(id).getMoney()+money);
 	}
 	
+	//회원의 메모 저장
+	public static void setUserMemo(String id, String txt) {
+		map.get(id).setMemo(txt);
+	}
+	
+	//회원의 메모 가져오기
+	public static String getUserMemo(String id) {
+		return map.get(id).getMemo();
+	}
 	
 }
