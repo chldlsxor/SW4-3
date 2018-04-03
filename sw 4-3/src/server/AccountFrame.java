@@ -54,9 +54,15 @@ class AccountFrame extends JFrame{
 		accountData = new String[row+1][4];				//표 내용 데이터
 		for(int i: AccountManager.account.keySet()) {
 			accountData[i][0] = AccountManager.getPName(i);	//제품 이름
-			accountData[i][1] = Integer.toString(AccountManager.getPPrice(i));//제품 금액
-			accountData[i][2] = Integer.toString(AccountManager.getSellNum(i));//제품 판매량
-			accountData[i][3] =Integer.toString(AccountManager.calcMoney(i));//제품  판매 금액
+			if(i==0) {
+				accountData[i][3] =Integer.toString(AccountManager.getTotalPCPrice());//제품  판매 금액
+			}
+			else {				
+				accountData[i][1] = Integer.toString(AccountManager.getPPrice(i));//제품 금액
+				accountData[i][2] = Integer.toString(AccountManager.getSellNum(i));//제품 판매량
+				accountData[i][3] =Integer.toString(AccountManager.calcMoney(i));//제품  판매 금액
+			}
+			
 		}
 		accountData[row][0] = "총합계";
 		accountData[row][2] = Integer.toString(AccountManager.totalSellNum());
