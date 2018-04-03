@@ -12,13 +12,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,10 +31,17 @@ import javax.swing.border.Border;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
 
-import db.Account;
-
 class CounterFrame extends JFrame {
 	public static Boolean[] seatCheck = new Boolean[60];
+	public static Boolean orderCheck = false;
+	public static Boolean[] useCheck = new Boolean[60];
+	public static List<String> orderId = new ArrayList();
+	public static List<Integer> orderInfo = new ArrayList<>();
+
+	public static void time(String id, int time) {
+		btlb[Integer.parseInt(FileManager.getUserPCNum(id)) - 120][3].setText(
+				"시간 : " + FileManager.getUserTime(id) / 3600 + " : " + FileManager.getUserTime(id) % 3600 / 60);
+	}
 
 	private JPanel mainPanel = new JPanel();
 	private JPanel subPanel = new JPanel();
@@ -56,7 +63,7 @@ class CounterFrame extends JFrame {
 
 	// 자리 표시 버튼 / 자리 버튼 내 텍스트
 	private JButton[] btList = new JButton[60];
-	private JLabel[][] btlb = new JLabel[60][6];
+	public static JLabel[][] btlb = new JLabel[60][6];
 
 	// 주문 내역 라벨
 	private JLabel orderLb = new JLabel("주문 내역");
@@ -86,11 +93,14 @@ class CounterFrame extends JFrame {
 	private int myTestCnt = 1;
 
 	private Dimension win = Toolkit.getDefaultToolkit().getScreenSize();
-	
+
 	private Iterator<String> userId;
-	
+
 	private SimpleDateFormat f = new SimpleDateFormat("hh : mm");
 	private String startTime;
+
+	// 회원 아이디 자리마다 저장
+	private String[] uId = new String[60];
 
 	// private ServerManager sm;
 
@@ -117,7 +127,7 @@ class CounterFrame extends JFrame {
 		this.setResizable(true);
 		this.setVisible(true);
 	}
-	
+
 	public void gOpen() {
 		AccountManager.readDB();
 	}
@@ -138,9 +148,9 @@ class CounterFrame extends JFrame {
 			btlb[i][3] = new JLabel("남은 시간 : ");
 			btlb[i][3].setBounds(5, 40, 100, 50);
 			btList[i].add(btlb[i][3]);
-			//회원 아이디 저장
+			// 회원 아이디 저장
 			btlb[i][4] = new JLabel();
-			//시작 시간 저장
+			// 시작 시간 저장
 			btlb[i][5] = new JLabel();
 		}
 
@@ -150,7 +160,6 @@ class CounterFrame extends JFrame {
 		}
 
 	}
-	
 
 	private void menu() {
 		// TODO Auto-generated method stub
@@ -190,12 +199,16 @@ class CounterFrame extends JFrame {
 		bExit.addActionListener(e -> {
 			// seatCheck[(int)(Math.random()*60)] = true;
 
-			 System.exit(0);
+			System.exit(0);
 		});
 
 		msg.addActionListener(e -> {
 			orderList.add((myTestCnt++) + "번 주문");
 			this.orderReset();
+		});
+
+		calculate.addActionListener(e -> {
+			AccountFrame afr = new AccountFrame();
 		});
 
 		// 버튼 누르면 오른쪽에 회원 정보 표시
@@ -218,8 +231,8 @@ class CounterFrame extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getClickCount() > 1) {
-					for(int i = 0 ; i < btList.length ; i++) {
-						if(e.getSource().equals(btList[i])) {
+					for (int i = 0; i < btList.length; i++) {
+						if (e.getSource().equals(btList[i])) {
 							SeatManager smg = new SeatManager(btlb[i][4].getText());
 						}
 					}
@@ -231,7 +244,7 @@ class CounterFrame extends JFrame {
 			i.addActionListener(e -> {
 				if (!e.getActionCommand().equals("")) {
 					int uc = JOptionPane.showConfirmDialog(mainPanel, "주문 내역을 삭제 하시겠습니까?", "주문 내역 삭제",
-							JOptionPane.YES_NO_CANCEL_OPTION);
+							JOptionPane.YES_NO_OPTION);
 					// 선택된 주문 삭제
 					if (uc == 0) {
 						for (int j = 0; j < btGList.length; j++) {
@@ -243,10 +256,7 @@ class CounterFrame extends JFrame {
 								break;
 							}
 						}
-					}else if(uc == 1) {
-						OrderManager omg = new OrderManager(e.getActionCommand());
 					}
-					
 
 				} else {
 					JOptionPane.showMessageDialog(mainPanel, "주문 내역이 없습니다.");
@@ -280,20 +290,38 @@ class CounterFrame extends JFrame {
 					while (true) {
 						userId = ServerManager.idList.iterator();
 						if (userId.hasNext()) {
-							String uId = userId.next();
-//							mainReset();
+							String idU = userId.next();
+							// mainReset();
 							for (int i = 0; i < btList.length; i++) {
-								if (seatCheck[i]) {
+								if (seatCheck[i] && useCheck[i]) {
+									System.out.println("==================여기야여기================"+idU);
+									uId[i] = idU;
 									btlb[i][5].setText(f.format(new Date()));
-									btlb[i][4].setText(uId);
+									btlb[i][4].setText(uId[i]);
 									btlb[i][1].setText("사용중");
-									btlb[i][2].setText("이름 : " + FileManager.getUserName(uId));
-									btlb[i][3].setText("시간 : " + FileManager.getUserTime(uId)/3600+" : "+FileManager.getUserTime(uId)%3600/60);
+									btlb[i][2].setText("이름 : " + FileManager.getUserName(uId[i]));
+									btlb[i][3].setText("시간 : " + FileManager.getUserTime(uId[i]) / 3600 + " : "
+											+ FileManager.getUserTime(uId[i]) % 3600 / 60);
 									btList[i].setBackground(Color.pink);
+									
+									useCheck[i] = false;
+								}
+								if (orderCheck) {
+									System.out.println(orderId.size());
+									for (int k = 0; k < orderId.size(); k++) {
+										orderList.add(FileManager.getUserPCNum(orderId.get(k)) + " 번 "
+												+ AccountManager.getPName(orderInfo.get(k * 2)) + " / "
+												+ orderInfo.get(k * 2 + 1) + " / " + f.format(new Date()));
+										orderCheck = false;
+										orderReset();
+									}
+									orderId.removeAll(orderId);
+									orderInfo.removeAll(orderInfo);
 								}
 							}
-//							subPanel2.repaint();
+							// subPanel2.repaint();
 						}
+
 						mainReset();
 						for (int i = 0; i < btList.length; i++) {
 							if (!seatCheck[i]) {
@@ -303,8 +331,10 @@ class CounterFrame extends JFrame {
 								btlb[i][4].setText("");
 								btlb[i][5].setText("");
 								btList[i].setBackground(Color.WHITE);
+								useCheck[i] = true;
+
 							}
-//							subPanel2.repaint();
+							// subPanel2.repaint();
 						}
 						Thread.sleep(1000);
 					}
@@ -314,6 +344,7 @@ class CounterFrame extends JFrame {
 				}
 			}
 		};
+
 		// 화면 갱신
 		WindowListener wl = new WindowAdapter() {
 
@@ -332,6 +363,7 @@ class CounterFrame extends JFrame {
 	private void booleanSet() {
 		for (int i = 0; i < seatCheck.length; i++) {
 			seatCheck[i] = false;
+			useCheck[i] = true;
 		}
 	}
 

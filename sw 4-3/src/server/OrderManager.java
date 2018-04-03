@@ -19,6 +19,8 @@ class OrderManager extends JFrame{
 
 	private JButton cancel = new JButton("확인");
 	
+	private String order;
+	
 	public OrderManager(String title) {
 		super();
 		this.display();
@@ -64,6 +66,10 @@ class OrderManager extends JFrame{
 		//취소 버튼
 		cancel.setBounds(67, 369, 150, 37);
 		mainPanel.add(cancel);
+		
+		order = "<html>"+ AccountManager.getPName(CounterFrame.orderInfo.get(0))+"<br>"+CounterFrame.orderInfo.get(1)+" </html>";
+		
+		jtf.setText(order);
 	}
 	
 	

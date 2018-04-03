@@ -82,7 +82,8 @@ public class ServerManager extends Thread{
 				String pw= in.readObject().toString();//비번 받아옴
 				System.out.println("비번 : "+pw);
 				//map에 아이디랑 비번 존재하는지 보내기
-				boolean loginCheck =FileManager.loginCheck(id, pw);
+				boolean loginCheck = false;
+				if(FileManager.loginCheck(id, pw) && !idList.contains(id)) loginCheck = true;
 				System.out.println("loginCheck : "+loginCheck);
 				
 				send(loginCheck);
@@ -127,6 +128,7 @@ public class ServerManager extends Thread{
 					System.out.println("보낼 클라이언트의 아이피 : "+FileManager.getUserIP(id));
 					ssm.sendPCTime(FileManager.plusTime(money));		
 //					ssm.disconnect();
+					CounterFrame.time(id, FileManager.getUserTime(id));
 				}	
 			}catch(Exception e) {}
 		}
@@ -146,6 +148,10 @@ public class ServerManager extends Thread{
 					int money = AccountManager.calcOrderMoney(PID, PNum);
 					FileManager.plusUserMoney(id, money);
 					AccountManager.saveDB(PID, AccountManager.getAccount(PID));
+					CounterFrame.orderCheck = true;
+					CounterFrame.orderId.add(id);
+					CounterFrame.orderInfo.add(PID);
+					CounterFrame.orderInfo.add(PNum);
 				}			
 			}catch(Exception e) {}
 		}
@@ -169,7 +175,8 @@ public class ServerManager extends Thread{
 				CounterFrame.seatCheck[Integer.parseInt(FileManager.getUserPCNum(id))-120] = false;
 				FileManager.setUserPCNum(id, null);	// 해당아이디의 Member에 저장된 피씨자리를 Null로
 				idList.remove(id);				// countdown 스레드에 아이디가 빠지면서 시간이 줄지 않고 그대로 저장
-							
+//				CounterFrame.useCheck[Integer.parseInt(FileManager.getUserPCNum(id))-120] = true;
+				
 				for(String i : idList) {
 					System.out.println(i);
 				}	
