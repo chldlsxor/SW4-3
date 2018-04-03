@@ -1,4 +1,4 @@
-package sign;
+package client;
 
 import java.awt.GridLayout;
 
@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import Client.ClientManager;
 import header.Header;
 
 public class Charger extends JFrame{

@@ -1,4 +1,4 @@
-package sign;
+package client;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,7 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-import Client.ClientManager;
 import db.Account;
 import header.Header;
 

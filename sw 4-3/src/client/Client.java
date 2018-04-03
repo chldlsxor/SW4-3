@@ -1,9 +1,7 @@
-package sign;
+package client;
 
 import java.io.IOException;
 import java.net.InetAddress;
-
-import Client.ClientManager2;
 
 public class Client {
 	public static void main(String[] args) throws IOException {
