@@ -50,23 +50,36 @@ class AccountFrame extends JFrame{
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(label_Date,BorderLayout.NORTH);	//날짜 표시
 			
-		int row = AccountManager.account.size();		//데이터 크기
-		accountData = new String[row+1][4];				//표 내용 데이터
+		//int row = AccountManager.account.size();		//데이터 크기
+//		System.out.println("몇개냐구아아아"+row);
+//		for(int i :AccountManager.account.keySet()) {
+//			System.out.println("---->"+i+"번째 "/*+AccountManager.getPName(i)+" "+AccountManager.getSellNum(i)+"  "+AccountManager.calcMoney(i)*/);
+//		}
+		int rowCount=0;
 		for(int i: AccountManager.account.keySet()) {
-			accountData[i][0] = AccountManager.getPName(i);	//제품 이름
-			if(i==0) {
-				accountData[i][3] =Integer.toString(AccountManager.getTotalPCPrice());//제품  판매 금액
-			}
-			else {				
-				accountData[i][1] = Integer.toString(AccountManager.getPPrice(i));//제품 금액
-				accountData[i][2] = Integer.toString(AccountManager.getSellNum(i));//제품 판매량
-				accountData[i][3] =Integer.toString(AccountManager.calcMoney(i));//제품  판매 금액
-			}
-			
+			if(AccountManager.account.get(i)!=null) {
+				rowCount++;
+			}		
 		}
-		accountData[row][0] = "총합계";
-		accountData[row][2] = Integer.toString(AccountManager.totalSellNum());
-		accountData[row][3] = Integer.toString(AccountManager.totalPrice());
+		
+		accountData = new String[rowCount+1][4];				//표 내용 데이터
+		for(int i: AccountManager.account.keySet()) {
+			if(AccountManager.account.get(i)!=null) {
+				System.out.println("---->"+i+"번째 "+AccountManager.getPName(i)+" "+AccountManager.getSellNum(i)+"  "+AccountManager.calcMoney(i));
+				accountData[i][0] = AccountManager.getPName(i);	//제품 이름
+				if(i==0) {
+					accountData[i][3] =Integer.toString(AccountManager.getTotalPCPrice());//제품  판매 금액
+				}
+				else {				
+					accountData[i][1] = Integer.toString(AccountManager.getPPrice(i));//제품 금액
+					accountData[i][2] = Integer.toString(AccountManager.getSellNum(i));//제품 판매량
+					accountData[i][3] =Integer.toString(AccountManager.calcMoney(i));//제품  판매 금액
+				}
+			}		
+		}
+		accountData[rowCount][0] = "총합계";
+		accountData[rowCount][2] = Integer.toString(AccountManager.totalSellNum());
+		accountData[rowCount][3] = Integer.toString(AccountManager.totalPrice());
 		
 		table = new JTable(accountData,title);
 		scroll.setViewportView(table);
