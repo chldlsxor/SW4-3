@@ -17,7 +17,7 @@ import header.Header;
 
 public class ServerManager extends Thread{
 	
-	public static Set<String> idList = new HashSet<>();
+	public static List<String> idList = new ArrayList<>();
 	
 	private static class Client extends Thread{
 		//총괄 기능
@@ -97,6 +97,7 @@ public class ServerManager extends Thread{
 						int availableTime = FileManager.getUserTime(id);	//해당 아이디 가능한 시간 가져옴
 						System.out.println("보낸 시간 : "+ availableTime);
 						CounterFrame.seatCheck[Integer.parseInt(PCNum)-120] = true;
+						CounterFrame.userIdUse[Integer.parseInt(PCNum)-120] = id;
 						out.writeInt(availableTime);						//헤더 없이 시간 보냄
 						out.flush();
 						if(availableTime>60) {							

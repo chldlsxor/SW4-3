@@ -57,7 +57,6 @@ class SeatManager extends JDialog {
 		
 		msgSend.addActionListener(e -> {
 			String uMsg = JOptionPane.showInputDialog("메세지 입력");
-			JOptionPane.showMessageDialog(this, FileManager.getUserIP(id)+"");
 			ServerSendManager ssm = new ServerSendManager(FileManager.getUserIP(id));
 			ssm.sendMessage(uMsg);
 		});
@@ -69,13 +68,14 @@ class SeatManager extends JDialog {
 		save.addActionListener(e -> {
 			FileManager.setUserMemo(id, ta.getText());
 			FileManager.saveDB(id, FileManager.getUserClass(id));
+			dispose();
 		});
 	}
 	
 	public void set(String id) {
 		uName.setText("이         름 : "+FileManager.getUserName(id));
 		uBirth.setText("생년월일 	: "+FileManager.getUserBirth(id));
-		uPay.setText("사용금액 : ");
+		uPay.setText("사용금액 : "+FileManager.getUserMoney(id));
 		ta.setText(FileManager.getUserMemo(id));
 	}
 

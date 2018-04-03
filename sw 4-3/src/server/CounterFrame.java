@@ -37,6 +37,7 @@ class CounterFrame extends JFrame {
 	public static Boolean[] useCheck = new Boolean[60];
 	public static List<String> orderId = new ArrayList();
 	public static List<Integer> orderInfo = new ArrayList<>();
+	public static String[] userIdUse = new String[60];
 
 	public static void time(String id, int time) {
 		btlb[Integer.parseInt(FileManager.getUserPCNum(id)) - 120][3].setText(
@@ -80,12 +81,12 @@ class CounterFrame extends JFrame {
 	private JButton management = new JButton("상품 관리");
 
 	private JLabel jlbJari = new JLabel();
-	private JLabel jlbUserId = new JLabel("아이디 : kim");
-	private JLabel jlbUserName = new JLabel("이름 : min");
+	private JLabel jlbUserId = new JLabel("아이디 : ");
+	private JLabel jlbUserName = new JLabel("이름 : ");
 
-	private JLabel jlbUserStartT = new JLabel("시작 시간 : 13시30분");
-	private JLabel jlbUserUseT = new JLabel("사용 시간 : 00시40분");
-	private JLabel jlbUserPrice = new JLabel("정산 요금 : 1000원");
+	private JLabel jlbUserStartT = new JLabel("시작 시간 : ");
+	private JLabel jlbUserUseT = new JLabel("사용 시간 : ");
+	private JLabel jlbUserPrice = new JLabel("정산 요금 : ");
 
 	private Border line = BorderFactory.createLineBorder(Color.BLACK, 3);
 	private Font font = new Font("", Font.BOLD, 30);
@@ -94,13 +95,16 @@ class CounterFrame extends JFrame {
 
 	private Dimension win = Toolkit.getDefaultToolkit().getScreenSize();
 
-	private Iterator<String> userId;
+	private List<String> userId;
 
 	private SimpleDateFormat f = new SimpleDateFormat("hh : mm");
 	private String startTime;
 
 	// 회원 아이디 자리마다 저장
 	private String[] uId = new String[60];
+
+
+	//
 
 	// private ServerManager sm;
 
@@ -216,11 +220,12 @@ class CounterFrame extends JFrame {
 			System.out.println(e.getSource());
 			for (int i = 0; i < btList.length; i++) {
 				if (btList[i] == e.getSource()) {
-					jlbJari.setText(btlb[i][0].getText() + " 자리");
+					jlbJari.setText(btlb[i][0].getText()+"번 자리");
+					jlbUserId.setText("아이디 : "+uId[i]);
 					jlbUserName.setText(btlb[i][2].getText());
-					jlbUserStartT.setText(btlb[i][5].getText());
+					jlbUserStartT.setText("시작 시간 : " +btlb[i][5].getText());
 					jlbUserUseT.setText(btlb[i][3].getText());
-					jlbUserPrice.setText("");
+					jlbUserPrice.setText("사용 금액 : "+FileManager.getUserMoney(uId[i]));
 					break;
 				}
 			}
@@ -288,39 +293,39 @@ class CounterFrame extends JFrame {
 				super.run();
 				try {
 					while (true) {
-						userId = ServerManager.idList.iterator();
-						if (userId.hasNext()) {
-							String idU = userId.next();
-							// mainReset();
-							for (int i = 0; i < btList.length; i++) {
-								if (seatCheck[i] && useCheck[i]) {
-									System.out.println("==================여기야여기================"+idU);
-									uId[i] = idU;
-									btlb[i][5].setText(f.format(new Date()));
-									btlb[i][4].setText(uId[i]);
-									btlb[i][1].setText("사용중");
-									btlb[i][2].setText("이름 : " + FileManager.getUserName(uId[i]));
-									btlb[i][3].setText("시간 : " + FileManager.getUserTime(uId[i]) / 3600 + " : "
-											+ FileManager.getUserTime(uId[i]) % 3600 / 60);
-									btList[i].setBackground(Color.pink);
-									
-									useCheck[i] = false;
-								}
-								if (orderCheck) {
-									System.out.println(orderId.size());
-									for (int k = 0; k < orderId.size(); k++) {
-										orderList.add(FileManager.getUserPCNum(orderId.get(k)) + " 번 "
-												+ AccountManager.getPName(orderInfo.get(k * 2)) + " / "
-												+ orderInfo.get(k * 2 + 1) + " / " + f.format(new Date()));
-										orderCheck = false;
-										orderReset();
-									}
-									orderId.removeAll(orderId);
-									orderInfo.removeAll(orderInfo);
-								}
+						userId = ServerManager.idList;
+						// String idU = ;
+						// mainReset();
+						for (int i = 0; i < btList.length; i++) {
+							if (seatCheck[i] && useCheck[i]) {
+
+								// 처음 로그인 한 경우에는 유저 자리 배열에 추가
+								uId[i] = userIdUse[i];
+								btlb[i][5].setText(f.format(new Date()));
+								btlb[i][4].setText(uId[i]);
+								btlb[i][1].setText("사용중");
+								btlb[i][2].setText("이름 : " + FileManager.getUserName(uId[i]));
+								btlb[i][3].setText("남은 시간 : " + FileManager.getUserTime(uId[i]) / 3600 + " : "
+										+ FileManager.getUserTime(uId[i]) % 3600 / 60);
+								btList[i].setBackground(Color.pink);
+
+								useCheck[i] = false;
 							}
-							// subPanel2.repaint();
+
+							if (orderCheck) {
+								System.out.println(orderId.size());
+								for (int k = 0; k < orderId.size(); k++) {
+									orderList.add(FileManager.getUserPCNum(orderId.get(k)) + " 번 "
+											+ AccountManager.getPName(orderInfo.get(k * 2)) + " / "
+											+ orderInfo.get(k * 2 + 1) + " / " + f.format(new Date()));
+									orderCheck = false;
+									orderReset();
+								}
+								orderId.removeAll(orderId);
+								orderInfo.removeAll(orderInfo);
+							}
 						}
+						// subPanel2.repaint();
 
 						mainReset();
 						for (int i = 0; i < btList.length; i++) {
@@ -440,28 +445,29 @@ class CounterFrame extends JFrame {
 		subPanel4.add(jlbUserPrice);
 
 		// 정산 버튼 출력
-		calculate.setBounds(12, 450, 160, 60);
+		calculate.setBounds(12, 500, 160, 60);
 		mainPanel.add(calculate);
 
 		// 메세지 보내기 버튼 출력
-		msg.setBounds(12, 550, 160, 60);
-		mainPanel.add(msg);
+//		msg.setBounds(12, 550, 160, 60);
+//		mainPanel.add(msg);
 
 		// 상품 관리 버튼 출력
-		management.setBounds(12, 650, 160, 60);
+		management.setBounds(12, 600, 160, 60);
 		mainPanel.add(management);
 
 		// 종료 버튼 출력
-		bExit.setBounds(12, 750, 160, 60);
+		bExit.setBounds(12, 700, 160, 60);
 		mainPanel.add(bExit);
 
 		// 폰트, 색상 설정
-		jlbJari.setFont(font);
+		jlbJari.setFont(new Font("",Font.BOLD,25));
 		jlbJari.setForeground(Color.BLACK);
 		jlbUserName.setForeground(Color.black);
 		jlbUserId.setForeground(Color.BLACK);
 		jlbUserStartT.setForeground(Color.black);
 		jlbUserUseT.setForeground(Color.black);
+		jlbUserPrice.setForeground(Color.black);
 
 		// 상품 주문상황 판넬 추가
 		goodsView.setLayout(new GridLayout(0, 1, 0, 0));
