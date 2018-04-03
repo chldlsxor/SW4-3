@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import db.Account;
-import db.Member;
 import header.Header;
 
 public class AccountManager {
@@ -34,6 +33,7 @@ public class AccountManager {
         } catch (Exception e) {
         	account = new HashMap<>();
        }
+		account.put(Header.PCID, new Account(null, "PC시간", 0));
 	}
 	//해당 제품의 Account가져오기
 	public static Account getAccount(int PID) {
