@@ -33,7 +33,7 @@ public class AccountManager {
         } catch (Exception e) {
         	account = new HashMap<>();
        }
-		account.put(Header.PCID, new Account(null, "PC시간", 0));
+//		account.put(Header.PCID, new Account(null, "PC시간", 0));
 	}
 	//해당 제품의 Account가져오기
 	public static Account getAccount(int PID) {

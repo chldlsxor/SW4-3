@@ -92,6 +92,10 @@ public class FileManager {
 		return map.get(id).getTime();
 	}
 	
+	public static int getUserMoney(String id) {
+		return map.get(id).getMoney();
+	}
+	
 	//회원의 ip 가져오기
 	public static String getUserIP(String id) {
 		return "192.168.0."+map.get(id).getPcNum();
