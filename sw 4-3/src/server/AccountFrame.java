@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-class Win01 extends JFrame{
+class AccountFrame extends JFrame{
 	private JPanel mainPanel = new JPanel();
 	private JPanel gridPanel = new JPanel();
 	
@@ -24,7 +24,7 @@ class Win01 extends JFrame{
 	private JScrollPane scroll = new JScrollPane(gridPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	
 	//main에 하던 설정들을 생성자에서 진행
-	public Win01() {
+	public AccountFrame() {
 		this.display();//화면 구성 관련 처리
 		this.event();//이벤트 관련 처리
 		this.menu();//메뉴 관련 처리
@@ -79,21 +79,5 @@ class Win01 extends JFrame{
 
 	private void menu() {
 		
-	}
-}
-
-public class AccountFrame {
-	public static void main(String[] args) {
-		//스킨 설치 - ???LookAndFeel클래스를 Swing전체에 설정하도록 코드 구현
-//		try {
-//			UIManager.setLookAndFeel("com.jtattoo.plaf.mcwin.McWinLookAndFeel");	//awt에는 없..Swing에만 있..
-//			
-//			
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		//창을 더이상 직접 만들지 않고 확장시킨 클래스의 인스턴스를 생성
-		Win01 window = new Win01();
 	}
 }
