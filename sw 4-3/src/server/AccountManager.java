@@ -55,6 +55,7 @@ public class AccountManager {
 	}	
 	//해당 제품 가격 가져오기
 	public static int getPPrice(int PID) {
+		account.get(PID).setTotalPrice();
 		return account.get(PID).getPprice();
 	}	
 	
