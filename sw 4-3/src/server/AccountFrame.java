@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 class AccountFrame extends JFrame{
 	private JPanel mainPanel = new JPanel();
@@ -80,8 +81,16 @@ class AccountFrame extends JFrame{
 		accountData[rowCount][0] = "총합계";
 		accountData[rowCount][2] = Integer.toString(AccountManager.totalSellNum());
 		accountData[rowCount][3] = Integer.toString(AccountManager.totalPrice());
+		DefaultTableModel dtm = new DefaultTableModel(accountData, title) {	//데이터 내용 수정 불가
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 		
-		table = new JTable(accountData,title);
+		table = new JTable(dtm);		
+		table.getTableHeader().setReorderingAllowed(false);	//열 이동불가
+		table.getTableHeader().setResizingAllowed(false);	//크기조절 불가..왜쓸까..?
 		scroll.setViewportView(table);
 		mainPanel.add(scroll, BorderLayout.CENTER);
 		
