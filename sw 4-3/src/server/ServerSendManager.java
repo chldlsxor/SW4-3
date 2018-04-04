@@ -74,6 +74,20 @@ public class ServerSendManager{
 		disconnect();
 		
 	}
+	//PC강제 종료 신호 보내기
+	public void sendShutDownPC(String id) {
+		try {
+			out.writeChar(Header.SHUTDOWN);	//피씨 강제 종료 신호
+			out.flush();
+//			FileManager.setUserPCNum(id, null);	// 해당아이디의 Member에 저장된 피씨자리를 Null로
+//			ServerManager.idList.remove(id);	// countdown 스레드에 아이디가 빠지면서 시간이 줄지 않고 그대로 저장
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		disconnect();
+		
+	}
 	public void disconnect() {
 		try {
 			in.close();
