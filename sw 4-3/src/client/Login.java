@@ -103,11 +103,11 @@ public class Login extends JFrame{
 						break;
 					int hour = timeSet/3600;
 					int min = timeSet%3600/60;
-					int sec = timeSet%3600%60;
+//					int sec = timeSet%3600%60;
 					restTimeOut.setText(hour+"시간 "+min+"분 ");
 					timeSet--;
 					if(timeSet==300)
-						System.out.println("선불 이용 시간이 5분 남았습니다.");
+						System.out.println("선불 이용 시간이 5분 남았습니다.");//목소리
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e1) {}
@@ -127,7 +127,7 @@ public class Login extends JFrame{
 			public void run() {
 				while(timer>0) {
 					timer--;
-					System.out.println(timer);
+//					System.out.println(timer);
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e1) {}

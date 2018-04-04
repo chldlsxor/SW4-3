@@ -11,7 +11,7 @@ import java.net.Socket;
 import db.Member;
 
 public class ClientManager {
-	private String ip = "192.168.0.177";
+	private String ip = "192.168.0.130";
 	private int port = 20000;
 	private InetAddress inet;
 	private Socket socket;
@@ -29,10 +29,10 @@ public class ClientManager {
 	public void connect() {
 		try {
 			socket = new Socket(inet, port);
-			System.out.println("socket : "+socket);
+//			System.out.println("socket : "+socket);
 			out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
-			System.out.println("소켓 연결완료");
+//			System.out.println("소켓 연결완료");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -43,7 +43,7 @@ public class ClientManager {
 			out.close();
 			in.close();
 			socket.close();
-			System.out.println("끊고"+socket);
+//			System.out.println("끊고"+socket);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
