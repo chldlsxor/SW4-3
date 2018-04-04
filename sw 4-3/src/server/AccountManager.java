@@ -82,10 +82,8 @@ public class AccountManager {
 	//ÃÑ  ÆÇ¸Å ¼ö·®
 	public static int totalSellNum() {
 		int total=0;
-		for(Integer PID : account.keySet()) {
-			if(AccountManager.account.get(PID)!=null) {
-				total +=account.get(PID).getSellNum();
-			}		
+		for(Integer PID : account.keySet()) {		
+			total +=account.get(PID).getSellNum();
 		}
 		return total;
 	}
@@ -94,9 +92,7 @@ public class AccountManager {
 	public static int totalPrice() {
 		int total=0;
 		for(Integer PID : account.keySet()) {
-			if(AccountManager.account.get(PID)!=null) {
-				total +=account.get(PID).getTotalPrice();
-			}			
+			total +=account.get(PID).getTotalPrice();	
 		}
 		return total;
 	}
