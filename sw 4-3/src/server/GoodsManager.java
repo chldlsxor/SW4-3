@@ -6,6 +6,7 @@ import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -18,6 +19,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
+
+import db.Account;
+import header.Header;
 
 class GoodsManager extends JFrame {
 
@@ -60,6 +64,9 @@ class GoodsManager extends JFrame {
 
 	private int ret = 0;
 
+	private String stringRgx = "^[°¡-ÆR]{1,}$";
+	private String numRgx = "^[0-9]{1,}$";
+
 	// Å¬¶ó °ü¸®¿ë
 	private JButton[] clientBt = new JButton[81];
 
@@ -81,6 +88,7 @@ class GoodsManager extends JFrame {
 	}
 
 	public GoodsManager(int ch) {
+//		System.out.println(AccountManager.account.size());
 		switch (ch) {
 		case 0:
 			this.display(pageN);
@@ -128,7 +136,7 @@ class GoodsManager extends JFrame {
 
 		add.addActionListener(e -> {
 			AddManager amg = new AddManager(this, true);
-
+//			System.out.println(AccountManager.account.size());
 			this.menuReset();
 			this.menuSet(pageN);
 			subPanel[1].repaint();
@@ -139,6 +147,7 @@ class GoodsManager extends JFrame {
 			int choose = JOptionPane.showConfirmDialog(mainPanel, "ÀüÃ¼ »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?", "ÀüÃ¼»èÁ¦", JOptionPane.YES_NO_OPTION);
 			if (choose == 0) {
 				AccountManager.account.clear();
+				AccountManager.account.put(Header.PCID, new Account(null, "PC½Ã°£", 0));
 				this.menuReset();
 				this.menuSet(pageN);
 				subPanel[1].repaint();
@@ -148,26 +157,35 @@ class GoodsManager extends JFrame {
 
 		remove.addActionListener(e -> {
 			String gNum = JOptionPane.showInputDialog("»èÁ¦ÇÒ »óÇ° ¹øÈ£ ÀÔ·Â");
+			if (gNum.equals("0")) {
+				JOptionPane.showMessageDialog(this, "0¹ø »óÇ°Àº »èÁ¦ÇÏ½Ç ¼ö ¾ø½À´Ï´Ù.");
+				return;
+			}
 			try {
-				int size = AccountManager.account.size();
-				AccountManager.account.remove(Integer.parseInt(gNum));
+				if (Pattern.matches(numRgx, gNum)) {
+					int size = AccountManager.account.size();
+					AccountManager.account.remove(Integer.parseInt(gNum));
 
-				int nSize = AccountManager.account.size();
-				// ¸ñ·Ï ¾ÕÀ¸·Î ¶¯±è
-				for (int i = Integer.parseInt(gNum); i < AccountManager.account.size(); i++) {
-					AccountManager.account.put(i, AccountManager.account.get(i + 1));
-				}
+					int nSize = AccountManager.account.size();
+					// ¸ñ·Ï ¾ÕÀ¸·Î ¶¯±è
+					for (int i = Integer.parseInt(gNum); i < AccountManager.account.size(); i++) {
+						AccountManager.account.put(i, AccountManager.account.get(i + 1));
+					}
 
-				// ¸ñ·Ï µŞºÎºĞ »èÁ¦
-				for (int i = size; i > nSize; i--) {
-//					System.out.println("µŞºÎºĞ»èÁ¦");
-					AccountManager.account.remove(i);
+					// ¸ñ·Ï µŞºÎºĞ »èÁ¦
+					for (int i = size; i > nSize; i--) {
+						// System.out.println("µŞºÎºĞ»èÁ¦");
+						AccountManager.account.remove(i);
+					}
+					this.menuReset();
+					this.menuSet(pageN);
+					mainPanel.revalidate();
+					mainPanel.repaint();
+//					System.out.println(AccountManager.account.size());
+					JOptionPane.showMessageDialog(this, "»óÇ°ÀÌ »èÁ¦µÇ¾ú½À´Ï´Ù.");
+				} else {
+					JOptionPane.showMessageDialog(this, "Àß ¸øµÈ »óÇ° ¹øÈ£ÀÔ´Ï´Ù.");
 				}
-				this.menuReset();
-				this.menuSet(pageN);
-				mainPanel.revalidate();
-				mainPanel.repaint();
-				JOptionPane.showMessageDialog(this, "»óÇ°ÀÌ »èÁ¦µÇ¾ú½À´Ï´Ù.");
 			} catch (Exception err) {
 				JOptionPane.showMessageDialog(this, "Àß ¸øµÈ »óÇ° ¹øÈ£ÀÔ´Ï´Ù.");
 			}
@@ -175,11 +193,15 @@ class GoodsManager extends JFrame {
 
 		fix.addActionListener(e -> {
 			String uNum = JOptionPane.showInputDialog("¼öÁ¤ÇÒ »óÇ° ¹øÈ£ ÀÔ·Â");
-			FixManager fmg = new FixManager(Integer.parseInt(uNum), this, true);
-			this.menuReset();
-			this.menuSet(pageN);
-			subPanel[1].revalidate();
-			subPanel[1].repaint();
+			if (Pattern.matches(numRgx, uNum)) {
+				FixManager fmg = new FixManager(Integer.parseInt(uNum), this, true);
+				this.menuReset();
+				this.menuSet(pageN);
+				subPanel[1].revalidate();
+				subPanel[1].repaint();
+			} else {
+				JOptionPane.showMessageDialog(this, "Àß ¸øµÈ »óÇ° ¹øÈ£ÀÔ´Ï´Ù.");
+			}
 		});
 	}
 
@@ -199,19 +221,18 @@ class GoodsManager extends JFrame {
 	}
 
 	public void menuSet(int n) {
-		for (int i = (n * 9); i < ((n + 1) * 9); i++) {
-			System.out.println("n " + n);
+		for (int i = (n * 9)+1; i < ((n + 1) * 9)+1; i++) {
+//			System.out.println("n " + n);
 			subPanel[1].add(subPanel[i + 2]);
 			subPanel[i + 2].setBorder(line);
-			System.out.println(i);
 
 			try {
-				name = AccountManager.account.get(i + 1).getPName();
-				price = AccountManager.account.get(i + 1).getPprice();
-				gIcon = AccountManager.account.get(i + 1).getPIcon();
+				name = AccountManager.account.get(i).getPName();
+				price = AccountManager.account.get(i).getPprice();
+				gIcon = AccountManager.account.get(i).getPIcon();
 				gName = "»óÇ°¸í : " + name;
 				gPrice = "°¡°İ : " + price;
-				gNumber = "" + (i + 1);
+				gNumber = "" + (i);
 
 				jlb[i][0].setIcon(gIcon);
 				jlb[i][0].setBounds(12, 10, 190, 123);
@@ -230,7 +251,7 @@ class GoodsManager extends JFrame {
 				jlb[i][3].setFont(tFont);
 				subPanel[i + 2].add(jlb[i][3]);
 			} catch (Exception err) {
-				System.out.println("i = " + i);
+//				System.out.println("i = " + i);
 				gIcon = null;
 				name = "";
 				price = 0;
