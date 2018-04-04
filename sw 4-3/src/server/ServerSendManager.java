@@ -75,7 +75,7 @@ public class ServerSendManager{
 		
 	}
 	//PC강제 종료 신호 보내기
-	public void sendShutDownPC(String id) {
+	public void sendShutDownPC() {
 		try {
 			out.writeChar(Header.SHUTDOWN);	//피씨 강제 종료 신호
 			out.flush();

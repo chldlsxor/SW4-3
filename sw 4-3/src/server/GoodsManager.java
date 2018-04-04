@@ -82,6 +82,7 @@ class GoodsManager extends JFrame {
 	}
 
 	public GoodsManager(int ch) {
+		System.out.println("==============================>"+AccountManager.account.size());
 		switch (ch) {
 		case 0:
 			this.display(pageN);
@@ -152,8 +153,6 @@ class GoodsManager extends JFrame {
 				AccountManager.account.remove(Integer.parseInt(gNum));
 
 				int nSize = AccountManager.account.size();
-				// System.out.println(AccountManager.account.size());
-				// System.out.println(size);
 				// 목록 앞으로 땡김
 				for (int i = Integer.parseInt(gNum); i < AccountManager.account.size(); i++) {
 					AccountManager.account.put(i, AccountManager.account.get(i + 1));
@@ -207,7 +206,6 @@ class GoodsManager extends JFrame {
 			System.out.println(i);
 
 			try {
-				// if (AccountManager.account.size() > i) {
 				name = AccountManager.account.get(i + 1).getPName();
 				price = AccountManager.account.get(i + 1).getPprice();
 				gIcon = AccountManager.account.get(i + 1).getPIcon();
@@ -215,13 +213,7 @@ class GoodsManager extends JFrame {
 				gPrice = "가격 : " + price;
 				gNumber = "" + (i + 1);
 
-				// } else {
-				// gIcon = null;
-				// name = "";
-				// price = 0;
-				// gName = "";
-				// gPrice = "";
-				// }
+
 				jlb[i][0].setIcon(gIcon);
 				jlb[i][0].setBounds(12, 10, 190, 123);
 				subPanel[i + 2].add(jlb[i][0]);
@@ -281,8 +273,7 @@ class GoodsManager extends JFrame {
 		}
 		// 라벨 생성
 		this.setJlb();
-		// subPanel[1] 그리드 레이어 적용 -> 메뉴판
-		// subPanel[1].setLayout(new GridLayout(0, 4, 0, 0));
+
 
 		// 상품 보기 제목
 		subPanel[0].setBounds(12, 10, 1400, 99);
@@ -290,14 +281,9 @@ class GoodsManager extends JFrame {
 		subPanel[0].setBorder(line);
 		subPanel[0].setLayout(null);
 
-		// 제목 라벨
-		// jlbtitle.setBounds(12, 10, 1400, 79);
-		// jlbtitle.setFont(tFont);
-		// subPanel[0].add(jlbtitle);
-		// 페이지 버튼으로 교체
+
 		this.jbtSet();
-		// jbt[0].setBounds(10, 20, 150, 60);
-		// subPanel[0].add(jbt[0]);
+
 		for (int i = 0; i < jbt.length; i++) {
 			jbt[i].setBounds(10 + (i * 150), 20, 150, 60);
 			subPanel[0].add(jbt[i]);
@@ -315,8 +301,7 @@ class GoodsManager extends JFrame {
 		// 메뉴 설정
 		this.menuSet(pageN);
 
-		// jsp.setBounds(0, 0, 200,300);
-		// this.add(jsp);
+
 
 	}
 
@@ -335,8 +320,7 @@ class GoodsManager extends JFrame {
 			}
 			// 라벨 생성
 			this.setJlb();
-			// subPanel[1] 그리드 레이어 적용 -> 메뉴판
-			// subPanel[1].setLayout(new GridLayout(0, 4, 0, 0));
+
 
 			// 상품 보기 제목
 			subPanel[0].setBounds(12, 10, 1400, 99);
@@ -344,14 +328,10 @@ class GoodsManager extends JFrame {
 			subPanel[0].setBorder(line);
 			subPanel[0].setLayout(null);
 
-			// 제목 라벨
-			// jlbtitle.setBounds(12, 10, 1400, 79);
-			// jlbtitle.setFont(tFont);
-			// subPanel[0].add(jlbtitle);
+
 			// 페이지 버튼으로 교체
 			this.jbtSet();
-			// jbt[0].setBounds(10, 20, 150, 60);
-			// subPanel[0].add(jbt[0]);
+
 			for (int i = 0; i < jbt.length; i++) {
 				jbt[i].setBounds(10 + (i * 150), 20, 150, 60);
 				subPanel[0].add(jbt[i]);
@@ -364,12 +344,11 @@ class GoodsManager extends JFrame {
 			subPanel[1].setLayout(new GridLayout(3, 3));
 
 			// 상품 번호 설정
-			// this.gNum();
+
 
 			// 메뉴 설정
 			this.menuSet(pageN);
 
-			// jsp.setBounds(0, 0, 200,300);
-			// this.add(jsp);
+
 	}
 }

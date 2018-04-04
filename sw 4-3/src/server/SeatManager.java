@@ -21,10 +21,11 @@ class SeatManager extends JDialog {
 	
 	private JTextArea ta = new JTextArea();
 	
-	private JButton msgSend = new JButton("메세지 보내기");
+	private JButton msgSend = new JButton("메세지");
 	private JButton save = new JButton("저장");
 	private JButton cancel = new JButton("취소");
 	
+	private JButton clientExit = new JButton("사용 종료");
 
 	public SeatManager(String id) {
 		this.set(id);
@@ -70,6 +71,15 @@ class SeatManager extends JDialog {
 			FileManager.saveDB(id, FileManager.getUserClass(id));
 			dispose();
 		});
+		
+		clientExit.addActionListener(e -> {
+			int choose = JOptionPane.showConfirmDialog(mainPanel, "사용 종료 시키겠습니까?","사용 종료",JOptionPane.YES_NO_OPTION);
+			if(choose == 0 ) {
+				ServerSendManager ssm = new ServerSendManager(FileManager.getUserIP(id));
+				ssm.sendShutDownPC();
+				dispose();
+			}
+		});
 	}
 	
 	public void set(String id) {
@@ -108,8 +118,12 @@ class SeatManager extends JDialog {
 		mainPanel.add(ta);
 		
 		//메세지 보내기 버튼 추가
-		msgSend.setBounds(41, 315, 204, 44);
+		msgSend.setBounds(41, 315, 97, 37);
 		mainPanel.add(msgSend);
+		
+		//사용 종료 버튼 추가
+		clientExit.setBounds(148, 315, 97, 37);
+		mainPanel.add(clientExit);
 		
 		//저장 버튼 추가
 		save.setBounds(41, 369, 97, 37);
