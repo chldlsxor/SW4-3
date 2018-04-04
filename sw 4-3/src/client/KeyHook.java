@@ -11,7 +11,7 @@ import com.sun.jna.platform.win32.WinUser.LowLevelKeyboardProc;
 import com.sun.jna.platform.win32.WinUser.MSG;
 
 
-public class KeyHook {
+public class KeyHook {	//윈도우 키 막기위한 클래스
     private static HHOOK hhk;
     private static LowLevelKeyboardProc keyboardHook;
     private static User32 lib;
