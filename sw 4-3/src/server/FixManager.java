@@ -1,6 +1,7 @@
 package server;
 
 import java.awt.FileDialog;
+import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,47 +30,50 @@ class FixManager extends JDialog {
 	private String addPrice;
 
 	private FileDialog open = new FileDialog(this, "»çÁø ¼±ÅÃ", FileDialog.LOAD);
-	
+
 	private int num;
-	
+
 	private Boolean picFlag = true;
 	private Boolean nameFlag = true;
 	private Boolean priceFlag = true;
 	private Boolean retFlag = true;
-	
+
+	private String stringRgx = "^[°¡-ÆR]{1,}$";
+	private String numRgx = "^[0-9]{1,}$";
+
 	public ImageIcon getAddPic() {
 		return addPic;
 	}
-	
+
 	public void setAddPic(ImageIcon addPic) {
 		this.addPic = addPic;
 	}
-	
+
 	public String getAddName() {
 		return addName;
 	}
-	
+
 	public void setAddName(String addName) {
 		this.addName = addName;
 	}
-	
+
 	public String getAddPrice() {
 		return addPrice;
 	}
-	
+
 	public void setAddPrice(String addPrice) {
 		this.addPrice = addPrice;
 	}
-	
+
 	public Boolean getRetFlag() {
 		return retFlag;
 	}
 
-	public FixManager(int num,JFrame jf ,Boolean b) {
-		super(jf,b);
+	public FixManager(int num, JFrame jf, Boolean b) {
+		super(jf, b);
 		this.num = num;
 		this.setting();
-		
+
 		this.display();
 		this.event();
 		this.menu();
@@ -85,17 +89,16 @@ class FixManager extends JDialog {
 		this.setVisible(true);
 	}
 
-	
 	private void setting() {
 		pic.setIcon(AccountManager.account.get(num).getPIcon());
-		name.setText("»óÇ°¸í : "+AccountManager.account.get(num).getPName());
-		price.setText("°¡°Ý : "+AccountManager.account.get(num).getPprice());
-		
+		name.setText("»óÇ°¸í : " + AccountManager.account.get(num).getPName());
+		price.setText("°¡°Ý : " + AccountManager.account.get(num).getPprice());
+
 		addPic = AccountManager.account.get(num).getPIcon();
 		addName = AccountManager.account.get(num).getPName();
-		addPrice = ""+AccountManager.account.get(num).getPprice();
+		addPrice = "" + AccountManager.account.get(num).getPprice();
 	}
-	
+
 	private void menu() {
 		// TODO Auto-generated method stub
 
@@ -123,40 +126,44 @@ class FixManager extends JDialog {
 			if (addName == null || addName.equals("")) {
 				name.setText("»óÇ° ÀÌ¸§À» Ãß°¡ÇØ ÁÖ¼¼¿ä");
 				nameFlag = false;
-			}else {
-				name.setText("»óÇ°¸í : "+addName);
+			} else {
+				name.setText("»óÇ°¸í : " + addName);
 				nameFlag = true;
 			}
 		});
-		
-		price.addActionListener(e ->{
+
+		price.addActionListener(e -> {
 			addPrice = JOptionPane.showInputDialog("»óÇ° °¡°Ý ÀÔ·Â");
-			if (addPrice == null || addPrice.equals("")) {
-				price.setText("»óÇ° °¡°ÝÀ» Ãß°¡ÇØ ÁÖ¼¼¿ä");
-				priceFlag = false;
-			}else {
-				price.setText("°¡°Ý : "+addPrice);
-				priceFlag = true;
+			if (Pattern.matches(numRgx, addPrice)) {
+				if (addPrice == null || addPrice.equals("")) {
+					price.setText("»óÇ° °¡°ÝÀ» Ãß°¡ÇØ ÁÖ¼¼¿ä");
+					priceFlag = false;
+				} else {
+					price.setText("°¡°Ý : " + addPrice);
+					priceFlag = true;
+				}
+			} else {
+				JOptionPane.showMessageDialog(mainPanel, "¼ýÀÚ¸¸ ÀÔ·Â °¡´ÉÇÕ´Ï´Ù.");
 			}
 		});
 
-		add.addActionListener(e ->{
-			if(picFlag && nameFlag && priceFlag) {
+		add.addActionListener(e -> {
+			if (picFlag && nameFlag && priceFlag) {
 				retFlag = true;
 				System.out.println("in");
 				System.out.println(addName);
-				AccountManager.account.put(num, new Account(addPic,addName,Integer.parseInt(addPrice)));
+				AccountManager.account.put(num, new Account(addPic, addName, Integer.parseInt(addPrice)));
 				JOptionPane.showMessageDialog(mainPanel, "»óÇ° ¼öÁ¤ ¿Ï·á");
 				dispose();
-			}else {
+			} else {
 				JOptionPane.showMessageDialog(mainPanel, "»óÇ°ÀÇ »çÁø,ÀÌ¸§,°¡°ÝÀ» ¸ðµÎ ÀÔ·ÂÇØ¾ß ÇÕ´Ï´Ù.");
 			}
 		});
-		
+
 		cancel.addActionListener(e -> {
 			dispose();
 		});
-		
+
 	}
 
 	private void display() {
