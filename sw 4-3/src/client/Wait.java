@@ -8,6 +8,9 @@ import java.awt.Panel;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -50,6 +53,7 @@ public class Wait extends JFrame{
 	private ImageIcon i1 = new ImageIcon("image/1600x900.jpg");
 	
 	ClientManager cmg = new ClientManager();
+	private KeyHook kh = new KeyHook();
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	double width = screenSize.getWidth();
@@ -119,6 +123,19 @@ public class Wait extends JFrame{
 
 	private void event(String num) {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		WindowAdapter window = new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				kh.unblockWindowsKey();				//창 닫히면 윈도우키 사용가능
+			}
+
+			@Override
+			public void windowOpened(WindowEvent e) {
+				kh.blockWindowsKey();				//창 열리면 윈도우키 사용불가
+			}		
+		};
+		this.addWindowListener(window);
 		
 		KeyStroke altF4 = KeyStroke.getKeyStroke(KeyEvent.VK_F4,KeyEvent.ALT_DOWN_MASK);
 		Action altF4Action = new AbstractAction() {
