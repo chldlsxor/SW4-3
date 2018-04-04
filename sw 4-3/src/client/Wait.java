@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -75,8 +74,6 @@ public class Wait extends JFrame{
 	
 	private void display() {
 		this.setContentPane(mainPanel);
-//		mainPanel.setLayout(new BorderLayout());
-//		mainPanel.add(p, BorderLayout.EAST);
 		mainPanel.setLayout(null);
 		mainPanel.add(p);
 		mainPanel.add(display);
@@ -84,17 +81,6 @@ public class Wait extends JFrame{
 		display.setBounds(0, 0, (int)width, (int)height);
 		p.setBounds((int)width*6/10, (int)height*5/20, (int)width*5/20, (int)height*5/10+50);
 		
-//		p.setLayout(new GridLayout(5,2));
-//		p.add(pcNum);
-//		p.add(pcNumInput);
-//		p.add(id);
-//		p.add(idInput);
-//		p.add(pw);
-//		p.add(pwInput);
-//		p.add(rogin);
-//		p.add(signUp);
-//		p.add(charger);
-//		p.add(exit);
 		p.setLayout(new BorderLayout());
 		p.add(bar,BorderLayout.NORTH);
 		p.add(p2, BorderLayout.CENTER);
@@ -141,7 +127,7 @@ public class Wait extends JFrame{
 		Action altF4Action = new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(mainPanel, "알트f4 누르지마");
+//				JOptionPane.showMessageDialog(mainPanel, "알트f4 누르지마");
 			}
 		};
 		mainPanel.getInputMap().put(altF4, "f4");

@@ -2,6 +2,7 @@ package client;
 
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,7 +30,7 @@ public class Charger extends JFrame{
 		this.setLocation(0, 0);
 		this.setResizable(false);
 		this.setVisible(true);
-		this.setAlwaysOnTop(true);//항상 위에
+//		this.setAlwaysOnTop(true);//항상 위에
 	}
 	
 	private void display() {
@@ -73,4 +74,7 @@ public class Charger extends JFrame{
 			JOptionPane.showMessageDialog(mainPanel, "존재하지 않는 아이디입니다.");
 	}
 
+	public static void main(String[] args) throws IOException {
+		Charger charger = new Charger();
+	}
 }

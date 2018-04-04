@@ -115,7 +115,7 @@ public class Menu extends JFrame {
 			cmg.headerSend(Header.ORDER);
 			cmg.send(id);
 			cmg.intSend(cnt);
-			System.out.println(cnt);
+//			System.out.println(cnt);
 			for(int i=0;i<cnt;i++) {
 				cmg.intSend(Integer.parseInt(gJlb[i][3].getText()));//ÆÄ½ºÀÎÆ®
 				cmg.intSend(Integer.parseInt(gJlb[i][1].getText().substring(5)));//:±âÁØÀ¸·Î Â©¶ó¼­ µÚ¿¡²¨
@@ -158,11 +158,11 @@ public class Menu extends JFrame {
 						String sPrice = jlb[k][2].getText().substring(5);
 						gJlb[j][2].setText(sPrice);
 						int b = Integer.parseInt(sPrice);
-						System.out.println("a"+a+" b "+b);
+//						System.out.println("a"+a+" b "+b);
 						ret = ret + (a*b);
 						gRetLb.setText("ÃÑ ¿ä±Ý : "+(ret)+"¿ø");
 						gJlb[j][3].setText(jlb[k][3].getText());
-						System.out.println(gJlb[j][3].getText());
+//						System.out.println(gJlb[j][3].getText());
 						cnt++;
 						break;
 					}
@@ -178,14 +178,14 @@ public class Menu extends JFrame {
 				case 0 :
 					int a = Integer.parseInt(gJlb[j][1].getText().substring(5));
 					int b = Integer.parseInt(gJlb[j][2].getText());
-					System.out.println("µÊµµ¹ÌÀÌ? : "+a);
+//					System.out.println("µÊ? : "+a);
 					gJlb[j][0].setText("");
 					gJlb[j][1].setText("");
-					System.out.println(ret);
-					System.out.println("a = "+a);
-					System.out.println("b = "+b);
+//					System.out.println(ret);
+//					System.out.println("a = "+a);
+//					System.out.println("b = "+b);
 					ret = ret - (a*b);
-					System.out.println(ret);
+//					System.out.println(ret);
 					gRetLb.setText("ÃÑ ¿ä±Ý : "+(ret)+"¿ø");
 					gJlb[j][3].setText("");
 					cnt--;
@@ -249,7 +249,7 @@ public class Menu extends JFrame {
 				jlb[i][3].setFont(tFont);
 				goodsBt[i].add(jlb[i][3]);
 			} catch (Exception err) {
-				System.out.println("i = " + i);
+//				System.out.println("i = " + i);
 				gIcon = null;
 				name = "";
 				price = 0;

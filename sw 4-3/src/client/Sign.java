@@ -39,7 +39,7 @@ public class Sign extends JFrame{
 	boolean overlapCheck = false;
 	
 	//Á¤±ÔÇ¥Çö½Ä
-	private String idRgx = "^[a-z][0-9a-zA-Z]{2,13}$$";
+	private String idRgx = "^[0-9a-zA-Z]{3,14}$$";
 	private String pwRgx = "^[0-9a-zA-z]{6,20}$";
 	private String birthRgx = "^[0-9]{8}$";
 	private String nameRgx = "^[°¡-ÆR]{2,15}$";

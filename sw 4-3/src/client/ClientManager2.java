@@ -26,7 +26,7 @@ public class ClientManager2 {
 		public void message() {
 			try {
 				String message = in.readObject().toString();
-				System.out.println("내용 : " + message);		
+//				System.out.println("내용 : " + message);		
 				JOptionPane.showMessageDialog(null, message);
 			} catch (Exception e) {} 
 		}
@@ -34,16 +34,16 @@ public class ClientManager2 {
 		private void charge() {
 			try {
 				int time = in.readInt();
-				JOptionPane.showMessageDialog(null, time);
+//				JOptionPane.showMessageDialog(null, time);
 				Login.plus(time);
-				System.out.println(time);
+//				System.out.println(time);
 			}catch(Exception e) {}
 		}
 		
 		public void run() {
 			try {
 				char header = in.readChar();
-				System.out.println("헤더 : "+header);
+//				System.out.println("헤더 : "+header);
 				if(header==Header.MESSAGE) {
 					message();
 				}
@@ -69,14 +69,14 @@ public class ClientManager2 {
 			ServerSocket server = new ServerSocket(30001);
 			while(true) {
 				Socket socket = server.accept();
-				System.out.println("연결 완료");
+//				System.out.println("연결 완료");
 				
 				Client c = new Client(socket);
 				c.setDaemon(true);
 				c.start();
 				
-				System.out.println(socket.getInetAddress());
-				System.out.println(socket.getPort());
+//				System.out.println(socket.getInetAddress());
+//				System.out.println(socket.getPort());
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
