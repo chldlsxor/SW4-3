@@ -34,11 +34,7 @@ class AccountFrame extends JFrame{
 		
 		this.setTitle("회계");
 		this.setSize(500, 400);
-//		this.setLocation(100, 100);
-		//위치를 운영체제가 결정하도록 하자
 		this.setLocationByPlatform(true);
-		//상단부분이 나오지 않도록 설정
-		//this.setUndecorated(true);
 		this.setResizable(false);
 		this.setVisible(true);
 		
@@ -48,8 +44,7 @@ class AccountFrame extends JFrame{
 		//mainPanel을 기본 패널로 설정
 		this.setContentPane(mainPanel);
 		
-		//모든 컴포넌트의 추가는 mainPanel에서 진행
-		
+		//모든 컴포넌트의 추가는 mainPanel에서 진행	
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(label_Date,BorderLayout.NORTH);	//날짜 표시
 			
@@ -81,19 +76,14 @@ class AccountFrame extends JFrame{
 		
 		table = new JTable(dtm);		
 		table.getTableHeader().setReorderingAllowed(false);	//열 이동불가
-		table.getTableHeader().setResizingAllowed(false);	//크기조절 불가..왜쓸까..?
+		table.getTableHeader().setResizingAllowed(false);	//크기조절 불가
 		scroll.setViewportView(table);
 		mainPanel.add(scroll, BorderLayout.CENTER);
 		
 	}
 
 	private void event() {
-//		this.setDefaultCloseOperation(EXIT_ON_CLOSE);	// 프로그램 종료
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
-//		this.setDefaultCloseOperation(HIDE_ON_CLOSE); 	//창 숨김
-		
-		//위의 것들이 다 싫을 경우 커스텀 이벤트 설정
-//		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	}
 
 	private void menu() {

@@ -6,9 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -22,8 +20,7 @@ public class ServerManager extends Thread{
 	private static class Client extends Thread{
 		//총괄 기능
 		private static List<Client> list = new ArrayList<>();
-		
-		
+			
 		public static void add(Client c) {
 			list.add(c);
 		}
@@ -49,10 +46,7 @@ public class ServerManager extends Thread{
 			try {
 				out.writeBoolean(text);
 				out.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (IOException e) {}
 		}
 		
 		//회원가입
@@ -88,21 +82,21 @@ public class ServerManager extends Thread{
 				
 				send(loginCheck);
 				
-				if(loginCheck) {
-					out.writeObject(FileManager.getUserBirth(id));//생년월일 보냄		//★★★★★미성년자면 클라이언트는 피씨번호 안보내는데 그럼 어케 되..?
+				if (loginCheck) {
+					out.writeObject(FileManager.getUserBirth(id));//생년월일 보냄
 					String PCNum = in.readObject().toString();	//피씨 번호 받음	//미성년자면 0보낼꺼
 					System.out.println("PCNum : "+PCNum);
 					if(!PCNum.equals("-1")) {					//미성년자가 아니면
 						
 						int availableTime = FileManager.getUserTime(id);	//해당 아이디 가능한 시간 가져옴
 						System.out.println("보낸 시간 : "+ availableTime);
-						CounterFrame.seatCheck[Integer.parseInt(PCNum)-120] = true;
-						CounterFrame.userIdUse[Integer.parseInt(PCNum)-120] = id;
 						out.writeInt(availableTime);						//헤더 없이 시간 보냄
 						out.flush();
 						if(availableTime>60) {							
 							idList.add(id);								//로그인한 회원리스트에 추가하고 카운트 다운 시작	
 							FileManager.setUserPCNum(id, PCNum);			//해당 아이디 멤버에 피씨번호 저장
+							CounterFrame.seatCheck[Integer.parseInt(PCNum)-120] = true;
+							CounterFrame.userIdUse[Integer.parseInt(PCNum)-120] = id;
 						}
 					}				
 				}
@@ -124,11 +118,9 @@ public class ServerManager extends Thread{
 				}			
 				//만약 회원아이디가 로그인 된 아이디 리스트에 존재한다면 충전한 시간을 해당 PC로 보내줘야되..
 				if(idList.contains(id)) {	
-					//sendTime(3600);
 					ServerSendManager ssm = new ServerSendManager(FileManager.getUserIP(id));
 					System.out.println("보낼 클라이언트의 아이피 : "+FileManager.getUserIP(id));
 					ssm.sendPCTime(FileManager.plusTime(money));		
-//					ssm.disconnect();
 					CounterFrame.time(id, FileManager.getUserTime(id));
 				}	
 			}catch(Exception e) {}
@@ -137,7 +129,7 @@ public class ServerManager extends Thread{
 		//주문받기
 		private void order() {
 			try {
-				String id= in.readObject().toString();//주문자의 아이디 받아옴->피씨 번호 알아올 수 있당..
+				String id= in.readObject().toString();//주문자의 아이디 받아옴-> 피씨 번호 알아올 수 있당..
 				System.out.println(FileManager.getUserPCNum(id));	//피씨 번호 표시
 				int Menunum = in.readInt();//메뉴 종류 개수 받아오기
 				for(int i=0;i<Menunum;i++) {
@@ -156,8 +148,7 @@ public class ServerManager extends Thread{
 				}			
 			}catch(Exception e) {}
 		}
-		
-		
+				
 		//메세지 받기
 		public void message() {
 			try {
@@ -176,17 +167,9 @@ public class ServerManager extends Thread{
 				CounterFrame.seatCheck[Integer.parseInt(FileManager.getUserPCNum(id))-120] = false;
 				FileManager.setUserPCNum(id, null);	// 해당아이디의 Member에 저장된 피씨자리를 Null로
 				idList.remove(id);				// countdown 스레드에 아이디가 빠지면서 시간이 줄지 않고 그대로 저장
-//				CounterFrame.useCheck[Integer.parseInt(FileManager.getUserPCNum(id))-120] = true;
-				
-				for(String i : idList) {
-					System.out.println(i);
-				}	
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
+			} catch (Exception e) {} 
 		}
-		
-		
+			
 		//메소드 - run()
 		@Override
 		public void run() {			
@@ -204,32 +187,13 @@ public class ServerManager extends Thread{
 				in.close();			
 				socket.close();
 				
-				System.out.print("지금까지 로그인 한 아이디 :  ");
-				for(String id : ServerManager.idList) {
-					System.out.print(id+" ");
-				}
-				
-				System.out.println("--------------");
 			}catch(Exception e) {}
 			Client.remove(this);
-			System.out.println("나가리");
 		}
 	}
 	private Socket socket ;
 	
-	ServerManager(){
-//		스레드 개수를 확인하는 테스트용 스레드
-//		Thread th = new Thread(()->{
-//			while(true) {
-//				System.out.println("스레드 개수 : "+Thread.activeCount());
-//				try {Thread.sleep(100);}catch(Exception e) {}
-//			}
-//		});
-//		th.setDaemon(true);
-//		th.start();
-		
-//		connect();
-	}
+	ServerManager(){}
 	
 	public void run() {	
 		try {
@@ -241,14 +205,14 @@ public class ServerManager extends Thread{
 			cd.start();
 			while(true) {
 				socket = server.accept();
-				System.out.println("연결 가능");
+//				System.out.println("연결 가능");
 				
 				Client c = new Client(socket);
 				c.setDaemon(true);
 				c.start();
 				
-				System.out.println("Server에게 신호 보낸 client의 ip : "+socket.getInetAddress());
-				System.out.println("Server에게 신호 보낸 client의 port : "+socket.getPort());
+//				System.out.println("Server에게 신호 보낸 client의 ip : "+socket.getInetAddress());
+//				System.out.println("Server에게 신호 보낸 client의 port : "+socket.getPort());
 			}
 			
 		} catch (IOException e) {}		

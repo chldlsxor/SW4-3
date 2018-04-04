@@ -296,6 +296,12 @@ class CounterFrame extends JFrame {
 
 								useCheck[i] = false;
 							}
+							
+							if(!useCheck[i]) {
+								btlb[i][3].setText("남은 시간 : " + FileManager.getUserTime(userIdUse[i]) / 3600 + " : "
+										+ FileManager.getUserTime(userIdUse[i]) % 3600 / 60);
+							}
+
 
 							if (orderCheck) {
 								System.out.println(orderId.size());

@@ -22,9 +22,7 @@ public class FileManager {
 		try (ObjectOutputStream fout = new ObjectOutputStream(new FileOutputStream(new File("DBFile", "Member.txt")))){
 			fout.writeObject(map);
 	        fout.flush();
-		} catch (Exception e) {
-			System.out.println("실패...");
-		}
+		} catch (Exception e) {}
 	}
     
     //회원디비 가져오기
@@ -37,6 +35,7 @@ public class FileManager {
             map = new HashMap<>();
        }
 	}
+	
 	//해당 아이디의 멤버 클래스 가져오기
 	public static Member getUserClass(String id) {
 		return map.get(id);
@@ -44,7 +43,6 @@ public class FileManager {
 	
 	//사용자 이름 가져오기
 	public static String getUserName(String id) {
-		// TODO Auto-generated method stub
 		return map.get(id).getName();
 	}
 	
@@ -77,6 +75,7 @@ public class FileManager {
 		}
 		return time;
 	}
+	
 	//회원의 좌석 번호 가져오기
 	public static String getUserPCNum(String id) {
 		return map.get(id).getPcNum();
