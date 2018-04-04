@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
@@ -12,10 +13,10 @@ import header.Header;
 public class Charger extends JFrame{
 	private JPanel mainPanel = new JPanel();
 	
-	private JButton order1000 = new JButton("1시간 추가");
-	private JButton order2500 = new JButton("3시간 추가");
-	private JButton order4000 = new JButton("5시간 추가");
-	private JButton order7000 = new JButton("10시간 추가");
+	private JButton order1000 = new JButton("<html>1 시간<br><br>1,000 원</html>");
+	private JButton order2500 = new JButton("<html>3 시간<br><br>2,500 원</html>");
+	private JButton order4000 = new JButton("<html>5 시간<br><br>4,000 원</html>");
+	private JButton order7000 = new JButton("<html>10 시간<br><br>7,000 원</html>");
 
 	ClientManager cmg = new ClientManager();
 
@@ -38,6 +39,10 @@ public class Charger extends JFrame{
 		mainPanel.add(order2500);
 		mainPanel.add(order4000);
 		mainPanel.add(order7000);
+		order1000.setFont(new Font("",Font.BOLD,20));
+		order2500.setFont(new Font("",Font.BOLD,20));
+		order4000.setFont(new Font("",Font.BOLD,20));
+		order7000.setFont(new Font("",Font.BOLD,20));
 	}
 
 	private void event() {
