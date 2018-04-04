@@ -15,10 +15,10 @@ import db.Account;
 
 class AddManager extends JDialog {
 
-	// ±âÁ¸¿¡´Â Component¸¦ Frame¿¡ Á÷Á¢ ¹èÄ¡Çß¾ú´Âµ¥ ÀÌ·¯¸é °ü¸®È¿À²ÀÌ ¶³¾îÁø´Ù.
-	// PanelÀ» ¸¸µé¾î¼­ Component¸¦ ¹èÄ¡ÇÒ ¼ö ÀÖµµ·Ï ¼³Á¤ÇÒ ¼ö ÀÖ´Ù(ContentPane)
+	//¸ÅÀÎ ÆÐ³Î
 	private JPanel mainPanel = new JPanel();
 
+	//¹öÆ°
 	private JButton pic = new JButton("»çÁøÀ» Ãß°¡ÇØ ÁÖ¼¼¿ä");
 	private JButton name = new JButton("»óÇ° ÀÌ¸§À» Ãß°¡ÇØ ÁÖ¼¼¿ä");
 	private JButton price = new JButton("»óÇ° °¡°ÝÀ» Ãß°¡ÇØ ÁÖ¼¼¿ä");
@@ -36,7 +36,6 @@ class AddManager extends JDialog {
 	private Boolean priceFlag = false;
 	private Boolean retFlag = false;
 
-	private String stringRgx = "^[°¡-ÆR]{1,}$";
 	private String numRgx = "^[0-9]{1,}$";
 
 	public ImageIcon getAddPic() {
@@ -75,11 +74,7 @@ class AddManager extends JDialog {
 
 		this.setSize(630, 430);
 		this.setTitle("»óÇ° Ãß°¡");
-		// this.setLocation(100, 200);
-		// À§Ä¡¸¦ ¿î¿µÃ¼Á¦°¡ °áÁ¤ÇÏµµ·Ï ÇÏÀÚ
 		this.setLocationByPlatform(true);
-		// »ó´ÜºÎºÐÀÌ ³ª¿ÀÁö ¾Êµµ·Ï ¼³Á¤
-		// this.setUndecorated(true);
 		this.setResizable(false);
 		this.setVisible(true);
 	}
@@ -92,6 +87,7 @@ class AddManager extends JDialog {
 	private void event() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// Ã¢ Á¾·á
 
+		//±×¸² Ãß°¡
 		pic.addActionListener(e -> {
 			open.setVisible(true);
 			if (open.getDirectory() == null && open.getFile() == null) {
@@ -106,6 +102,7 @@ class AddManager extends JDialog {
 			}
 		});
 
+		//»óÇ° ÀÌ¸§ Ãß°¡
 		name.addActionListener(e -> {
 			addName = JOptionPane.showInputDialog("»óÇ° ÀÌ¸§ ÀÔ·Â");
 			if (addName == null || addName.equals("")) {
@@ -117,6 +114,7 @@ class AddManager extends JDialog {
 			}
 		});
 
+		//»óÇ° °¡°Ý Ãß°¡
 		price.addActionListener(e -> {
 			addPrice = JOptionPane.showInputDialog("»óÇ° °¡°Ý ÀÔ·Â");
 			if (Pattern.matches(numRgx, addPrice)) {
@@ -132,6 +130,7 @@ class AddManager extends JDialog {
 			}
 		});
 
+		//»óÇ° ÃÖÁ¾ Ãß°¡
 		add.addActionListener(e -> {
 			if (picFlag && nameFlag && priceFlag) {
 				retFlag = true;

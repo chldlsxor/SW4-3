@@ -64,12 +64,9 @@ class GoodsManager extends JFrame {
 
 	private int ret = 0;
 
-	private String stringRgx = "^[°¡-ÆR]{1,}$";
 	private String numRgx = "^[0-9]{1,}$";
 
-	// Å¬¶ó °ü¸®¿ë
-	private JButton[] clientBt = new JButton[81];
-
+	
 	public int check() {
 		for (int i = 0; i < jlb.length; i++) {
 			if (jlb[i][1].equals("")) {
@@ -81,6 +78,7 @@ class GoodsManager extends JFrame {
 		return ret;
 	}
 
+	//»óÇ° ¹øÈ£
 	public void jbtSet() {
 		for (int i = 0; i < jbt.length; i++) {
 			jbt[i] = new JButton("" + (i + 1));
@@ -88,7 +86,6 @@ class GoodsManager extends JFrame {
 	}
 
 	public GoodsManager(int ch) {
-//		System.out.println(AccountManager.account.size());
 		switch (ch) {
 		case 0:
 			this.display(pageN);
@@ -113,15 +110,11 @@ class GoodsManager extends JFrame {
 		jmb.add(reset);
 	}
 
-	private void ClientEvent() {
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// Ã¢ Á¾·á
-	}
-
 	private void event() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// Ã¢ Á¾·á
 
+		//ÆäÀÌÁö ±³Ã¼ ÀÌº¥Æ®
 		ActionListener btChang = (e) -> {
-			// System.out.println(e.getActionCommand());
 			pageC = e.getActionCommand();
 			pageN = Integer.parseInt(pageC) - 1;
 			this.menuReset();
@@ -134,15 +127,16 @@ class GoodsManager extends JFrame {
 			i.addActionListener(btChang);
 		}
 
+		//Ãß°¡
 		add.addActionListener(e -> {
 			AddManager amg = new AddManager(this, true);
-//			System.out.println(AccountManager.account.size());
 			this.menuReset();
 			this.menuSet(pageN);
 			subPanel[1].repaint();
 			subPanel[1].revalidate();
 		});
 
+		//ÀüÃ¼ »èÁ¦
 		reset.addActionListener(e -> {
 			int choose = JOptionPane.showConfirmDialog(mainPanel, "ÀüÃ¼ »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?", "ÀüÃ¼»èÁ¦", JOptionPane.YES_NO_OPTION);
 			if (choose == 0) {
@@ -155,6 +149,7 @@ class GoodsManager extends JFrame {
 			}
 		});
 
+		//Á¦°Å
 		remove.addActionListener(e -> {
 			String gNum = JOptionPane.showInputDialog("»èÁ¦ÇÒ »óÇ° ¹øÈ£ ÀÔ·Â");
 			if (gNum.equals("0")) {
@@ -163,10 +158,13 @@ class GoodsManager extends JFrame {
 			}
 			try {
 				if (Pattern.matches(numRgx, gNum)) {
+					
 					int size = AccountManager.account.size();
+					
 					AccountManager.account.remove(Integer.parseInt(gNum));
 
 					int nSize = AccountManager.account.size();
+					
 					// ¸ñ·Ï ¾ÕÀ¸·Î ¶¯±è
 					for (int i = Integer.parseInt(gNum); i < AccountManager.account.size(); i++) {
 						AccountManager.account.put(i, AccountManager.account.get(i + 1));
@@ -177,11 +175,11 @@ class GoodsManager extends JFrame {
 						// System.out.println("µÞºÎºÐ»èÁ¦");
 						AccountManager.account.remove(i);
 					}
+					
 					this.menuReset();
 					this.menuSet(pageN);
 					mainPanel.revalidate();
 					mainPanel.repaint();
-//					System.out.println(AccountManager.account.size());
 					JOptionPane.showMessageDialog(this, "»óÇ°ÀÌ »èÁ¦µÇ¾ú½À´Ï´Ù.");
 				} else {
 					JOptionPane.showMessageDialog(this, "Àß ¸øµÈ »óÇ° ¹øÈ£ÀÔ´Ï´Ù.");
@@ -191,6 +189,7 @@ class GoodsManager extends JFrame {
 			}
 		});
 
+		//¼öÁ¤
 		fix.addActionListener(e -> {
 			String uNum = JOptionPane.showInputDialog("¼öÁ¤ÇÒ »óÇ° ¹øÈ£ ÀÔ·Â");
 			if (Pattern.matches(numRgx, uNum)) {
@@ -205,12 +204,14 @@ class GoodsManager extends JFrame {
 		});
 	}
 
+	//ÆÇ³Ú Á¦°Å
 	public void menuReset() {
 		subPanel[1].removeAll();
 		subPanel[1].revalidate();
 
 	}
 
+	//¶óº§ ÃÊ±âÈ­
 	public void setJlb() {
 		for (int i = 0; i < jlb.length; i++) {
 			jlb[i][0] = new JLabel();
@@ -220,9 +221,9 @@ class GoodsManager extends JFrame {
 		}
 	}
 
+	//ÆäÀÌÁö º°·Î ¸Þ´º Ãâ·Â
 	public void menuSet(int n) {
 		for (int i = (n * 9)+1; i < ((n + 1) * 9)+1; i++) {
-//			System.out.println("n " + n);
 			subPanel[1].add(subPanel[i + 2]);
 			subPanel[i + 2].setBorder(line);
 
@@ -251,7 +252,6 @@ class GoodsManager extends JFrame {
 				jlb[i][3].setFont(tFont);
 				subPanel[i + 2].add(jlb[i][3]);
 			} catch (Exception err) {
-//				System.out.println("i = " + i);
 				gIcon = null;
 				name = "";
 				price = 0;
@@ -312,52 +312,6 @@ class GoodsManager extends JFrame {
 		mainPanel.add(subPanel[1]);
 		subPanel[1].setBorder(line);
 		subPanel[1].setLayout(new GridLayout(3, 3));
-
-		// »óÇ° ¹øÈ£ ¼³Á¤
-		// this.gNum();
-
-		// ¸Þ´º ¼³Á¤
-		this.menuSet(pageN);
-
-	}
-
-	private void ClientDisplay(int pageN) {
-		// mainPanelÀ» ±âº» ÆÐ³Î·Î ¼³Á¤
-		this.setLayout(null);
-		this.setContentPane(mainPanel);
-		mainPanel.setLayout(null);
-		mainPanel.setPreferredSize(new Dimension(1400, 600));
-		mainPanel.setBackground(Color.DARK_GRAY);
-
-		// subPanel ·¹ÀÌ¾î ÃÊ±âÈ­
-		for (int i = 0; i < subPanel.length; i++) {
-			subPanel[i] = new JPanel();
-			subPanel[i].setLayout(null);
-		}
-		// ¶óº§ »ý¼º
-		this.setJlb();
-
-		// »óÇ° º¸±â Á¦¸ñ
-		subPanel[0].setBounds(12, 10, 1400, 99);
-		mainPanel.add(subPanel[0]);
-		subPanel[0].setBorder(line);
-		subPanel[0].setLayout(null);
-
-		// ÆäÀÌÁö ¹öÆ°À¸·Î ±³Ã¼
-		this.jbtSet();
-
-		for (int i = 0; i < jbt.length; i++) {
-			jbt[i].setBounds(10 + (i * 150), 20, 150, 60);
-			subPanel[0].add(jbt[i]);
-		}
-
-		// ¸Þ´ºÆÇ ÆÇ³Ú
-		subPanel[1].setBounds(12, 119, 1400, 500);
-		mainPanel.add(subPanel[1]);
-		subPanel[1].setBorder(line);
-		subPanel[1].setLayout(new GridLayout(3, 3));
-
-		// »óÇ° ¹øÈ£ ¼³Á¤
 
 		// ¸Þ´º ¼³Á¤
 		this.menuSet(pageN);

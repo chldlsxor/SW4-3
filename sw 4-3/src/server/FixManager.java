@@ -15,8 +15,6 @@ import db.Account;
 
 class FixManager extends JDialog {
 
-	// ±âÁ¸¿¡´Â Component¸¦ Frame¿¡ Á÷Á¢ ¹èÄ¡Çß¾ú´Âµ¥ ÀÌ·¯¸é °ü¸®È¿À²ÀÌ ¶³¾îÁø´Ù.
-	// PanelÀ» ¸¸µé¾î¼­ Component¸¦ ¹èÄ¡ÇÒ ¼ö ÀÖµµ·Ï ¼³Á¤ÇÒ ¼ö ÀÖ´Ù(ContentPane)
 	private JPanel mainPanel = new JPanel();
 
 	private JButton pic = new JButton();
@@ -38,7 +36,6 @@ class FixManager extends JDialog {
 	private Boolean priceFlag = true;
 	private Boolean retFlag = true;
 
-	private String stringRgx = "^[°¡-ÆR]{1,}$";
 	private String numRgx = "^[0-9]{1,}$";
 
 	public ImageIcon getAddPic() {
@@ -80,11 +77,7 @@ class FixManager extends JDialog {
 
 		this.setSize(630, 430);
 		this.setTitle("»óÇ° ¼öÁ¤");
-		// this.setLocation(100, 200);
-		// À§Ä¡¸¦ ¿î¿µÃ¼Á¦°¡ °áÁ¤ÇÏµµ·Ï ÇÏÀÚ
 		this.setLocationByPlatform(true);
-		// »ó´ÜºÎºÐÀÌ ³ª¿ÀÁö ¾Êµµ·Ï ¼³Á¤
-		// this.setUndecorated(true);
 		this.setResizable(false);
 		this.setVisible(true);
 	}
@@ -170,8 +163,6 @@ class FixManager extends JDialog {
 		// TODO Auto-generated method stub
 		// mainPanelÀ» ±âº» ÆÐ³Î·Î ¼³Á¤
 		this.setContentPane(mainPanel);
-		// ¸ðµç ÄÄÆ÷³ÍÆ®ÀÇ Ãß°¡´Â mainPanel¿¡ ¼öÇà
-
 		mainPanel.setLayout(null);
 		// »çÁø Ãß°¡ ¹öÆ°
 		pic.setBounds(49, 66, 179, 189);
