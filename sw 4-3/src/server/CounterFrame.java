@@ -385,16 +385,16 @@ class CounterFrame extends JFrame {
 		subPanel1.setBorder(line);
 
 		// 좌석 표시 라벨
-		subPanel2.setBounds(12, 10, 165, 69);
-		subPanel1.add(subPanel2);
-		subPanel2.setLayout(null);
-		jlbJari.setBounds(12, 10, 141, 54);
-		subPanel2.add(jlbJari);
-		subPanel2.setBackground(Color.DARK_GRAY);
-		subPanel2.setBorder(line);
+//		subPanel2.setBounds(12, 10, 165, 69);
+//		subPanel1.add(subPanel2);
+//		subPanel2.setLayout(null);
+//		jlbJari.setBounds(12, 10, 141, 54);
+//		subPanel2.add(jlbJari);
+//		subPanel2.setBackground(Color.DARK_GRAY);
+//		subPanel2.setBorder(line);
 
 		// 회원 정보 판넬
-		subPanel3.setBounds(12, 89, 165, 95);
+		subPanel3.setBounds(12, 50, 165, 95);
 		subPanel1.add(subPanel3);
 		subPanel3.setLayout(null);
 		subPanel3.setBackground(Color.darkGray);

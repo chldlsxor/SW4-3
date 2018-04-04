@@ -21,7 +21,7 @@ import javax.swing.border.Border;
 
 class GoodsManager extends JFrame {
 
-	//서버 상품 관리
+	// 서버 상품 관리
 	private JPanel mainPanel = new JPanel();
 
 	private JPanel[] subPanel = new JPanel[83];
@@ -38,7 +38,7 @@ class GoodsManager extends JFrame {
 	private JMenuItem add = new JMenuItem("추가", JMenuItem.CENTER);
 	private JMenuItem remove = new JMenuItem("삭제", JMenuItem.CENTER);
 	private JMenuItem fix = new JMenuItem("수정", JMenuItem.CENTER);
-	private JMenuItem reset = new JMenuItem("새로고침", JMenuItem.CENTER);
+	private JMenuItem reset = new JMenuItem("전체 삭제", JMenuItem.CENTER);
 
 	private Font tFont = new Font("", Font.BOLD, 30);
 
@@ -60,10 +60,9 @@ class GoodsManager extends JFrame {
 
 	private int ret = 0;
 
-	
-	//클라 관리용
+	// 클라 관리용
 	private JButton[] clientBt = new JButton[81];
-	
+
 	public int check() {
 		for (int i = 0; i < jlb.length; i++) {
 			if (jlb[i][1].equals("")) {
@@ -82,7 +81,6 @@ class GoodsManager extends JFrame {
 	}
 
 	public GoodsManager(int ch) {
-		System.out.println("==============================>"+AccountManager.account.size());
 		switch (ch) {
 		case 0:
 			this.display(pageN);
@@ -110,7 +108,7 @@ class GoodsManager extends JFrame {
 	private void ClientEvent() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
 	}
-	
+
 	private void event() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
 
@@ -130,7 +128,6 @@ class GoodsManager extends JFrame {
 
 		add.addActionListener(e -> {
 			AddManager amg = new AddManager(this, true);
-			System.out.println("dd");
 
 			this.menuReset();
 			this.menuSet(pageN);
@@ -139,11 +136,14 @@ class GoodsManager extends JFrame {
 		});
 
 		reset.addActionListener(e -> {
-			System.out.println("새로고침");
-			this.menuReset();
-			this.menuSet(pageN);
-			subPanel[1].repaint();
-			subPanel[1].revalidate();
+			int choose = JOptionPane.showConfirmDialog(mainPanel, "전체 삭제하시겠습니까?", "전체삭제", JOptionPane.YES_NO_OPTION);
+			if (choose == 0) {
+				AccountManager.account.clear();
+				this.menuReset();
+				this.menuSet(pageN);
+				subPanel[1].repaint();
+				subPanel[1].revalidate();
+			}
 		});
 
 		remove.addActionListener(e -> {
@@ -160,7 +160,7 @@ class GoodsManager extends JFrame {
 
 				// 목록 뒷부분 삭제
 				for (int i = size; i > nSize; i--) {
-					System.out.println("뒷부분삭제");
+//					System.out.println("뒷부분삭제");
 					AccountManager.account.remove(i);
 				}
 				this.menuReset();
@@ -212,7 +212,6 @@ class GoodsManager extends JFrame {
 				gName = "상품명 : " + name;
 				gPrice = "가격 : " + price;
 				gNumber = "" + (i + 1);
-
 
 				jlb[i][0].setIcon(gIcon);
 				jlb[i][0].setBounds(12, 10, 190, 123);
@@ -274,13 +273,11 @@ class GoodsManager extends JFrame {
 		// 라벨 생성
 		this.setJlb();
 
-
 		// 상품 보기 제목
 		subPanel[0].setBounds(12, 10, 1400, 99);
 		mainPanel.add(subPanel[0]);
 		subPanel[0].setBorder(line);
 		subPanel[0].setLayout(null);
-
 
 		this.jbtSet();
 
@@ -301,54 +298,48 @@ class GoodsManager extends JFrame {
 		// 메뉴 설정
 		this.menuSet(pageN);
 
-
-
 	}
 
 	private void ClientDisplay(int pageN) {
-			// mainPanel을 기본 패널로 설정
-			this.setLayout(null);
-			this.setContentPane(mainPanel);
-			mainPanel.setLayout(null);
-			mainPanel.setPreferredSize(new Dimension(1400, 600));
-			mainPanel.setBackground(Color.DARK_GRAY);
+		// mainPanel을 기본 패널로 설정
+		this.setLayout(null);
+		this.setContentPane(mainPanel);
+		mainPanel.setLayout(null);
+		mainPanel.setPreferredSize(new Dimension(1400, 600));
+		mainPanel.setBackground(Color.DARK_GRAY);
 
-			// subPanel 레이어 초기화
-			for (int i = 0; i < subPanel.length; i++) {
-				subPanel[i] = new JPanel();
-				subPanel[i].setLayout(null);
-			}
-			// 라벨 생성
-			this.setJlb();
+		// subPanel 레이어 초기화
+		for (int i = 0; i < subPanel.length; i++) {
+			subPanel[i] = new JPanel();
+			subPanel[i].setLayout(null);
+		}
+		// 라벨 생성
+		this.setJlb();
 
+		// 상품 보기 제목
+		subPanel[0].setBounds(12, 10, 1400, 99);
+		mainPanel.add(subPanel[0]);
+		subPanel[0].setBorder(line);
+		subPanel[0].setLayout(null);
 
-			// 상품 보기 제목
-			subPanel[0].setBounds(12, 10, 1400, 99);
-			mainPanel.add(subPanel[0]);
-			subPanel[0].setBorder(line);
-			subPanel[0].setLayout(null);
+		// 페이지 버튼으로 교체
+		this.jbtSet();
 
+		for (int i = 0; i < jbt.length; i++) {
+			jbt[i].setBounds(10 + (i * 150), 20, 150, 60);
+			subPanel[0].add(jbt[i]);
+		}
 
-			// 페이지 버튼으로 교체
-			this.jbtSet();
+		// 메뉴판 판넬
+		subPanel[1].setBounds(12, 119, 1400, 500);
+		mainPanel.add(subPanel[1]);
+		subPanel[1].setBorder(line);
+		subPanel[1].setLayout(new GridLayout(3, 3));
 
-			for (int i = 0; i < jbt.length; i++) {
-				jbt[i].setBounds(10 + (i * 150), 20, 150, 60);
-				subPanel[0].add(jbt[i]);
-			}
+		// 상품 번호 설정
 
-			// 메뉴판 판넬
-			subPanel[1].setBounds(12, 119, 1400, 500);
-			mainPanel.add(subPanel[1]);
-			subPanel[1].setBorder(line);
-			subPanel[1].setLayout(new GridLayout(3, 3));
-
-			// 상품 번호 설정
-
-
-			// 메뉴 설정
-			this.menuSet(pageN);
-
+		// 메뉴 설정
+		this.menuSet(pageN);
 
 	}
 }
