@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.Color;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -36,6 +37,14 @@ public class Sign extends JFrame{
 	ClientManager cmg = new ClientManager();
 	
 	boolean overlapCheck = false;
+	
+	//Á¤±ÔÇ¥Çö½Ä
+	private String idRgx = "^[a-z][0-9a-zA-Z]{2,13}$$";
+	private String pwRgx = "^[0-9a-zA-z]{6,20}$";
+	private String birthRgx = "^[0-9]{8}$";
+	private String nameRgx = "^[°¡-ÆR]{2,15}$";
+	
+	
 	
 	public Sign(){
 		cmg.connect();
@@ -80,7 +89,7 @@ public class Sign extends JFrame{
 			//Áßº¹È®ÀÎ
 			//È¸¿ødb¿¡ °°Àº ¾ÆÀÌµğ°¡ µî·ÏµÇ¾îÀÖ´ÂÁö È®ÀÎÈÄ ¸Ş½ÃÁö Ãâ·Â
 			String str=idInput.getText();
-			if(str.length()>=3 && str.length()<=14) {
+			if(Pattern.matches(idRgx, str)) {
 				cmg.send(str);//¾ÆÀÌµğ º¸³»°í
 				overlapCheck = cmg.receive();//³Î°ª ¹Ş°í
 				if(overlapCheck) {
@@ -98,15 +107,15 @@ public class Sign extends JFrame{
 			//ok¹öÆ° ´©¸£¸é ³ª¸ÓÁö Á¤º¸¸¦ ¼­¹ö¿¡ ´Ù º¸³¿
 			//ºñ¹Ğ¹øÈ£ = ºñ¹Ğ¹øÈ£ È®ÀÎ °Ë»ç
 			//È¸¿ø°¡ÀÔÀÌ ¿Ï·á‰ç´ÂÁö ³Î°ª ¹Ş¾Æ¼­ È®ÀÎÃ¢ ¶ç¿öÁÜ
-			if(nameInput.getText().equals(""))
+			if(!Pattern.matches(nameRgx, nameInput.getText()))
 				JOptionPane.showMessageDialog(mainPanel, "ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä");
 			else if(!overlapCheck)
 				JOptionPane.showMessageDialog(mainPanel, "¾ÆÀÌµğ Áßº¹È®ÀÎÀ» ÇØÁÖ¼¼¿ä");
-			else if(pwInput.getText().length()<6 || pwInput.getText().length()>20)
+			else if(!Pattern.matches(pwRgx, pwInput.getText()))
 				JOptionPane.showMessageDialog(mainPanel, "ºñ¹Ğ¹øÈ£´Â 6~20±ÛÀÚ¸¸ °¡´ÉÇÕ´Ï´Ù");
 			else if(!pwInput.getText().equals(pwCheckInput.getText()))
 				JOptionPane.showMessageDialog(mainPanel, "ºñ¹Ğ¹øÈ£¸¦ ´Ù½Ã È®ÀÎÇØÁÖ¼¼¿ä");
-			else if(birthInput.getText().length()!=8)
+			else if(!Pattern.matches(birthRgx, birthInput.getText()))
 				JOptionPane.showMessageDialog(mainPanel, "»ı³â¿ùÀÏÀÌ Àß¸ø ÀÔ·ÂµÆ½À´Ï´Ù");
 			else {
 				Member m = new Member(pwInput.getText(),nameInput.getText(),birthInput.getText());
