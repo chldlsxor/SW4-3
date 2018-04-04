@@ -39,6 +39,7 @@ class CounterFrame extends JFrame {
 	public static List<Integer> orderInfo = new ArrayList<>();
 	public static String[] userIdUse = new String[60];
 
+	//시간 추가 메소드
 	public static void time(String id, int time) {
 		btlb[Integer.parseInt(FileManager.getUserPCNum(id)) - 120][3].setText(
 				"시간 : " + FileManager.getUserTime(id) / 3600 + " : " + FileManager.getUserTime(id) % 3600 / 60);
@@ -71,8 +72,6 @@ class CounterFrame extends JFrame {
 	private List<String> orderList = new ArrayList<>();
 
 	private JButton bExit = new JButton("종료");
-
-	private JButton msg = new JButton("주문 추가");
 
 	private JButton calculate = new JButton("정산");
 	private JButton management = new JButton("상품 관리");
@@ -108,24 +107,21 @@ class CounterFrame extends JFrame {
 		this.display();
 		this.event();
 		this.menu();
-
-		System.out.println(btList.length);
-
+		
 		this.setSize(win.width, win.height);
 		this.setTitle("KG PC방 - 관리자");
-		// this.setLocation(100, 200);
-		// 위치를 운영체제가 결정하도록 하자
 		this.setLocationByPlatform(false);
-		// 상단부분이 나오지 않도록 설정
 		this.setUndecorated(true);
 		this.setResizable(true);
 		this.setVisible(true);
 	}
 
+	//DB읽어옴
 	public void gOpen() {
 		AccountManager.readDB();
 	}
 
+	//자리 버튼 세팅
 	private void btset() {
 		for (int i = 0; i < btList.length; i++) {
 			btList[i] = new JButton();
@@ -165,6 +161,7 @@ class CounterFrame extends JFrame {
 		setting.add(gSave);
 	}
 
+	//주문 내역 초기화
 	private void orderReset() {
 		// 주문 내역 초기화
 		for (JButton j : btGList) {
@@ -181,22 +178,24 @@ class CounterFrame extends JFrame {
 	private void event() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
 
+		//상품 저장
 		gSave.addActionListener(e -> {
 			for (int Pid : AccountManager.account.keySet()) {
 				AccountManager.saveDB(Pid, AccountManager.account.get(Pid));
 			}
 		});
 
+		//종료 버튼 -> 프로그램 종료
 		bExit.addActionListener(e -> {
 
 			System.exit(0);
 		});
-
-		msg.addActionListener(e -> {
-			orderList.add((myTestCnt++) + "번 주문");
-			this.orderReset();
+		//메뉴바) 파일 - 종료 -> 프로그램 종료
+		exit.addActionListener(e -> {
+			System.exit(0);
 		});
 
+		//정산창 출력
 		calculate.addActionListener(e -> {
 			AccountFrame afr = new AccountFrame();
 		});
@@ -215,7 +214,8 @@ class CounterFrame extends JFrame {
 				}
 			}
 		};
-
+		
+		//자리 더블 클릭 시 회원 정보 출력
 		MouseInputListener mil = new MouseInputAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -230,6 +230,7 @@ class CounterFrame extends JFrame {
 			}
 		};
 
+		//주문 내역 삭제
 		for (JButton i : btGList) {
 			i.addActionListener(e -> {
 				if (!e.getActionCommand().equals("")) {
@@ -254,19 +255,18 @@ class CounterFrame extends JFrame {
 			});
 		}
 
+		//자리 버튼에 이벤트 추가
 		for (JButton i : btList) {
 			i.addActionListener(btls);
 			i.addMouseListener(mil);
 		}
 
-		exit.addActionListener(e -> {
-			System.exit(0);
-		});
-
+		//메뉴바 -> 메뉴판 보기
 		view.addActionListener(e -> {
 			GoodsManager gmg = new GoodsManager(0);
 		});
 
+		//버튼 메뉴판 보기
 		management.addActionListener(e -> {
 			GoodsManager gmg = new GoodsManager(0);
 		});
@@ -296,12 +296,11 @@ class CounterFrame extends JFrame {
 
 								useCheck[i] = false;
 							}
-							
-							if(!useCheck[i]) {
+
+							if (!useCheck[i]) {
 								btlb[i][3].setText("남은 시간 : " + FileManager.getUserTime(userIdUse[i]) / 3600 + " : "
 										+ FileManager.getUserTime(userIdUse[i]) % 3600 / 60);
 							}
-
 
 							if (orderCheck) {
 								System.out.println(orderId.size());
@@ -389,15 +388,6 @@ class CounterFrame extends JFrame {
 		subPanel1.setLayout(null);
 		subPanel1.setBackground(Color.darkGray);
 		subPanel1.setBorder(line);
-
-		// 좌석 표시 라벨
-//		subPanel2.setBounds(12, 10, 165, 69);
-//		subPanel1.add(subPanel2);
-//		subPanel2.setLayout(null);
-//		jlbJari.setBounds(12, 10, 141, 54);
-//		subPanel2.add(jlbJari);
-//		subPanel2.setBackground(Color.DARK_GRAY);
-//		subPanel2.setBorder(line);
 
 		// 회원 정보 판넬
 		subPanel3.setBounds(12, 50, 165, 95);

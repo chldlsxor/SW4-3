@@ -11,8 +11,6 @@ import javax.swing.JTextArea;
 
 class SeatManager extends JDialog {
 
-	// 기존에는 Component를 Frame에 직접 배치했었는데 이러면 관리효율이 떨어진다.
-	// Panel을 만들어서 Component를 배치할 수 있도록 설정할 수 있다(ContentPane)
 	private JPanel mainPanel = new JPanel();
 	
 	private JLabel uName = new JLabel();
@@ -27,6 +25,7 @@ class SeatManager extends JDialog {
 	
 	private JButton clientExit = new JButton("사용 종료");
 
+	//자리를 사용하고 있는 사용자의 ID를 받아옴
 	public SeatManager(String id) {
 		this.set(id);
 		this.display();
@@ -35,13 +34,17 @@ class SeatManager extends JDialog {
 
 		this.setSize(300, 450);
 		this.setTitle("자리 정보");
-		// this.setLocation(100, 200);
-		// 위치를 운영체제가 결정하도록 하자
 		this.setLocationByPlatform(true);
-		// 상단부분이 나오지 않도록 설정
-		// this.setUndecorated(true);
 		this.setResizable(false);
 		this.setVisible(true);
+	}
+	
+	//자리 클릭 시 자리 정보 mainPanel 우측에 표시
+	public void set(String id) {
+		uName.setText("이         름 : "+FileManager.getUserName(id));
+		uBirth.setText("생년월일 	: "+FileManager.getUserBirth(id));
+		uPay.setText("사용금액 : "+FileManager.getUserMoney(id));
+		ta.setText(FileManager.getUserMemo(id));
 	}
 
 	private void menu() {
@@ -50,28 +53,28 @@ class SeatManager extends JDialog {
 	}
 
 	private void event(String id) {
-		// this.setDefaultCloseOperation(EXIT_ON_CLOSE);//프로그램 종료
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
-		// this.setDefaultCloseOperation(HIDE_ON_CLOSE);//창숨김
-		// 위의 것들이 다 싫을 경우 커스텀 이벤트 설정
-		// this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);//기본 이벤트 방지
 		
+		//메세지 보내기
 		msgSend.addActionListener(e -> {
 			String uMsg = JOptionPane.showInputDialog("메세지 입력");
 			ServerSendManager ssm = new ServerSendManager(FileManager.getUserIP(id));
 			ssm.sendMessage(uMsg);
 		});
 		
+		//종료
 		cancel.addActionListener(e -> {
 			dispose();
 		});
 		
+		//상품 db 저장
 		save.addActionListener(e -> {
 			FileManager.setUserMemo(id, ta.getText());
 			FileManager.saveDB(id, FileManager.getUserClass(id));
 			dispose();
 		});
 		
+		//클라 강제 종료
 		clientExit.addActionListener(e -> {
 			int choose = JOptionPane.showConfirmDialog(mainPanel, "사용 종료 시키겠습니까?","사용 종료",JOptionPane.YES_NO_OPTION);
 			if(choose == 0 ) {
@@ -82,19 +85,12 @@ class SeatManager extends JDialog {
 		});
 	}
 	
-	public void set(String id) {
-		uName.setText("이         름 : "+FileManager.getUserName(id));
-		uBirth.setText("생년월일 	: "+FileManager.getUserBirth(id));
-		uPay.setText("사용금액 : "+FileManager.getUserMoney(id));
-		ta.setText(FileManager.getUserMemo(id));
-	}
 
 	private void display() {
 		// TODO Auto-generated method stub
 		// mainPanel을 기본 패널로 설정
 		this.setContentPane(mainPanel);
 
-		// 모든 컴포넌트의 추가는 mainPanel에 수행
 		mainPanel.setLayout(null);
 		mainPanel.setBackground(Color.DARK_GRAY);
 		
