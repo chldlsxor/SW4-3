@@ -50,6 +50,9 @@ public class ClientManager2 {
 				else if(header==Header.CHARGE) {
 					charge();
 				}
+				else if(header==Header.SHUTDOWN) {
+					Login.exit();
+				}
 				out.close();
 				in.close();			
 				socket.close();

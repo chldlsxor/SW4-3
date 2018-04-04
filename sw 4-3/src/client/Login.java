@@ -1,7 +1,9 @@
 package client;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Panel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,14 +20,18 @@ import header.Header;
 public class Login extends JFrame{
 	private JPanel mainPanel = new JPanel();
 	
+	private Panel p = new Panel();
+	private JLabel p2 = new JLabel();
+	
 	private JButton order = new JButton("상품 주문");
 	private JButton message = new JButton("메세지");
 	private JButton exit = new JButton("종료");
 
 	private JLabel startTime = new JLabel("시작 시간",JLabel.CENTER);
-	private JLabel startTimeOut = new JLabel("시작 시간",JLabel.CENTER);
+	private JLabel startTimeOut = new JLabel("",JLabel.RIGHT);
 	private JLabel restTime = new JLabel("남은 시간",JLabel.CENTER);
-	private JLabel restTimeOut = new JLabel("",JLabel.CENTER);
+	private JLabel restTimeOut = new JLabel("",JLabel.RIGHT);
+	private JLabel seat = new JLabel("",JLabel.CENTER);
 	
 	ClientManager cmg = new ClientManager();
 	
@@ -41,13 +47,15 @@ public class Login extends JFrame{
 	
 	public static int timeSet;
 	
+	public static boolean end = false;
+	
 	public Login(String pcNum, String id, int time, int age){	
 		timeSet = time;
 		this.display();
 		this.event(pcNum, id, age);
-
-		this.setTitle(pcNum+"번 자리");
-		this.setSize(500,400);
+		
+		this.setTitle("KG PC방");
+		this.setSize(480,220);
 		this.setLocation(1000, 50);
 		this.setResizable(false);
 		this.setVisible(true);
@@ -55,33 +63,48 @@ public class Login extends JFrame{
 	
 	private void display() {
 		this.setContentPane(mainPanel);
-		mainPanel.setLayout(new GridLayout(5,2));
-		mainPanel.add(order);
-		mainPanel.add(message);
-		mainPanel.add(startTime);
-		mainPanel.add(startTimeOut);
-		mainPanel.add(restTime);
-		mainPanel.add(restTimeOut);
-		mainPanel.add(exit);
+		mainPanel.setLayout(new BorderLayout());
+		mainPanel.add(p, BorderLayout.NORTH);
+		mainPanel.add(p2, BorderLayout.CENTER);
+		p.add(order);
+		p.add(message);
+		p2.add(seat).setBounds(25,25,100,100);
+		p2.add(startTime).setBounds(130,40,100,30);
+		p2.add(startTimeOut).setBounds(230,40,100,30);
+		startTimeOut.setFont(new Font("",Font.PLAIN,15));
+		p2.add(restTime).setBounds(130,80,100,30);
+		p2.add(restTimeOut).setBounds(230,80,100,30);
+		restTimeOut.setFont(new Font("",Font.PLAIN,15));
+		p2.add(exit).setBounds(360,50,70,50);
+		seat.setFont(new Font("",Font.BOLD,50));
+		
 		Border line = BorderFactory.createLineBorder(Color.BLACK,1);
-		startTime.setBorder(line);
-		startTimeOut.setBorder(line);
-		restTime.setBorder(line);
-		restTimeOut.setBorder(line);
+		seat.setBorder(line);
+		Border line2 = BorderFactory.createLineBorder(Color.BLACK,3);
+		Border title = BorderFactory.createTitledBorder(line2,"-");
+		p2.setBorder(title);
 	}
 
 	public static void plus(int plus) {
 		timeSet += plus;
 	}
 	
+	public static void exit() {
+		end=true;
+	}
+	
 	private void event(String pcNum, String id, int age) {
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);//x막기
+		
 		Thread t = new Thread() { // 시간출력 스레드
 			public void run() {
 				while(timeSet>0){
+					if(end==true)
+						break;
 					int hour = timeSet/3600;
 					int min = timeSet%3600/60;
 					int sec = timeSet%3600%60;
-					restTimeOut.setText(hour+"시간 "+min+"분 "+sec+"초");
+					restTimeOut.setText(hour+"시간 "+min+"분 ");
 					timeSet--;
 					if(timeSet==300)
 						System.out.println("선불 이용 시간이 5분 남았습니다.");
@@ -89,6 +112,7 @@ public class Login extends JFrame{
 						Thread.sleep(1000);
 					} catch (InterruptedException e1) {}
 				}
+				end=false;
 				cmg.connect();
 				cmg.headerSend(Header.SAVE);
 				cmg.send(id);
@@ -144,5 +168,7 @@ public class Login extends JFrame{
 		});
 		
 		startTimeOut.setText(now.format(date)); // 시작시간
+		
+		seat.setText(pcNum);
 	}
 }

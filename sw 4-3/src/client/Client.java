@@ -9,8 +9,10 @@ public class Client {
 		String num = ip.getHostAddress();
 		String numArr[] = num.split("\\.");
 		Wait wait = new Wait(numArr[3]);
-//		Charger charger = new Charger();
 		ClientManager2 cm = new ClientManager2();
+//		Login l = new Login("129","id",1000,30);
+//		Sign sign = new Sign();
+//		Charger charger = new Charger();
 //		Menu menu = new Menu("asdf");
 	}
 }

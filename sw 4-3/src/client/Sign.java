@@ -1,7 +1,6 @@
 package client;
 
 import java.awt.Color;
-import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -18,12 +17,12 @@ import header.Header;
 public class Sign extends JFrame{
 	private JPanel mainPanel = new JPanel();
 	
-	private JLabel name = new JLabel("이름",JLabel.CENTER);
-	private JLabel id = new JLabel("아이디(3~14)",JLabel.CENTER);
-	private JLabel pw = new JLabel("비밀번호(6~20)",JLabel.CENTER);
-	private JLabel pwCheck = new JLabel("비밀번호 확인",JLabel.CENTER);
-	private JLabel birth = new JLabel("생년월일(8자리)",JLabel.CENTER);
-	
+	private JLabel name = new JLabel("이름");
+	private JLabel id = new JLabel("아이디(3~14)");
+	private JLabel pw = new JLabel("비밀번호(6~20)");
+	private JLabel pwCheck = new JLabel("비밀번호 확인");
+	private JLabel birth = new JLabel("생년월일(8자리)");
+
 	private JTextArea nameInput = new JTextArea();
 	private JTextArea idInput = new JTextArea();
 	private JTextArea pwInput = new JTextArea();
@@ -45,7 +44,7 @@ public class Sign extends JFrame{
 		this.event();
 		
 		this.setTitle("회원가입");
-		this.setSize(500, 400);
+		this.setSize(420, 370);
 		this.setLocation(500, 150);
 		this.setResizable(false);
 		this.setVisible(true);
@@ -53,31 +52,26 @@ public class Sign extends JFrame{
 	}
 	private void display() {
 		this.setContentPane(mainPanel);
-		mainPanel.setLayout(new GridLayout(7,2));
-		mainPanel.add(name);
-		mainPanel.add(nameInput);
-		mainPanel.add(id);
-		mainPanel.add(idInput);
-		mainPanel.add(pw);
-		mainPanel.add(pwInput);
-		mainPanel.add(pwCheck);
-		mainPanel.add(pwCheckInput);
-		mainPanel.add(birth);
-		mainPanel.add(birthInput);
-		mainPanel.add(ok);
-		mainPanel.add(no);
-		mainPanel.add(overlap);
+		mainPanel.setLayout(null);
+		mainPanel.add(name).setBounds(10,0,120,40);
+		mainPanel.add(nameInput).setBounds(130,10,150,40);
+		mainPanel.add(id).setBounds(10,50,120,40);
+		mainPanel.add(idInput).setBounds(130,60,150,40);
+		mainPanel.add(pw).setBounds(10,100,120,40);
+		mainPanel.add(pwInput).setBounds(130,110,150,40);
+		mainPanel.add(pwCheck).setBounds(10,150,120,40);
+		mainPanel.add(pwCheckInput).setBounds(130,160,150,40);
+		mainPanel.add(birth).setBounds(10,200,120,40);
+		mainPanel.add(birthInput).setBounds(130,210,150,40);
+		mainPanel.add(overlap).setBounds(300,65,90,30);
+		mainPanel.add(ok).setBounds(100,280,90,30);
+		mainPanel.add(no).setBounds(200,280,90,30);
 		
 		Border line = BorderFactory.createLineBorder(Color.BLACK,1);
-		name.setBorder(line);
 		nameInput.setBorder(line);
-		id.setBorder(line);
 		idInput.setBorder(line);
-		pw.setBorder(line);
 		pwInput.setBorder(line);
-		pwCheck.setBorder(line);
 		pwCheckInput.setBorder(line);
-		birth.setBorder(line);
 		birthInput.setBorder(line);
 	}
 
