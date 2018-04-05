@@ -2,6 +2,10 @@ package client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,7 +15,7 @@ import java.net.Socket;
 import db.Member;
 
 public class ClientManager {
-	private String ip = "192.168.0.130";
+	private String ip;
 	private int port = 20000;
 	private InetAddress inet;
 	private Socket socket;
@@ -20,7 +24,8 @@ public class ClientManager {
 
 	public ClientManager() {
 		try {
-			inet = InetAddress.getByName(ip);
+			System.out.println(getIP());
+			inet = InetAddress.getByName(getIP());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -126,5 +131,15 @@ public class ClientManager {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	public String getIP() {
+		String ip;
+		try (BufferedReader fin = new BufferedReader(
+                new FileReader(new File("DBFile", "ip.txt")));){
+          ip = fin.readLine();
+        } catch (Exception e) {
+        	ip = null;
+       }
+		return ip;
 	}
 }

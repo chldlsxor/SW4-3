@@ -107,10 +107,11 @@ public class ServerManager extends Thread{
 		private void charge() {
 			try {
 				String id= in.readObject().toString();	//아이디 받아옴
-				int money = in.readInt();				//금액 받아옴
+				int money=0;
 				System.out.println(id);
 				send(FileManager.IDcheck(id));
-				if(FileManager.IDcheck(id)) {	//아이디가 존재하면					
+				if(FileManager.IDcheck(id)) {	//아이디가 존재하면	
+					money = in.readInt();				//금액 받아옴
 					FileManager.chargeUserTime(id, money);	//시간 충전
 					FileManager.plusUserMoney(id, money);	//사용금액 갱신
 					AccountManager.addTotalPCPrice(money);	//회계에 PC 사용금액 추가
