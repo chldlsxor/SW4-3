@@ -66,8 +66,8 @@ public class Charger extends JFrame{
 		cmg.connect();
 		cmg.headerSend(Header.CHARGE);
 		cmg.send(id);
-		cmg.intSend(money);
 		if(cmg.receive()) {
+			cmg.intSend(money);
 			JOptionPane.showMessageDialog(mainPanel, "충전이 완료되었습니다.");
 		}
 		else
