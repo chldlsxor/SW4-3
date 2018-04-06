@@ -5,7 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -16,6 +18,8 @@ import header.Header;
 public class ServerManager extends Thread{
 	
 	public static List<String> idList = new ArrayList<>();
+	
+	
 	
 	private static class Client extends Thread{
 		//총괄 기능
@@ -83,7 +87,14 @@ public class ServerManager extends Thread{
 				send(loginCheck);
 				
 				if (loginCheck) {
+					
 					out.writeObject(FileManager.getUserBirth(id));//생년월일 보냄
+					out.flush();
+					SimpleDateFormat check = new SimpleDateFormat("HHmmss");
+					int time = Integer.parseInt(check.format(new Date()));
+					System.out.println(time);
+					out.writeInt(time);
+					out.flush();
 					String PCNum = in.readObject().toString();	//피씨 번호 받음	//미성년자면 0보낼꺼
 					System.out.println("PCNum : "+PCNum);
 					if(!PCNum.equals("-1")) {					//미성년자가 아니면
