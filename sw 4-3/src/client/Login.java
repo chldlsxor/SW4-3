@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Panel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -35,22 +33,17 @@ public class Login extends JFrame{
 	
 	ClientManager cmg = new ClientManager();
 	
-	Date date = new Date();
-	SimpleDateFormat now = new SimpleDateFormat("a h시 mm분");
-	SimpleDateFormat cal = new SimpleDateFormat("HH-mm-ss");
-	
-	String nowTime = cal.format(date);
-	String timeArr[] = nowTime.split("-");
-	int timer = (21-Integer.parseInt(timeArr[0]))*3600
-			+(59-Integer.parseInt(timeArr[1]))*60
-			+(59-Integer.parseInt(timeArr[2]));
+	int date;
+	int timer;
 	
 	public static int timeSet;
 	
 	public static boolean end = false;
 	
-	public Login(String pcNum, String id, int time, int age){	
+	public Login(String pcNum, String id, int time, int age, int now){	
 		timeSet = time;
+		date=now;
+		timer= (21-date/10000)*3600 + (59-(date%10000)/100)*60 + 59-(date%100);
 		this.display();
 		this.event(pcNum, id, age);
 		
@@ -167,7 +160,7 @@ public class Login extends JFrame{
 			cmg.send(str);
 		});
 		
-		startTimeOut.setText(now.format(date)); // 시작시간
+		startTimeOut.setText(date/10000+"시 "+date%10000/100+"분"); // 시작시간
 		
 		seat.setText(pcNum);
 	}

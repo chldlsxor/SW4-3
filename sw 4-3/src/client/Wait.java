@@ -69,7 +69,7 @@ public class Wait extends JFrame{
 		this.setUndecorated(true);//상단바 없애기
 		this.setResizable(false);
 		this.setVisible(true);
-		this.setAlwaysOnTop(true);//항상 위에
+//		this.setAlwaysOnTop(true);//항상 위에
 	}
 	
 	private void display() {
@@ -159,9 +159,7 @@ public class Wait extends JFrame{
 		
 		rogin.addActionListener(e->{
 			Date today = new Date();
-			SimpleDateFormat exit22 = new SimpleDateFormat("HH");
 			SimpleDateFormat adult = new SimpleDateFormat("yyyy");
-			int timer = Integer.parseInt(exit22.format(today));//16시
 			int year = Integer.parseInt(adult.format(today));//2018년
 			//아이디 비번 보내고
 			cmg.connect();
@@ -172,17 +170,19 @@ public class Wait extends JFrame{
 			if(cmg.receive()) {
 				//나이를 받아서 시간체크
 				int age = year + 1 - (Integer.parseInt(cmg.strReceive())/10000);//2018-1993=25
+				int now = cmg.plusReceive();
+				int timer = now/10000;
 				if(age<20 && (timer>=22 || timer<=8)) {
 					JOptionPane.showMessageDialog(mainPanel, "미성년자 이용 불가 시간입니다");
 					cmg.send("-1");
 				}
 				else {
-					cmg.send(num);
+					cmg.send(num);		
 					int time = cmg.plusReceive();
 					if(time<60)
 						JOptionPane.showMessageDialog(mainPanel, "시간을 충전하고 오세요");
 					else {
-						Login login = new Login(num,idInput.getText(),time,age);					
+						Login login = new Login(num,idInput.getText(),time,age,now);					
 						dispose();
 					}
 				}
