@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -10,22 +11,32 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+
 import header.Header;
 
 class AccountFrame extends JFrame{
 	private JPanel mainPanel = new JPanel();
+	private JPanel subPanel = new JPanel();
 	private JPanel gridPanel = new JPanel();
+	private JPanel graphPanel = new JPanel();
 	
 	private Date date = new Date();
+	private JButton graphBtn= new JButton("그래프 보기");
 	private SimpleDateFormat today = new SimpleDateFormat("yyyy-MM-dd E요일");
 	private JLabel label_Date = new JLabel(today.format(date));
 	private JTable table;
 	private String[] title = {"제품명", "제품가격","판매량", "판매금액"};
 	private String[][] accountData;
 	
+	private ChartManager cm = new ChartManager();
+	private JFreeChart chart = cm.getChart();
+	private ChartPanel cp = new ChartPanel(chart);
 	
 	private JScrollPane scroll = new JScrollPane(gridPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	
+	private JScrollPane scroll2 = new JScrollPane(cp, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 	//main에 하던 설정들을 생성자에서 진행
 	public AccountFrame() {
 		this.display();//화면 구성 관련 처리
@@ -46,8 +57,11 @@ class AccountFrame extends JFrame{
 		
 		//모든 컴포넌트의 추가는 mainPanel에서 진행	
 		mainPanel.setLayout(new BorderLayout());
-		mainPanel.add(label_Date,BorderLayout.NORTH);	//날짜 표시
-			
+		mainPanel.add(subPanel,BorderLayout.NORTH);	//날짜 표시
+		subPanel.setLayout(new BorderLayout());
+		subPanel.add(label_Date,BorderLayout.CENTER);
+		subPanel.add(graphBtn,BorderLayout.EAST);
+		
 		int row = AccountManager.account.size();		//데이터 크기
 		
 		accountData = new String[row+1][4];				//표 내용 데이터
@@ -84,6 +98,16 @@ class AccountFrame extends JFrame{
 
 	private void event() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);// 창 종료
+		
+		//그래프 버튼 -> 그래프 출력
+		graphBtn.addActionListener(e->{
+			
+			JFrame cf=new JFrame("그래프 보기");
+			cf.setContentPane(scroll2);
+
+			cf.setSize(800,400); 
+			cf.setVisible(true);
+		});
 	}
 
 	private void menu() {
