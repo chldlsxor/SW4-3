@@ -69,7 +69,7 @@ public class Wait extends JFrame{
 		this.setUndecorated(true);//상단바 없애기
 		this.setResizable(false);
 		this.setVisible(true);
-//		this.setAlwaysOnTop(true);//항상 위에
+		this.setAlwaysOnTop(true);//항상 위에
 	}
 	
 	private void display() {
